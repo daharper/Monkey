@@ -62,4 +62,7 @@ public class Token(TokenType type, string literal = "")
     public TokenType Type { get; set; } = type;
     
     public string Literal { get; set; } = literal;
+
+    public override string ToString()
+        => $"Token({Type}, {Literal})";
 }
