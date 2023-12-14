@@ -1,5 +1,8 @@
 // ReSharper disable UseSymbolAlias
-namespace Monkey;
+
+using Monkey.Utils;
+
+namespace Monkey.Lexing;
 
 using TokenType = string;
 
@@ -20,16 +23,16 @@ public class Lexer
     }
 
     // The input string to be tokenized
-    public string Input { get; set; } 
+    private string Input { get; set; } 
     
     // Points to the current character under examination
-    public int Position { get; set; }
+    private int Position { get; set; }
     
     // Points to the next character after the current one
-    public int ReadPosition { get; set; }
+    private int ReadPosition { get; set; }
     
     // The current character under examination
-    public char Ch { get; set; }
+    private char Ch { get; set; }
 
     public Token NextToken()
     {
@@ -149,12 +152,12 @@ public class Lexer
 
     private string ReadSubstring(Func<char, bool> predicate)
     {
-        var (position, value) = Input.TakeFrom(Position, predicate);
+        var (index, value) = Input.TakeFrom(Position, predicate);
 
-        if (position > Position)
+        if (index > Position)
         {
-            Position = position - 1;
-            ReadPosition = Position + 1;
+            Position = index - 1;
+            ReadPosition = index;
         }
         
         return value;

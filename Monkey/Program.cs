@@ -1,4 +1,4 @@
-﻿using Monkey;
+﻿using Monkey.Lexing;
 using static System.Console;
 
 const string prompt = ">> ";
@@ -13,9 +13,9 @@ while (true)
 
     if (string.IsNullOrWhiteSpace(input)) continue;
     if (input == "exit") break;
-    
+
     var lexer = new Lexer(input);
-    
-    for(var token = lexer.NextToken(); token.Type != Token.Eof; token = lexer.NextToken())
+
+    for (var token = lexer.NextToken(); token.Type != Token.Eof; token = lexer.NextToken())
         WriteLine(token);
 }

@@ -1,6 +1,9 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=613203f8_002D3894_002D411e_002D8256_002D9c0d12d369ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestNextToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Tests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Lexing.LexerTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.LetStatementTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.ParserErrorTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.ReturnStatementTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

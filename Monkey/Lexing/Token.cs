@@ -2,7 +2,7 @@
 
 using System.Collections.Immutable;
 
-namespace Monkey;
+namespace Monkey.Lexing;
 
 using TokenType = string;
 
@@ -63,6 +63,9 @@ public class Token(TokenType type, string literal = "")
     
     public string Literal { get; set; } = literal;
 
-    public override string ToString()
-        => $"Token({Type}, {Literal})";
+    public bool Is(TokenType tokenType) => Type == tokenType;
+    
+    public bool Is(Token token) => Type == token.Type;
+    
+    public override string ToString() => $"Token({Type}, {Literal})";
 }

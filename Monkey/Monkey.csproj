@@ -7,4 +7,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Reference Include="testcentric.engine.metadata">
+        <HintPath>..\Monkey.Tests\bin\Debug\net8.0\testcentric.engine.metadata.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

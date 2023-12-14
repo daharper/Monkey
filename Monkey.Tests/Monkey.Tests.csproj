@@ -21,4 +21,8 @@
       <ProjectReference Include="..\Monkey\Monkey.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Fixtures\Parsing\" />
+    </ItemGroup>
+
 </Project>
