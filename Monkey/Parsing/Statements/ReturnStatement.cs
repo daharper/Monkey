@@ -1,6 +1,7 @@
 using Monkey.Lexing;
+using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing;
+namespace Monkey.Parsing.Statements;
 
 public class ReturnStatement : IStatement
 {
@@ -12,4 +13,7 @@ public class ReturnStatement : IStatement
     public string TokenLiteral() => Token.Literal;
 
     public void StatementNode() { }
+    
+    public override string ToString()
+        => $"{TokenLiteral()} {ReturnValue};";
 }

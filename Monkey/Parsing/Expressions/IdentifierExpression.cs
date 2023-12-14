@@ -1,8 +1,9 @@
 using Monkey.Lexing;
+using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing;
+namespace Monkey.Parsing.Expressions;
 
-public class Identifier : IExpression
+public class IdentifierExpression : IExpression
 {
     public Token Token { get; set; }
     public string Value { get; set; }
@@ -11,4 +12,6 @@ public class Identifier : IExpression
         => Token.Literal;
 
     public void ExpressionNode() { }
+    
+    public override string ToString() => Value;
 }

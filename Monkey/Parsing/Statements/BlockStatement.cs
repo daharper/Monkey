@@ -1,14 +1,18 @@
 using System.Text;
+using Monkey.Lexing;
 using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing;
+namespace Monkey.Parsing.Statements;
 
-public class Programme 
-{ 
+public class BlockStatement : IStatement
+{
+    public Token Token { get; set; } = null!;
+
     public List<IStatement> Statements { get; set; } = [];
+    
+    public string TokenLiteral() => Token.Literal;
 
-    public string TokenLiteral()
-        => Statements.Count > 0 ? Statements[0].TokenLiteral() : string.Empty;
+    public void StatementNode() { }
 
     public override string ToString()
     {
@@ -18,7 +22,7 @@ public class Programme
         {
             builder.Append(statement);
         }
-        
+
         return builder.ToString();
     }
 }

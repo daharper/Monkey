@@ -1,4 +1,4 @@
-namespace Monkey.Parsing;
+namespace Monkey.Parsing.Interfaces;
 
 public interface IStatement : INode
 {

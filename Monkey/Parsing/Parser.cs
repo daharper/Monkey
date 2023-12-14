@@ -1,5 +1,7 @@
 using Monkey.Lexing;
-
+using Monkey.Parsing.Expressions;
+using Monkey.Parsing.Interfaces;
+using Monkey.Parsing.Statements;
 using TokenType = string;
 
 namespace Monkey.Parsing;
@@ -84,7 +86,7 @@ public class Parser
             return null;
         }
         
-        statement.Name = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+        statement.Name = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
         
         if (!TryAdvanceTo(Token.Assign))
         {
