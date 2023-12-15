@@ -7,7 +7,7 @@ public class ExpressionStatement : IStatement
 {
     public Token Token { get; set; } = null!;
     
-    public IExpression Expression { get; set; } = null!;
+    public IExpression? Expression { get; set; }
     
     public string TokenLiteral() => Token.Literal;
 

@@ -2,6 +2,7 @@ using Monkey.Lexing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
 using Monkey.Parsing.Statements;
+
 using TokenType = string;
 
 namespace Monkey.Parsing;
@@ -9,15 +10,28 @@ namespace Monkey.Parsing;
 public class Parser
 {
     private readonly List<string> _errors = new();
+
+    private readonly Dictionary<TokenType, Func<IExpression>> _prefixParseFns = new();
+    
+    private readonly Dictionary<TokenType, Func<IExpression, IExpression>> _infixParseFns = new();
     
     public Parser(Lexer lexer)
     {
-        Lexer = lexer; 
+        Lexer = lexer;
+
+        RegisterParserFunctions();
         
         NextToken();
         NextToken();
     }
-    
+
+    private void RegisterParserFunctions()
+    {
+        _prefixParseFns.Add(
+            Token.Identifier, 
+            () => new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal });
+    }
+
     public IEnumerable<string> Errors => _errors;
 
     public bool HasErrors => _errors.Count > 0;
@@ -59,8 +73,51 @@ public class Parser
         {
             Token.Let => ParseLetStatement(),
             Token.Return => ParseReturnStatement(),
-            _ => null
+            _ => ParseExpressionStatement()
         };
+    }
+
+    private IStatement? ParseExpressionStatement()
+    {   
+        var statement = new ExpressionStatement
+        {
+            Token = CurrentToken,
+            Expression = ParseExpression(Precedence.Lowest)
+        };
+
+        if (PeekToken.Is(Token.Semicolon))
+        {
+            NextToken();
+        }
+
+        return statement;
+    }
+
+    private IExpression? ParseExpression(Precedence precedence)
+    {
+        if (!_prefixParseFns.TryGetValue(CurrentToken.Type, out var prefix))
+        {
+            _errors.Add($"no prefix parse function for {CurrentToken.Type} found");
+            return null;
+        }
+        
+        var leftExpression = prefix();
+        
+        // while (!PeekToken.Is(Token.Semicolon)) && precedence < PeekPrecedence())
+        // {
+        //     var infix = _infixParseFns[PeekToken.Type];
+        //     
+        //     if (infix == null)
+        //     {
+        //         return leftExpression;
+        //     }
+        //     
+        //     NextToken();
+        //     
+        //     leftExpression = infix(leftExpression);
+        // }
+        
+        return leftExpression;
     }
 
     private IStatement? ParseReturnStatement()
@@ -114,4 +171,10 @@ public class Parser
         
         return false;
     }
+    
+    public void RegisterPrefix(TokenType type, Func<IExpression> fn)
+        => _prefixParseFns[type] = fn;
+    
+    public void RegisterInfix(TokenType type, Func<IExpression, IExpression> fn)
+        => _infixParseFns[type] = fn;
 }

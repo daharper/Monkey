@@ -72,7 +72,13 @@ public static class CollectionsExt
         while (index < source.Length && predicate(ch))
         {
             sb.Append(ch);
-            ch = source[++index];
+            
+            ++index;
+            
+            if (index < source.Length) 
+            {
+                ch = source[index];
+            }
         }
         
         return (index, sb.ToString());
