@@ -10,19 +10,24 @@ public class StatementTests : TestBase
     [Test]
     public void TestLetStatements()
     {
-        List<string> identifiers = ["x", "y", "foobar"];
-        
-        var lexer = new Lexer("let x = 5; let y = 10; let foobar = 838383;");
-        var parser = new Parser(lexer);
-        
-        var programme = parser.ParseProgramme();
-        CheckErrors(parser);
-        
-        Assert.AreEqual(identifiers.Count, programme.Statements.Count);
-        
-        identifiers.ForEach((i, identifier) =>
+        var tests = new List<(string input, string identifier, object value)>
         {
-            var statement = programme.Statements[i];
+            ("let x = 5;", "x", 5),
+            ("let y = true;", "y", "true"),
+            ("let foobar = y;", "foobar", "y")
+        };
+        
+        tests.ForEach((i, test) =>
+        {
+            var lexer = new Lexer(test.input);
+            var parser = new Parser(lexer);
+            var programme = parser.ParseProgramme();
+            
+            CheckErrors(parser);
+            
+            Assert.AreEqual(1, programme.Statements.Count);
+            
+            var statement = programme.Statements[0];
             
             Assert.Multiple(() =>
             {
@@ -34,11 +39,14 @@ public class StatementTests : TestBase
                 
                 var letStatement = (LetStatement) statement;
                 
-                Assert.AreEqual(letStatement.Name.Value, identifier,
-                    $"expected '{identifier}' got '{letStatement.Name.Value}'");
+                Assert.AreEqual(letStatement.Name.Value, test.identifier,
+                    $"expected '{test.identifier}' got '{letStatement.Name.Value}'");
                 
-                Assert.AreEqual(letStatement.Name.TokenLiteral(), identifier,
-                    $"expected '{identifier}' got '{letStatement.Name.TokenLiteral()}'");
+                Assert.AreEqual(letStatement.Name.TokenLiteral(), test.identifier,
+                    $"expected '{test.identifier}' got '{letStatement.Name.TokenLiteral()}'");
+                
+                Assert.AreEqual(letStatement.Value.TokenLiteral(), test.value.ToString(),
+                    $"expected '{test.value}' got '{letStatement.Value.TokenLiteral()}'");
             });
         });
     }

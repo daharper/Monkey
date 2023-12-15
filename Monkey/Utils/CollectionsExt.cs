@@ -46,21 +46,18 @@ public static class CollectionsExt
     }
 
     /// <summary>
-    /// Returns a tuple containing the index of the first character that does not satisfy the predicate,
-    /// and the substring of the source string that satisfies the predicate. If a substring is found,
-    /// index points one character past the end of the substring. If a substring is not found, index
-    /// will be the same as the startIndex parameter, and value will be an empty string. 
+    /// Executes the specified <paramref name="action"/> for each element in the <paramref name="source"/> sequence.
     /// </summary>
-    /// <param name="source">The string to take characters from.</param>
-    /// <param name="startIndex">The starting index in the string to begin taking characters from.</param>
-    /// <param name="predicate">
-    /// A function that determines when to stop taking characters.
-    /// Returns true to keep taking characters, false otherwise.
-    /// </param>
-    /// <returns>A tuple consisting of the index and the substring taken.</returns>
-    /// <throws>
-    /// <see cref="ArgumentOutOfRangeException"/> if startIndex is greater than the length of the source string.
-    /// </throws>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+    /// <param name="source">The sequence of elements.</param>
+    /// <param name="action">The action to be executed for each element.</param>
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+    {
+        foreach (var item in source)
+            action(item);
+    }
+
+    /// <summary
     public static (int index, string value) TakeFrom(this string source, int startIndex, Func<char, bool> predicate)
     {
         ArgumentOutOfRangeException.ThrowIfGreaterThan(startIndex, source.Length);
@@ -72,15 +69,15 @@ public static class CollectionsExt
         while (index < source.Length && predicate(ch))
         {
             sb.Append(ch);
-            
+
             ++index;
-            
-            if (index < source.Length) 
+
+            if (index < source.Length)
             {
                 ch = source[index];
             }
         }
-        
+
         return (index, sb.ToString());
     }
 }

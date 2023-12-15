@@ -122,8 +122,11 @@ public class ExpressionTests : TestBase
             ("2 / (5 + 5)", "(2 / (5 + 5))"),
             ("-(5 + 5)", "(-(5 + 5))"),
             ("!(true == true)", "(!(true == true))"),
-            // ("a + add(b * c) + d", "((a + add((b * c))) + d)"),
-            // ("add(a, b, 1, 2 * 3, 4 + 5, add(6,
+            ("a + add(b * c) + d", "((a + add((b * c))) + d)"),
+            ("add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))"),
+            ("add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))"),
+            // ("a * [1, 2, 3, 4][b * c] * d", "((a * ([1, 2, 3, 4][(b * c)])) * d)"),
+            // ("add(a * b[2], b[1], 2 * [1, 2][1])", "add((a * (b[2])), (b[1]), (2 * ([1, 2][1])))")
         };
         
         tests.ForEach(test =>
@@ -229,5 +232,85 @@ public class ExpressionTests : TestBase
         var alternative = AssertCast<ExpressionStatement>(expression.Alternative!.Statements[0]);
         
         Assert.AreEqual("y", alternative.Expression!.ToString(), $"expected 'y' got '{alternative.Expression}'");
+    }
+
+    [Test]
+    public void TestFunctionParsing()
+    {
+        const string input = "fn(x, y) { x + y; }";
+        
+        var lexer = new Lexer(input);
+        var parser = new Parser(lexer);
+        var programme = parser.ParseProgramme();
+        
+        CheckErrors(parser);
+        
+        Assert.AreEqual(1, programme.Statements.Count);
+        
+        var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
+        
+        var function = AssertCast<FunctionExpression>(statement.Expression!);
+        
+        Assert.AreEqual(2, function.Parameters.Count, $"expected 2 parameters got {function.Parameters.Count}");
+        
+        Assert.AreEqual("x", function.Parameters[0].ToString(), $"expected 'x' got '{function.Parameters[0]}'");
+        Assert.AreEqual("y", function.Parameters[1].ToString(), $"expected 'y' got '{function.Parameters[1]}'");
+        
+        Assert.AreEqual(1, function.Body.Statements.Count, $"expected 1 statement in body got {function.Body.Statements.Count}");
+        
+        var body = AssertCast<ExpressionStatement>(function.Body.Statements[0]);
+        
+        Assert.AreEqual("(x + y)", body.Expression!.ToString(), $"expected '(x + y)' got '{body.Expression}'");
+    }
+
+    [Test]
+    public void TestFunctionParameterParsing()
+    {
+        var tests = new List<(string input, string expectedParams)>()
+        {
+            ("fn() {};", ""),
+            ("fn(x) {};", "x"),
+            ("fn(x, y, z) {};", "x, y, z")
+        };
+        
+        tests.ForEach(test =>
+        {
+            var lexer = new Lexer(test.input);
+            var parser = new Parser(lexer);
+            var programme = parser.ParseProgramme();
+            
+            CheckErrors(parser);
+            
+            var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
+            var function = AssertCast<FunctionExpression>(statement.Expression!);
+
+            var parameters = string.Join(", ", function.Parameters.Select(p => p.ToString()));
+
+            Assert.That(parameters, Is.EqualTo(test.expectedParams), 
+                $"expected '{test.expectedParams}' got '{parameters}'");
+        });
+    }
+
+    [Test]
+    public void TestCallExpressionParsing()
+    {
+        const string input = "add(1, 2 * 3, 4 + 5);";
+        
+        var lexer = new Lexer(input);
+        var parser = new Parser(lexer);
+        var programme = parser.ParseProgramme();
+        
+        CheckErrors(parser);
+        
+        Assert.AreEqual(1, programme.Statements.Count);
+        
+        var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
+        var expression = AssertCast<CallExpression>(statement.Expression!);
+        
+        Assert.AreEqual("add", expression.Function.ToString(), $"expected 'add' got '{expression.Function}'");
+        Assert.AreEqual(3, expression.Arguments.Count, $"expected 3 arguments got {expression.Arguments.Count}");
+        Assert.AreEqual("1", expression.Arguments[0].ToString(), $"expected '1' got '{expression.Arguments[0]}'");
+        Assert.AreEqual("(2 * 3)", expression.Arguments[1].ToString(), $"expected '(2 * 3)' got '{expression.Arguments[1]}'");
+        Assert.AreEqual("(4 + 5)", expression.Arguments[2].ToString(), $"expected '(4 + 5)' got '{expression.Arguments[2]}'");
     }
 }

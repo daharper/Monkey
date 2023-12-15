@@ -57,6 +57,7 @@ public class Parser
         RegisterPrefix(Token.Minus, ParsePrefixExpression);
         RegisterPrefix(Token.LParen, ParseGroupedExpression);
         RegisterPrefix(Token.If, ParseIfExpression);
+        RegisterPrefix(Token.Function, ParseFunctionExpression);
         
         RegisterInfix(Token.Plus, ParseInfixExpression);
         RegisterInfix(Token.Minus, ParseInfixExpression);
@@ -66,8 +67,104 @@ public class Parser
         RegisterInfix(Token.NotEq, ParseInfixExpression);
         RegisterInfix(Token.Lt, ParseInfixExpression);
         RegisterInfix(Token.Gt, ParseInfixExpression);
+        RegisterInfix(Token.LParen, ParseCallExpression);
     }
 
+    private IExpression ParseCallExpression(IExpression function)
+    {
+        var expression = new CallExpression { Token = CurrentToken, Function = function };
+        
+        expression.Arguments = ParseCallArguments();
+        
+        return expression;
+    }
+
+    private List<IExpression> ParseCallArguments()
+    {
+        var arguments = new List<IExpression>();
+        
+        if (PeekToken.Is(Token.RParen))
+        {
+            NextToken();
+            return arguments;
+        }
+        
+        NextToken();
+        
+        arguments.Add(ParseExpression(Precedence.Lowest));
+        
+        while (PeekToken.Is(Token.Comma))
+        {
+            NextToken();
+            NextToken();
+            
+            arguments.Add(ParseExpression(Precedence.Lowest));
+        }
+        
+        if (!TryAdvanceTo(Token.RParen))
+        {
+            return null;
+        }
+        
+        return arguments;    
+    }
+    
+    
+    private IExpression ParseFunctionExpression()
+    {
+        var expression = new FunctionExpression { Token = CurrentToken };
+        
+        if (!TryAdvanceTo(Token.LParen))
+        {
+            return null;
+        }
+        
+        expression.Parameters = ParseFunctionParameters();
+        
+        if (!TryAdvanceTo(Token.LBrace))
+        {
+            return null;
+        }
+        
+        expression.Body = ParseBlockStatement();
+        
+        return expression;    
+    }
+    
+    private List<IdentifierExpression> ParseFunctionParameters()
+    {
+        var identifiers = new List<IdentifierExpression>();
+        
+        if (PeekToken.Is(Token.RParen))
+        {
+            NextToken();
+            return identifiers;
+        }
+        
+        NextToken();
+        
+        var identifier = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
+        
+        identifiers.Add(identifier);
+        
+        while (PeekToken.Is(Token.Comma))
+        {
+            NextToken();
+            NextToken();
+            
+            identifier = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
+            
+            identifiers.Add(identifier);
+        }
+        
+        if (!TryAdvanceTo(Token.RParen))
+        {
+            return null;
+        }
+        
+        return identifiers;
+    }
+    
     private IExpression ParsePrefixExpression()
     {
         var expression = new PrefixExpression
@@ -268,7 +365,9 @@ public class Parser
         
         NextToken();
         
-        while(!CurrentToken.Is(Token.Semicolon))
+        statement.ReturnValue = ParseExpression(Precedence.Lowest);
+        
+        if (PeekToken.Is(Token.Semicolon))
         {
             NextToken();
         }
@@ -292,7 +391,11 @@ public class Parser
             return null;
         }
         
-        while(!CurrentToken.Is(Token.Semicolon))
+        NextToken();
+
+        statement.Value = ParseExpression(Precedence.Lowest);
+        
+        if (PeekToken.Is(Token.Semicolon))
         {
             NextToken();
         }
