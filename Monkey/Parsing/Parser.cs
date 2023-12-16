@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using Monkey.Lexing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
+using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
 
 using TokenType = string;
@@ -42,10 +43,10 @@ public class Parser
     private void RegisterParserFunctions()
     {
         RegisterPrefix(Token.Identifier,
-            () => new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal });
+            () => new Identifier { Token = CurrentToken, Value = CurrentToken.Literal });
 
         RegisterPrefix(Token.Int,
-            () => new IntegerExpression { Token = CurrentToken, Value = int.Parse(CurrentToken.Literal) });
+            () => new IntegerLiteral { Token = CurrentToken, Value = int.Parse(CurrentToken.Literal) });
 
         RegisterPrefix(Token.True, 
             () => new BooleanExpression { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
@@ -112,7 +113,7 @@ public class Parser
     
     private IExpression ParseFunctionExpression()
     {
-        var expression = new FunctionExpression { Token = CurrentToken };
+        var expression = new FunctionLiteral { Token = CurrentToken };
         
         if (!TryAdvanceTo(Token.LParen))
         {
@@ -131,9 +132,9 @@ public class Parser
         return expression;    
     }
     
-    private List<IdentifierExpression> ParseFunctionParameters()
+    private List<Identifier> ParseFunctionParameters()
     {
-        var identifiers = new List<IdentifierExpression>();
+        var identifiers = new List<Identifier>();
         
         if (PeekToken.Is(Token.RParen))
         {
@@ -143,7 +144,7 @@ public class Parser
         
         NextToken();
         
-        var identifier = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
+        var identifier = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
         
         identifiers.Add(identifier);
         
@@ -152,7 +153,7 @@ public class Parser
             NextToken();
             NextToken();
             
-            identifier = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
+            identifier = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
             
             identifiers.Add(identifier);
         }
@@ -384,7 +385,7 @@ public class Parser
             return null;
         }
         
-        statement.Name = new IdentifierExpression { Token = CurrentToken, Value = CurrentToken.Literal };
+        statement.Name = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
         
         if (!TryAdvanceTo(Token.Assign))
         {

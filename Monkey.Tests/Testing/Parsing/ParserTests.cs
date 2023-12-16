@@ -1,6 +1,7 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Parsing.Expressions;
+using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
 
 namespace Monkey.Tests.Testing.Parsing;
@@ -29,12 +30,12 @@ public class ParserTests : ParsingTestBase
                 new LetStatement
                 {
                     Token = new Token(Token.Let, "let"),
-                    Name = new IdentifierExpression
+                    Name = new Identifier
                     {
                         Token = new Token(Token.Identifier, "myVar"),
                         Value = "myVar"
                     },
-                    Value = new IdentifierExpression
+                    Value = new Identifier
                     {
                         Token = new Token(Token.Identifier, "anotherVar"),
                         Value = "anotherVar"

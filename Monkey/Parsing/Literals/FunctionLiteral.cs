@@ -2,13 +2,13 @@ using Monkey.Lexing;
 using Monkey.Parsing.Interfaces;
 using Monkey.Parsing.Statements;
 
-namespace Monkey.Parsing.Expressions;
+namespace Monkey.Parsing.Literals;
 
-public class FunctionExpression : IExpression
+public class FunctionLiteral : ILiteral
 {
     public Token Token { get; set; } = null!;
     
-    public List<IdentifierExpression> Parameters { get; set; } = null!;
+    public List<Identifier> Parameters { get; set; } = null!;
     
     public BlockStatement Body { get; set; } = null!;
     

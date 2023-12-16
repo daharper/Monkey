@@ -1,9 +1,9 @@
 using Monkey.Lexing;
 using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Expressions;
+namespace Monkey.Parsing.Literals;
 
-public class IdentifierExpression : IExpression
+public class Identifier : ILiteral
 {
     public Token Token { get; set; }
     public string Value { get; set; }

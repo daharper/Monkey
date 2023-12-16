@@ -2,6 +2,7 @@ using Monkey.Evaluating.Objects;
 using Monkey.Parsing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
+using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
 
 namespace Monkey.Evaluating;
@@ -20,7 +21,7 @@ public static class Evaluator
                 return EvalProgramme(programme.Statements, environment);
             case ExpressionStatement expressionStatement:
                 return Eval(expressionStatement.Expression!, environment);
-            case IntegerExpression integerExpression:
+            case IntegerLiteral integerExpression:
                 return new MInteger { Value = integerExpression.Value };
             case BooleanExpression booleanExpression:
                 return booleanExpression.Value ? True : False;
@@ -34,7 +35,7 @@ public static class Evaluator
                  return right1 is MError ? right1 : EvalInfixExpression(infixExpression.Operator, left, right1);
             case IfExpression ifExpression:
                  return EvalIfExpression(ifExpression, environment);
-            case IdentifierExpression identifierExpression:
+            case Identifier identifierExpression:
                  return EvalIdentifierExpression(identifierExpression, environment);
             case BlockStatement blockStatement:
                  return EvalBlockStatement(blockStatement, environment);
@@ -46,7 +47,7 @@ public static class Evaluator
                  if (val is MError) return val;
                  environment.Set(letStatement.Name.Value, val!);
                  break;
-            case FunctionExpression functionExpression:
+            case FunctionLiteral functionExpression:
                  return new MFunction
                  {
                      Parameters = functionExpression.Parameters,
@@ -120,14 +121,14 @@ public static class Evaluator
         return result;
     }
 
-    private static IMObject? EvalIdentifierExpression(IdentifierExpression identifierExpression, Environment environment)
+    private static IMObject? EvalIdentifierExpression(Identifier identifier, Environment environment)
     {
-        if (environment.TryGet(identifierExpression.Value, out var value))
+        if (environment.TryGet(identifier.Value, out var value))
         {
             return value;
         }
 
-        return NewError("identifier not found: " + identifierExpression.Value);
+        return NewError("identifier not found: " + identifier.Value);
     }
 
     private static IMObject? NewError(string message, params object[] args)

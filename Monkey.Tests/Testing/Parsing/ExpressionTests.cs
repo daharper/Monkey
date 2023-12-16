@@ -1,6 +1,7 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Parsing.Expressions;
+using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
 
 namespace Monkey.Tests.Testing.Parsing;
@@ -12,7 +13,7 @@ public class ExpressionTests : ParsingTestBase
     {
         var programme = AssertParse("foobar", 1);
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
-        var expression = AssertCast<IdentifierExpression>(statement.Expression!);
+        var expression = AssertCast<Identifier>(statement.Expression!);
 
         Assert.AreEqual("foobar", expression.Value, $"expected 'foobar' got '{expression.Value}'");
         Assert.AreEqual("foobar", expression.TokenLiteral(), $"expected 'foobar' got '{expression.TokenLiteral()}'");
@@ -23,7 +24,7 @@ public class ExpressionTests : ParsingTestBase
     {
         var programme = AssertParse("5", 1);
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
-        var expression = AssertCast<IntegerExpression>(statement.Expression!);
+        var expression = AssertCast<IntegerLiteral>(statement.Expression!);
 
         Assert.AreEqual(5, expression.Value, $"expected '5' got '{expression.Value}'");
         Assert.AreEqual("5", expression.TokenLiteral(), $"expected '5' got '{expression.TokenLiteral()}'");
@@ -48,8 +49,8 @@ public class ExpressionTests : ParsingTestBase
 
             Assert.AreEqual(test.op, expression.Operator, $"expected '{test.op}' got '{expression.Operator}'");
             
-            dynamic right = expression.Right is IntegerExpression
-                ? AssertCast<IntegerExpression>(expression.Right)
+            dynamic right = expression.Right is IntegerLiteral
+                ? AssertCast<IntegerLiteral>(expression.Right)
                 : AssertCast<BooleanExpression>(expression.Right);
 
             Assert.AreEqual(test.value, right.Value, $"expected '{test.value}' got '{right.Value}'");
@@ -82,14 +83,14 @@ public class ExpressionTests : ParsingTestBase
 
             Assert.AreEqual(test.op, expression.Operator, $"expected '{test.op}' got '{expression.Operator}'");
 
-            dynamic left = expression.Left is IntegerExpression
-                ? AssertCast<IntegerExpression>(expression.Left)
+            dynamic left = expression.Left is IntegerLiteral
+                ? AssertCast<IntegerLiteral>(expression.Left)
                 : AssertCast<BooleanExpression>(expression.Left);
             
             Assert.AreEqual(test.leftValue, left.Value, $"expected '{test.leftValue}' got '{left.Value}'");
             
-            dynamic right = expression.Right is IntegerExpression
-                ? AssertCast<IntegerExpression>(expression.Right)
+            dynamic right = expression.Right is IntegerLiteral
+                ? AssertCast<IntegerLiteral>(expression.Right)
                 : AssertCast<BooleanExpression>(expression.Right);
             
             Assert.AreEqual(test.rightValue, right.Value, $"expected '{test.rightValue}' got '{right.Value}'");
@@ -249,7 +250,7 @@ public class ExpressionTests : ParsingTestBase
         
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         
-        var function = AssertCast<FunctionExpression>(statement.Expression!);
+        var function = AssertCast<FunctionLiteral>(statement.Expression!);
         
         Assert.AreEqual(2, function.Parameters.Count, $"expected 2 parameters got {function.Parameters.Count}");
         
@@ -282,7 +283,7 @@ public class ExpressionTests : ParsingTestBase
             CheckErrors(parser);
             
             var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
-            var function = AssertCast<FunctionExpression>(statement.Expression!);
+            var function = AssertCast<FunctionLiteral>(statement.Expression!);
 
             var parameters = string.Join(", ", function.Parameters.Select(p => p.ToString()));
 

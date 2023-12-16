@@ -1,6 +1,7 @@
 using Monkey.Lexing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
+using Monkey.Parsing.Literals;
 
 namespace Monkey.Parsing.Statements;
 
@@ -8,7 +9,7 @@ public class LetStatement : IStatement
 {
     public Token Token { get; set; } = null!;
     
-    public IdentifierExpression Name { get; set; } = null!;
+    public Identifier Name { get; set; } = null!;
     
     public IExpression Value { get; set; } = null!;
 
