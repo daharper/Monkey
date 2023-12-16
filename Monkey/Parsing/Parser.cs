@@ -49,10 +49,10 @@ public class Parser
             () => new IntegerLiteral { Token = CurrentToken, Value = int.Parse(CurrentToken.Literal) });
 
         RegisterPrefix(Token.True, 
-            () => new BooleanExpression { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
+            () => new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
 
         RegisterPrefix(Token.False, 
-            () => new BooleanExpression { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
+            () => new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
         
         RegisterPrefix(Token.Bang, ParsePrefixExpression);
         RegisterPrefix(Token.Minus, ParsePrefixExpression);

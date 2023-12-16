@@ -23,7 +23,7 @@ public static class Evaluator
                 return Eval(expressionStatement.Expression!, environment);
             case IntegerLiteral integerExpression:
                 return new MInteger { Value = integerExpression.Value };
-            case BooleanExpression booleanExpression:
+            case BooleanLiteral booleanExpression:
                 return booleanExpression.Value ? True : False;
             case PrefixExpression prefixExpression:
                 var right = Eval(prefixExpression.Right, environment);

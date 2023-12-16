@@ -51,7 +51,7 @@ public class ExpressionTests : ParsingTestBase
             
             dynamic right = expression.Right is IntegerLiteral
                 ? AssertCast<IntegerLiteral>(expression.Right)
-                : AssertCast<BooleanExpression>(expression.Right);
+                : AssertCast<BooleanLiteral>(expression.Right);
 
             Assert.AreEqual(test.value, right.Value, $"expected '{test.value}' got '{right.Value}'");
         });
@@ -85,13 +85,13 @@ public class ExpressionTests : ParsingTestBase
 
             dynamic left = expression.Left is IntegerLiteral
                 ? AssertCast<IntegerLiteral>(expression.Left)
-                : AssertCast<BooleanExpression>(expression.Left);
+                : AssertCast<BooleanLiteral>(expression.Left);
             
             Assert.AreEqual(test.leftValue, left.Value, $"expected '{test.leftValue}' got '{left.Value}'");
             
             dynamic right = expression.Right is IntegerLiteral
                 ? AssertCast<IntegerLiteral>(expression.Right)
-                : AssertCast<BooleanExpression>(expression.Right);
+                : AssertCast<BooleanLiteral>(expression.Right);
             
             Assert.AreEqual(test.rightValue, right.Value, $"expected '{test.rightValue}' got '{right.Value}'");
         });

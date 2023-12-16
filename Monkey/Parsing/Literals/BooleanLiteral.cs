@@ -1,9 +1,9 @@
 using Monkey.Lexing;
 using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Expressions;
+namespace Monkey.Parsing.Literals;
 
-public class BooleanExpression : IExpression
+public class BooleanLiteral : IExpression
 {
     public Token Token { get; set; } = null!;
     
