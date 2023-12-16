@@ -5,7 +5,7 @@ using Monkey.Parsing.Statements;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public class ParserTests : TestBase
+public class ParserTests : ParsingTestBase
 {
     [Test]
     public void TestErrorReporting()

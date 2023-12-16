@@ -6,5 +6,21 @@
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.StatementTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.ExpressionTests&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.ParserTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IntegerEvaluationTest.TestEvalIntegerExpressions&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.BooleanEvaluationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IntegerEvaluationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.ReturnStatementTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.ErrorHandlingTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.FunctionEvaluationTests.TestFunctionObject&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.FunctionEvaluationTests.TestClosures&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f694311a_002D0dc2_002D443e_002Db12d_002D0bffa86adba0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IntegerEvaluationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.BooleanEvaluationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.BangEvaluationTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IfElseEvaluationTests.TestIfElseExpressions&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.ReturnStatementTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

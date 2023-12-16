@@ -3,7 +3,7 @@ using Monkey.Parsing;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public abstract class TestBase
+public abstract class ParsingTestBase : TestBase
 {
     protected Programme AssertParse(string input, int expectedStatements)
     {
@@ -17,18 +17,5 @@ public abstract class TestBase
             $"expected {expectedStatements} got {programme.Statements.Count}");
         
         return programme;
-    }
-    
-    protected T AssertCast<T>(object obj)
-    {
-        Assert.IsInstanceOf<T>(obj, $"expected {typeof(T).Name} got {obj.GetType().Name}");
-        return (T)obj;
-    }
-    
-    protected void CheckErrors(Parser parser)
-    {
-        Assert.IsFalse(
-            parser.HasErrors, 
-            $"parser has the following errors:{Environment.NewLine}{string.Join(Environment.NewLine, parser.Errors)}");
     }
 }

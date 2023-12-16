@@ -5,7 +5,7 @@ using Monkey.Parsing.Statements;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public class ExpressionTests : TestBase
+public class ExpressionTests : ParsingTestBase
 {
     [Test]
     public void TestIdentifierExpression()

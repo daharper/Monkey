@@ -5,7 +5,7 @@ using Monkey.Utils;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public class StatementTests : TestBase
+public class StatementTests : ParsingTestBase
 {
     [Test]
     public void TestLetStatements()

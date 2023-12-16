@@ -1,6 +1,8 @@
+using Monkey.Evaluating;
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Utils;
+using Environment = Monkey.Evaluating.Environment;
 
 namespace Monkey;
 
@@ -28,6 +30,8 @@ public static class Repl
         WriteLine("Hello! This is the Monkey programming language!");
         WriteLine("Feel free to type in commands, or type 'exit' to exit.");
 
+        var environment = new Environment();
+        
         while (true)
         {
             Write(prompt);
@@ -52,7 +56,13 @@ public static class Repl
                 continue;
             }
             
-            WriteLine(programme);
+            var evaluated = Evaluator.Eval(programme, environment);
+            
+            if (evaluated is not null)
+            {
+                WriteLine(evaluated.Inspect());
+            }
+            
             WriteLine();
         }
     }

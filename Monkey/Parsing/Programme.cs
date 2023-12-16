@@ -3,7 +3,7 @@ using Monkey.Parsing.Interfaces;
 
 namespace Monkey.Parsing;
 
-public class Programme 
+public class Programme : INode
 { 
     public List<IStatement> Statements { get; set; } = [];
 
