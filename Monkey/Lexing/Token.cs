@@ -45,8 +45,10 @@ public class Token(TokenType type, string literal = "")
     public const string If = "IF";
     public const string Else = "ELSE";
     public const string Return = "RETURN";
+    public const string String = "STRING";
     
-    public static readonly ImmutableDictionary<string, string> Keywords = new Dictionary<string, string>
+    public static readonly ImmutableDictionary<string, string> Keywords 
+        = new Dictionary<string, string>
     {
         {"fn", Function},
         {"let", Let},

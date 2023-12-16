@@ -8,7 +8,7 @@ public static class Types
     public const string ReturnValueObj = "RETURN_VALUE";
     public const string ErrorObj = "ERROR";
     public const string FunctionObj = "FUNCTION";
-    // const string StringObj = "STRING";
+    //public const string StringObj = "STRING";
     // const string BuiltinObj = "BUILTIN";
     // const string ArrayObj = "ARRAY";
     // const string HashObj = "HASH";
