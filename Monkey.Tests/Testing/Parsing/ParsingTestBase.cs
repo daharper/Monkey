@@ -13,7 +13,7 @@ public abstract class ParsingTestBase : TestBase
         
         CheckErrors(parser);        
         
-        Assert.AreEqual(expectedStatements, programme.Statements.Count, 
+        Assert.That(programme.Statements.Count, Is.EqualTo(expectedStatements), 
             $"expected {expectedStatements} got {programme.Statements.Count}");
         
         return programme;

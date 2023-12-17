@@ -1,4 +1,3 @@
-using Monkey.Evaluating;
 using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;

@@ -3,7 +3,7 @@ using Monkey.Parsing.Interfaces;
 
 namespace Monkey.Parsing.Literals;
 
-public class BooleanLiteral : IExpression
+public class BooleanLiteral : ILiteral
 {
     public Token Token { get; set; } = null!;
     

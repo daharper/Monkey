@@ -1,5 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=613203f8_002D3894_002D411e_002D8256_002D9c0d12d369ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestNextToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=613203f8_002D3894_002D411e_002D8256_002D9c0d12d369ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestNextToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.StringTests.TestToString&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Parsing.IdentifierExpressionTests.TestIdentifierExpression&lt;/TestId&gt;
@@ -14,14 +14,9 @@
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.FunctionEvaluationTests.TestFunctionObject&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.FunctionEvaluationTests.TestClosures&lt;/TestId&gt;
     &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Lexing.LexerTests.TestNextToken&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.StringEvaluationTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f694311a_002D0dc2_002D443e_002Db12d_002D0bffa86adba0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IntegerEvaluationTests&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.BooleanEvaluationTests&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.BangEvaluationTests&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.IfElseEvaluationTests.TestIfElseExpressions&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::BF326BC0-466C-468D-A887-FA4E5DBD8A08::net8.0::Monkey.Tests.Testing.Evaluating.ReturnStatementTests&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f694311a_002D0dc2_002D443e_002Db12d_002D0bffa86adba0/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/home/david/Source/Monkey/Monkey.Tests" Presentation="&amp;lt;Monkey.Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

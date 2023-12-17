@@ -104,11 +104,20 @@ public class Lexer
             case '}':
                 tok = new Token(Token.RBrace, Ch);
                 break;
+            case '[':
+                tok = new Token(Token.LBracket, Ch);
+                break;
+            case ']':
+                tok = new Token(Token.RBracket, Ch);
+                break;
             case '"':
                 ReadChar();
                 var str = ReadSubstring(ch => ch != '"');
                 tok = new Token(Token.String, str);
-                ReadChar();
+                if (PeekChar() == '"')
+                {
+                    ReadChar();    
+                }
                 break;
             case '\0':
                 tok = new Token(Token.Eof);

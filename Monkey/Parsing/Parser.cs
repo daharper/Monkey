@@ -54,6 +54,9 @@ public class Parser
         RegisterPrefix(Token.False, 
             () => new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
         
+        RegisterPrefix(Token.String, 
+            () => new StringLiteral { Token = CurrentToken, Value = CurrentToken.Literal });
+        
         RegisterPrefix(Token.Bang, ParsePrefixExpression);
         RegisterPrefix(Token.Minus, ParsePrefixExpression);
         RegisterPrefix(Token.LParen, ParseGroupedExpression);

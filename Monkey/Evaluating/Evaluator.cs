@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Monkey.Evaluating.Objects;
 using Monkey.Parsing;
 using Monkey.Parsing.Expressions;
@@ -13,6 +14,71 @@ public static class Evaluator
     public static readonly MBoolean True = new() { Value = true };
     public static readonly MBoolean False = new() { Value = false };
     
+    public static readonly ImmutableDictionary<string, MBuiltin> Builtins = new Dictionary<string, MBuiltin>
+    {
+        ["len"] = new()
+        {
+            Fn = args => args.Count == 1 
+                ? EvalLen(args[0])   
+                : NewError("wrong number of arguments. got={0}, want=1", args.Count)
+        },
+        // ["first"] = new()
+        // {
+        //     Fn = args => args.Length == 1 
+        //         ? EvalFirst(args[0]) 
+        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
+        // },
+        // ["last"] = new()
+        // {
+        //     Fn = args => args.Length == 1 
+        //         ? EvalLast(args[0])  
+        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
+        // },
+        // ["rest"] = new()
+        // {
+        //     Fn = args => args.Length == 1 
+        //         ? EvalRest(args[0])  
+        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
+        // },
+        // ["push"] = new()
+        // {
+        //     Fn = args => args.Length == 2 
+        //         ? EvalPush(args[0], args[1]) 
+        //         : NewError("wrong number of arguments. got={0}, want=2", args.Length)
+        // },
+        // ["puts"] = new()
+        // {
+        //     Fn = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
+        // }
+    }.ToImmutableDictionary();
+
+    // private static IMObject EvalPush(IMObject mObject, IMObject o)
+    // {
+    //     
+    // }
+    //
+    // private static IMObject EvalRest(IMObject mObject)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    //
+    // private static IMObject EvalLast(IMObject mObject)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    //
+    // private static IMObject EvalFirst(IMObject mObject)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    private static IMObject EvalLen(IMObject obj)
+        => obj switch
+        {
+            MString str => new MInteger { Value = str.Value.Length },
+            _ => NewError("argument to `len` not supported, got {0}", obj.Type())
+        };
+
     public static IMObject? Eval(INode node, Environment environment)
     {
         switch (node)
@@ -54,12 +120,14 @@ public static class Evaluator
                      Body = functionExpression.Body,
                      Env = environment
                  };
+            case StringLiteral stringLiteral:
+                 return new MString { Value = stringLiteral.Value };
             case CallExpression callExpression:
                 var function = Eval(callExpression.Function, environment);
                 if (function is MError) return function;
                 var args = EvalExpressions(callExpression.Arguments, environment);
                 if (args.Count == 1 && args[0] is MError) return args[0];
-                return applyFunction(function, args);
+                return ApplyFunction(function, args);
             default:
                 throw new ArgumentException($"Unknown node type: {node.GetType().Name}");
         }
@@ -67,7 +135,7 @@ public static class Evaluator
         return null;
     }
 
-    private static IMObject? applyFunction(IMObject? function, List<IMObject> args)
+    private static IMObject? ApplyFunction(IMObject? function, List<IMObject> args)
     {
         if (function is MFunction fn)
         {
@@ -76,10 +144,10 @@ public static class Evaluator
             return UnwrapReturnValue(evaluated);
         }
 
-        // if (function is MBuiltin builtin)
-        // {
-        //     return builtin.Fn(args);
-        // }
+        if (function is MBuiltin builtin)
+        {
+             return builtin.Fn(args);
+        }
 
         return NewError("not a function: {0}", function?.Type() ?? "null");
     }
@@ -127,11 +195,16 @@ public static class Evaluator
         {
             return value;
         }
+        
+        if (Builtins.TryGetValue(identifier.Value, out var builtin))
+        {
+            return builtin;
+        }
 
         return NewError("identifier not found: " + identifier.Value);
     }
 
-    private static IMObject? NewError(string message, params object[] args)
+    private static IMObject NewError(string message, params object[] args)
         => new MError { Message = string.Format(message, args) };
 
     private static IMObject? EvalIfExpression(IfExpression ifExpression, Environment environment)
@@ -169,6 +242,11 @@ public static class Evaluator
         {
             return EvalIntegerInfixExpression(infixExpressionOperator, leftInteger, rightInteger);
         }
+        
+        if (left is MString leftString && right is MString rightString)
+        {
+            return EvalStringInfixExpression(infixExpressionOperator, leftString, rightString);
+        }
 
         if (left?.Type() != right?.Type()) 
         {
@@ -186,6 +264,16 @@ public static class Evaluator
         }
         
         return NewError("unknown operator: {0} {1} {2}", left.Type(), infixExpressionOperator, right.Type());
+    }
+
+    private static IMObject? EvalStringInfixExpression(string infixExpressionOperator, MString leftString, MString rightString)
+    {
+        if (infixExpressionOperator != "+")
+        {
+            return NewError("unknown operator: {0} {1} {2}", leftString.Type(), infixExpressionOperator, rightString.Type());
+        }
+
+        return new MString { Value = leftString.Value + rightString.Value };
     }
 
     private static IMObject? EvalIntegerInfixExpression(string infixExpressionOperator, MInteger leftInteger, MInteger rightInteger)
