@@ -43,7 +43,7 @@ public class ParserTests : ParsingTestBase
             ]
         };
         
-        Assert.AreEqual("let myVar = anotherVar;", programme.ToString(),
+        Assert.That(programme.ToString(), Is.EqualTo("let myVar = anotherVar;"),
             $"expected 'let myVar = anotherVar;' got '{programme}'");
     }
 }

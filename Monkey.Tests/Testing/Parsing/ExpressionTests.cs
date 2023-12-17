@@ -14,22 +14,28 @@ public class ExpressionTests : ParsingTestBase
         var programme = AssertParse("foobar", 1);
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         var expression = AssertCast<Identifier>(statement.Expression!);
-
-        Assert.AreEqual("foobar", expression.Value, $"expected 'foobar' got '{expression.Value}'");
-        Assert.AreEqual("foobar", expression.TokenLiteral(), $"expected 'foobar' got '{expression.TokenLiteral()}'");
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.Value, Is.EqualTo("foobar"), $"expected 'foobar' got '{expression.Value}'");
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("foobar"), $"expected 'foobar' got '{expression.TokenLiteral()}'");
+        });
     }
-    
+
     [Test]
     public void TestIntegerExpression()
     {
         var programme = AssertParse("5", 1);
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         var expression = AssertCast<IntegerLiteral>(statement.Expression!);
-
-        Assert.AreEqual(5, expression.Value, $"expected '5' got '{expression.Value}'");
-        Assert.AreEqual("5", expression.TokenLiteral(), $"expected '5' got '{expression.TokenLiteral()}'");
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.Value, Is.EqualTo(5), $"expected '5' got '{expression.Value}'");
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("5"), $"expected '5' got '{expression.TokenLiteral()}'");
+        });
     }
-    
+
     [Test]
     public void TestPrefixExpression()
     {
@@ -47,7 +53,7 @@ public class ExpressionTests : ParsingTestBase
             var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
             var expression = AssertCast<PrefixExpression>(statement.Expression!);
 
-            Assert.AreEqual(test.op, expression.Operator, $"expected '{test.op}' got '{expression.Operator}'");
+            Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
             
             dynamic right = expression.Right is IntegerLiteral
                 ? AssertCast<IntegerLiteral>(expression.Right)
@@ -81,7 +87,7 @@ public class ExpressionTests : ParsingTestBase
             var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
             var expression = AssertCast<InfixExpression>(statement.Expression!);
 
-            Assert.AreEqual(test.op, expression.Operator, $"expected '{test.op}' got '{expression.Operator}'");
+            Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
 
             dynamic left = expression.Left is IntegerLiteral
                 ? AssertCast<IntegerLiteral>(expression.Left)
@@ -126,8 +132,8 @@ public class ExpressionTests : ParsingTestBase
             ("a + add(b * c) + d", "((a + add((b * c))) + d)"),
             ("add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))"),
             ("add(a + b + c * d / f + g)", "add((((a + b) + ((c * d) / f)) + g))"),
-            // ("a * [1, 2, 3, 4][b * c] * d", "((a * ([1, 2, 3, 4][(b * c)])) * d)"),
-            // ("add(a * b[2], b[1], 2 * [1, 2][1])", "add((a * (b[2])), (b[1]), (2 * ([1, 2][1])))")
+            ("a * [1, 2, 3, 4][b * c] * d", "((a * ([1, 2, 3, 4][(b * c)])) * d)"),
+            ("add(a * b[2], b[1], 2 * [1, 2][1])", "add((a * (b[2])), (b[1]), (2 * ([1, 2][1])))")
         };
         
         tests.ForEach(test =>
@@ -140,7 +146,8 @@ public class ExpressionTests : ParsingTestBase
             
             var actual = programme.ToString();
             
-            Assert.AreEqual(test.expected, actual, $"expected '{test.expected}' got '{programme}'");
+            Assert.That(actual, Is.EqualTo(test.expected), 
+                $"expected '{test.expected}' got '{actual}'");
         });
     }
     
@@ -170,7 +177,7 @@ public class ExpressionTests : ParsingTestBase
             
             var actual = programme.ToString();
             
-            Assert.AreEqual(test.expected, actual, $"expected '{test.expected}' got '{actual}'");
+            Assert.That(actual, Is.EqualTo(test.expected), $"expected '{test.expected}' got '{actual}'");
         });
     }
 
@@ -185,23 +192,35 @@ public class ExpressionTests : ParsingTestBase
         
         CheckErrors(parser);
         
-        Assert.AreEqual(1, programme.Statements.Count);
+        Assert.That(programme.Statements.Count, Is.EqualTo(1));
         
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         var expression = AssertCast<IfExpression>(statement.Expression!);
         
-        Assert.AreEqual("if", expression.TokenLiteral(), $"expected 'if' got '{expression.TokenLiteral()}'");
-        Assert.AreEqual("(x < y)", expression.Condition.ToString(), $"expected '(x < y)' got '{expression.Condition}'");
-        
-        Assert.AreEqual(1, expression.Consequence.Statements.Count, 
-            $"expected 1 statement in consequence got {expression.Consequence.Statements.Count}");
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("if"), 
+                $"expected 'if' got '{expression.TokenLiteral()}'");
+            
+            Assert.That(expression.Condition.ToString(), Is.EqualTo("(x < y)"), 
+                $"expected '(x < y)' got '{expression.Condition}'");
+
+            Assert.That(expression.Consequence.Statements.Count, Is.EqualTo(1),
+                $"expected 1 statement in consequence got {expression.Consequence.Statements.Count}");
+        });
         
         var consequence = AssertCast<ExpressionStatement>(expression.Consequence.Statements[0]);
-        Assert.AreEqual("x", consequence.Expression!.ToString(), $"expected 'x' got '{consequence.Expression}'");
         
-        Assert.IsNull(expression.Alternative, "expected 'null' got 'not null'");
+        Assert.Multiple(() =>
+        {
+            Assert.That(consequence.Expression!.ToString(), Is.EqualTo("x"), 
+                $"expected 'x' got '{consequence.Expression}'");
+            
+            Assert.That(expression.Alternative, Is.Null, 
+                "expected 'null' got 'not null'");
+        });
     }
-    
+
     [Test]
     public void TestIfElseExpression()
     {
@@ -213,26 +232,38 @@ public class ExpressionTests : ParsingTestBase
         
         CheckErrors(parser);
         
-        Assert.AreEqual(1, programme.Statements.Count);
+        Assert.That(programme.Statements.Count, Is.EqualTo(1));
         
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         var expression = AssertCast<IfExpression>(statement.Expression!);
         
-        Assert.AreEqual("if", expression.TokenLiteral(), $"expected 'if' got '{expression.TokenLiteral()}'");
-        Assert.AreEqual("(x < y)", expression.Condition.ToString(), $"expected '(x < y)' got '{expression.Condition}'");
-        
-        Assert.AreEqual(1, expression.Consequence.Statements.Count, 
-            $"expected 1 statement in consequence got {expression.Consequence.Statements.Count}");
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("if"),
+                $"expected 'if' got '{expression.TokenLiteral()}'");
+
+            Assert.That(expression.Condition.ToString(), Is.EqualTo("(x < y)"),
+                $"expected '(x < y)' got '{expression.Condition}'");
+
+            Assert.That(expression.Consequence.Statements, Has.Count.EqualTo(1),
+                $"expected 1 statement in consequence got {expression.Consequence.Statements.Count}");
+        });
         
         var consequence = AssertCast<ExpressionStatement>(expression.Consequence.Statements[0]);
-        Assert.AreEqual("x", consequence.Expression!.ToString(), $"expected 'x' got '{consequence.Expression}'");
         
-        Assert.AreEqual(1, expression.Alternative!.Statements.Count, 
-            $"expected 1 statement in alternative got {expression.Alternative!.Statements.Count}");
+        Assert.Multiple(() =>
+        {
+            Assert.That(consequence.Expression!.ToString(), Is.EqualTo("x"),
+                $"expected 'x' got '{consequence.Expression}'");
+
+            Assert.That(expression.Alternative!.Statements, Has.Count.EqualTo(1),
+                $"expected 1 statement in alternative got {expression.Alternative!.Statements.Count}");
+        });
         
         var alternative = AssertCast<ExpressionStatement>(expression.Alternative!.Statements[0]);
         
-        Assert.AreEqual("y", alternative.Expression!.ToString(), $"expected 'y' got '{alternative.Expression}'");
+        Assert.That(alternative.Expression!.ToString(), Is.EqualTo("y"), 
+            $"expected 'y' got '{alternative.Expression}'");
     }
 
     [Test]
@@ -246,22 +277,31 @@ public class ExpressionTests : ParsingTestBase
         
         CheckErrors(parser);
         
-        Assert.AreEqual(1, programme.Statements.Count);
+        Assert.That(programme.Statements, Has.Count.EqualTo(1));
         
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         
         var function = AssertCast<FunctionLiteral>(statement.Expression!);
         
-        Assert.AreEqual(2, function.Parameters.Count, $"expected 2 parameters got {function.Parameters.Count}");
+        Assert.That(function.Parameters, Has.Count.EqualTo(2), 
+            $"expected 2 parameters got {function.Parameters.Count}");
         
-        Assert.AreEqual("x", function.Parameters[0].ToString(), $"expected 'x' got '{function.Parameters[0]}'");
-        Assert.AreEqual("y", function.Parameters[1].ToString(), $"expected 'y' got '{function.Parameters[1]}'");
-        
-        Assert.AreEqual(1, function.Body.Statements.Count, $"expected 1 statement in body got {function.Body.Statements.Count}");
+        Assert.Multiple(() =>
+        {
+            Assert.That(function.Parameters[0].ToString(), Is.EqualTo("x"),
+                $"expected 'x' got '{function.Parameters[0]}'");
+
+            Assert.That(function.Parameters[1].ToString(), Is.EqualTo("y"),
+                $"expected 'y' got '{function.Parameters[1]}'");
+
+            Assert.That(function.Body.Statements, Has.Count.EqualTo(1),
+                $"expected 1 statement in body got {function.Body.Statements.Count}");
+        });
         
         var body = AssertCast<ExpressionStatement>(function.Body.Statements[0]);
         
-        Assert.AreEqual("(x + y)", body.Expression!.ToString(), $"expected '(x + y)' got '{body.Expression}'");
+        Assert.That(body.Expression!.ToString(), Is.EqualTo("(x + y)"), 
+            $"expected '(x + y)' got '{body.Expression}'");
     }
 
     [Test]
@@ -303,15 +343,48 @@ public class ExpressionTests : ParsingTestBase
         
         CheckErrors(parser);
         
-        Assert.AreEqual(1, programme.Statements.Count);
+        Assert.That(programme.Statements, Has.Count.EqualTo(1));
         
         var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
         var expression = AssertCast<CallExpression>(statement.Expression!);
         
-        Assert.AreEqual("add", expression.Function.ToString(), $"expected 'add' got '{expression.Function}'");
-        Assert.AreEqual(3, expression.Arguments.Count, $"expected 3 arguments got {expression.Arguments.Count}");
-        Assert.AreEqual("1", expression.Arguments[0].ToString(), $"expected '1' got '{expression.Arguments[0]}'");
-        Assert.AreEqual("(2 * 3)", expression.Arguments[1].ToString(), $"expected '(2 * 3)' got '{expression.Arguments[1]}'");
-        Assert.AreEqual("(4 + 5)", expression.Arguments[2].ToString(), $"expected '(4 + 5)' got '{expression.Arguments[2]}'");
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.Function.ToString(), Is.EqualTo("add"), $"expected 'add' got '{expression.Function}'");
+            Assert.That(expression.Arguments, Has.Count.EqualTo(3), $"expected 3 arguments got {expression.Arguments.Count}");
+        });
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.Arguments[0].ToString(), Is.EqualTo("1"), $"expected '1' got '{expression.Arguments[0]}'");
+            Assert.That(expression.Arguments[1].ToString(), Is.EqualTo("(2 * 3)"), $"expected '(2 * 3)' got '{expression.Arguments[1]}'");
+            Assert.That(expression.Arguments[2].ToString(), Is.EqualTo("(4 + 5)"), $"expected '(4 + 5)' got '{expression.Arguments[2]}'");
+        });
+    }
+    
+    [Test]
+    public void TestParsingIndexExpressions()
+    {
+        const string input = "myArray[1 + 1]";
+        
+        var lexer = new Lexer(input);
+        var parser = new Parser(lexer);
+        var programme = parser.ParseProgramme();
+        
+        CheckErrors(parser);
+        
+        Assert.That(programme.Statements, Has.Count.EqualTo(1));
+        
+        var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
+        var expression = AssertCast<IndexExpression>(statement.Expression!);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(expression.Left.ToString(), Is.EqualTo("myArray"), 
+                $"expected 'myArray' got '{expression.Left}'");
+            
+            Assert.That(expression.Index.ToString(), Is.EqualTo("(1 + 1)"), 
+                $"expected '(1 + 1)' got '{expression.Index}'");
+        });
     }
 }

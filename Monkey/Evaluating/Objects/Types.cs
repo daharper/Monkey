@@ -10,6 +10,6 @@ public static class Types
     public const string FunctionObj = "FUNCTION";
     public const string StringObj = "STRING";
     public const string BuiltinObj = "BUILTIN";
-    // const string ArrayObj = "ARRAY";
+    public const string ArrayObj = "ARRAY";
     // const string HashObj = "HASH";
 }

@@ -22,59 +22,78 @@ public static class Evaluator
                 ? EvalLen(args[0])   
                 : NewError("wrong number of arguments. got={0}, want=1", args.Count)
         },
-        // ["first"] = new()
-        // {
-        //     Fn = args => args.Length == 1 
-        //         ? EvalFirst(args[0]) 
-        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
-        // },
-        // ["last"] = new()
-        // {
-        //     Fn = args => args.Length == 1 
-        //         ? EvalLast(args[0])  
-        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
-        // },
-        // ["rest"] = new()
-        // {
-        //     Fn = args => args.Length == 1 
-        //         ? EvalRest(args[0])  
-        //         : NewError("wrong number of arguments. got={0}, want=1", args.Length)
-        // },
-        // ["push"] = new()
-        // {
-        //     Fn = args => args.Length == 2 
-        //         ? EvalPush(args[0], args[1]) 
-        //         : NewError("wrong number of arguments. got={0}, want=2", args.Length)
-        // },
+        ["first"] = new()
+        {
+            Fn = args => args.Count == 1 
+                ? EvalFirst(args[0]) 
+                : NewError("wrong number of arguments. got={0}, want=1", args.Count)
+        },
+        ["last"] = new()
+        {
+            Fn = args => args.Count == 1 
+                ? EvalLast(args[0])  
+                : NewError("wrong number of arguments. got={0}, want=1", args.Count)
+        },
+        ["rest"] = new()
+        {
+            Fn = args => args.Count == 1 
+                ? EvalRest(args[0])  
+                : NewError("wrong number of arguments. got={0}, want=1", args.Count)
+        },
+        ["push"] = new()
+        {
+            Fn = args => args.Count == 2 
+                ? EvalPush(args[0], args[1]) 
+                : NewError("wrong number of arguments. got={0}, want=2", args.Count)
+        },
         // ["puts"] = new()
         // {
         //     Fn = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
         // }
     }.ToImmutableDictionary();
 
-    // private static IMObject EvalPush(IMObject mObject, IMObject o)
-    // {
-    //     
-    // }
-    //
-    // private static IMObject EvalRest(IMObject mObject)
-    // {
-    //     throw new NotImplementedException();
-    // }
-    //
-    // private static IMObject EvalLast(IMObject mObject)
-    // {
-    //     throw new NotImplementedException();
-    // }
-    //
-    // private static IMObject EvalFirst(IMObject mObject)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    private static IMObject EvalPush(IMObject mObject, IMObject o)
+    {
+        return mObject switch
+        {
+            MArray array => new MArray { Elements = array.Elements.Append(o).ToList() },
+            _ => NewError("argument to `push` must be ARRAY, got {0}", mObject.Type())
+        };        
+    }
+    
+    private static IMObject EvalRest(IMObject mObject)
+    {
+        return mObject switch
+        {
+            MArray array => array.Elements.Count > 0 
+                ? new MArray { Elements = array.Elements.Skip(1).ToList() } 
+                : Null,
+            _ => NewError("argument to `rest` must be ARRAY, got {0}", mObject.Type())
+        };
+    }
+    
+    private static IMObject EvalLast(IMObject mObject)
+    {
+        return mObject switch
+        {
+            MArray array => array.Elements.Count > 0 ? array.Elements[^1] : Null,
+            _ => NewError("argument to `last` must be ARRAY, got {0}", mObject.Type())
+        };
+    }
+    
+    private static IMObject EvalFirst(IMObject mObject)
+    {
+        return mObject switch
+        {
+            MArray array => array.Elements.Count > 0 ? array.Elements[0] : Null,
+            _ => NewError("argument to `first` must be ARRAY, got {0}", mObject.Type())
+        };
+    }
 
     private static IMObject EvalLen(IMObject obj)
         => obj switch
         {
+            MArray array => new MInteger { Value = array.Elements.Count },
             MString str => new MInteger { Value = str.Value.Length },
             _ => NewError("argument to `len` not supported, got {0}", obj.Type())
         };
@@ -128,11 +147,44 @@ public static class Evaluator
                 var args = EvalExpressions(callExpression.Arguments, environment);
                 if (args.Count == 1 && args[0] is MError) return args[0];
                 return ApplyFunction(function, args);
+            case ArrayLiteral arrayLiteral:
+                var elements = EvalExpressions(arrayLiteral.Elements, environment);
+                if (elements.Count == 1 && elements[0] is MError) return elements[0];
+                return new MArray { Elements = elements };
+            case IndexExpression indexExpression:
+                var left1 = Eval(indexExpression.Left, environment);
+                if (left1 is MError) return left1;
+                var index = Eval(indexExpression.Index, environment);
+                if (index is MError) return index;
+                return EvalIndexExpression(left1, index);
             default:
                 throw new ArgumentException($"Unknown node type: {node.GetType().Name}");
         }
 
         return null;
+    }
+
+    private static IMObject? EvalIndexExpression(IMObject? left1, IMObject? index)
+    {
+        return (left1, index) switch
+        {
+            (MArray array, MInteger integer) => EvalArrayIndexExpression(array, integer),
+            //(MString str, MInteger integer) => EvalStringIndexExpression(str, integer),
+            _ => NewError("index operator not supported: {0}", left1?.Type() ?? "null")
+        };
+    }
+
+    private static IMObject? EvalArrayIndexExpression(MArray array, MInteger integer)
+    {   
+        var index = integer.Value;
+        var max = array.Elements.Count - 1;
+
+        if (index < 0 || index > max)
+        {
+            return Null;
+        }
+
+        return array.Elements[index];
     }
 
     private static IMObject? ApplyFunction(IMObject? function, List<IMObject> args)

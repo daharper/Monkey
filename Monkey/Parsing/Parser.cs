@@ -1,10 +1,11 @@
 using System.Collections.Immutable;
+using System.Linq.Expressions;
 using Monkey.Lexing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
 using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
-
+using IndexExpression = Monkey.Parsing.Expressions.IndexExpression;
 using TokenType = string;
 
 namespace Monkey.Parsing;
@@ -27,7 +28,8 @@ public class Parser
         { Token.Minus, Precedence.Sum },
         { Token.Slash, Precedence.Product },
         { Token.Asterisk, Precedence.Product },
-        { Token.LParen, Precedence.Call }
+        { Token.LParen, Precedence.Call },
+        { Token.LBracket, Precedence.Index }
     }.ToImmutableDictionary();
     
     public Parser(Lexer lexer)
@@ -62,6 +64,7 @@ public class Parser
         RegisterPrefix(Token.LParen, ParseGroupedExpression);
         RegisterPrefix(Token.If, ParseIfExpression);
         RegisterPrefix(Token.Function, ParseFunctionExpression);
+        RegisterPrefix(Token.LBracket, ParseArrayLiteral);
         
         RegisterInfix(Token.Plus, ParseInfixExpression);
         RegisterInfix(Token.Minus, ParseInfixExpression);
@@ -72,14 +75,63 @@ public class Parser
         RegisterInfix(Token.Lt, ParseInfixExpression);
         RegisterInfix(Token.Gt, ParseInfixExpression);
         RegisterInfix(Token.LParen, ParseCallExpression);
+        RegisterInfix(Token.LBracket, ParseIndexExpression);
+    }
+
+    private IExpression ParseIndexExpression(IExpression left)
+    {
+        var expression = new IndexExpression { Token = CurrentToken, Left = left };
+        
+        NextToken();
+        
+        expression.Index = ParseExpression(Precedence.Lowest);
+        
+        if (!TryAdvanceTo(Token.RBracket))
+        {
+            return null;
+        }
+        
+        return expression;
+    }
+
+    private IExpression ParseArrayLiteral()
+        => new ArrayLiteral
+        {
+            Token = CurrentToken,
+            Elements = ParseExpressionList(Token.RBracket)
+        };
+
+    private List<IExpression> ParseExpressionList(string end)
+    {
+        var list = new List<IExpression>();
+        
+        if (PeekToken.Is(end))
+        {
+            NextToken();
+            return list;
+        }
+        
+        NextToken();
+        list.Add(ParseExpression(Precedence.Lowest)!);
+        
+        while (PeekToken.Is(Token.Comma))
+        {
+            NextToken();
+            NextToken();
+            list.Add(ParseExpression(Precedence.Lowest)!);
+        }
+
+        return TryAdvanceTo(end) ? list : [];
     }
 
     private IExpression ParseCallExpression(IExpression function)
     {
-        var expression = new CallExpression { Token = CurrentToken, Function = function };
-        
-        expression.Arguments = ParseCallArguments();
-        
+        var expression = new CallExpression
+        {
+            Token = CurrentToken, Function = function,
+            Arguments = ParseExpressionList(Token.RParen)
+        };
+
         return expression;
     }
 
