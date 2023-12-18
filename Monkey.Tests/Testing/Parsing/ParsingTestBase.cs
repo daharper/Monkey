@@ -6,36 +6,36 @@ namespace Monkey.Tests.Testing.Parsing;
 
 public abstract class ParsingTestBase : TestBase
 {
-    protected ProgramNode AssertParse(string input, int expectedStatements)
+    protected static ProgramNode AssertParse(string input, int expectedStatements)
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);        
         
-        Assert.That(programme.Statements, Has.Count.EqualTo(expectedStatements), 
-            $"expected {expectedStatements} got {programme.Statements.Count}");
+        Assert.That(program.Statements, Has.Count.EqualTo(expectedStatements), 
+            $"expected {expectedStatements} got {program.Statements.Count}");
         
-        return programme;
+        return program;
     }
     
-    protected void TestInfixExpression(Node expression, object leftValue, string op, object rightValue)
+    protected static void TestInfixExpression(Node expression, object left, string op, object right)
     {
         var infix = AssertCast<InfixNode>(expression);
         
         Assert.That(infix.Operator, Is.EqualTo(op), $"expected '{op}' got '{infix.Operator}'");
 
-        dynamic left = infix.Left is IntegerNode
+        dynamic l = infix.Left is IntegerNode
             ? AssertCast<IntegerNode>(infix.Left)
             : AssertCast<BooleanNode>(infix.Left);
             
-        Assert.AreEqual(leftValue, left.Value, $"expected '{leftValue}' got '{left.Value}'");
+        Assert.AreEqual(left, l.Value, $"expected '{left}' got '{l.Value}'");
             
-        dynamic right = infix.Right is IntegerNode
+        dynamic r = infix.Right is IntegerNode
             ? AssertCast<IntegerNode>(infix.Right)
             : AssertCast<BooleanNode>(infix.Right);
             
-        Assert.AreEqual(rightValue, right.Value, $"expected '{rightValue}' got '{right.Value}'");
+        Assert.AreEqual(right, r.Value, $"expected '{right}' got '{r.Value}'");
     }
 }

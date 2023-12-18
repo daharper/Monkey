@@ -20,13 +20,13 @@ public class StatementTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var programme = parser.ParseProgramme();
+            var program = parser.ParseProgramme();
             
             CheckErrors(parser);
             
-            Assert.That(programme.Statements, Has.Count.EqualTo(1));
+            Assert.That(program.Statements, Has.Count.EqualTo(1));
             
-            var statement = programme.Statements[0];
+            var statement = program.Statements[0];
             
             Assert.Multiple(() =>
             {
@@ -57,13 +57,13 @@ public class StatementTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        Assert.That(programme.Statements, Has.Count.EqualTo(3));
+        Assert.That(program.Statements, Has.Count.EqualTo(3));
         
-        programme.Statements.ForEach(statement =>
+        program.Statements.ForEach(statement =>
         {
             Assert.Multiple(() =>
             {

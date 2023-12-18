@@ -13,8 +13,8 @@ public class HashTests : ParsingTestBase
                              {"one" : 1, "two" : 2, "three" : 3}
                              """;
         
-        var programme = AssertParse(input, 1);
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var program = AssertParse(input, 1);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var hash = AssertCast<HashNode>(statement.Expression);
 
         Assert.That(hash.Pairs, Has.Count.EqualTo(3),
@@ -46,11 +46,11 @@ public class HashTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var hash = AssertCast<HashNode>(statement.Expression);
 
         Assert.That(hash.Pairs, Is.Empty,
@@ -64,8 +64,8 @@ public class HashTests : ParsingTestBase
                              {"one" : 0 + 1, "two" : 10 - 8, "three" : 15 / 5}
                              """;
 
-        var programme = AssertParse(input, 1);
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var program = AssertParse(input, 1);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var hash = AssertCast<HashNode>(statement.Expression);
 
         Assert.That(hash.Pairs, Has.Count.EqualTo(3),

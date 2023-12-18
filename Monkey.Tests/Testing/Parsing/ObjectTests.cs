@@ -8,16 +8,16 @@ public class ObjectTests : ParsingTestBase
     [Test]
     public void TestToString()
     {
-        var programme = ProgramNode.Create(
+        var program = ProgramNode.Create(
         [
             new LetNode(new Token(Token.Let, "let"))
             {
-                Name = new IdentifierNode(token: new Token(Token.Identifier, "myVar"), value: "myVar"),
-                Value = new IdentifierNode(token: new Token(Token.Identifier, "anotherVar"), value: "anotherVar")
+                Name = new IdentifierNode(new Token(Token.Identifier, "myVar"), "myVar"),
+                Value = new IdentifierNode(new Token(Token.Identifier, "anotherVar"), "anotherVar")
             }
         ]);
         
-        Assert.That(programme.ToString(), Is.EqualTo("let myVar = anotherVar;"),
-            $"expected 'let myVar = anotherVar;' got '{programme}'");
+        Assert.That(program.ToString(), Is.EqualTo("let myVar = anotherVar;"),
+            $"expected 'let myVar = anotherVar;' got '{program}'");
     }
 }

@@ -7,12 +7,12 @@ public class ArrayTests : ParsingTestBase
     [Test]
     public void TestArrayParsing()
     {
-        var programme = AssertParse("[1, 2 * 2, 3 + 3];", 1);
+        var program = AssertParse("[1, 2 * 2, 3 + 3];", 1);
         
-        Assert.That(programme.Statements, Has.Count.EqualTo(1), 
-            $"expected 1 statement got {programme.Statements.Count}");
+        Assert.That(program.Statements, Has.Count.EqualTo(1), 
+            $"expected 1 statement got {program.Statements.Count}");
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         
         Assert.That(statement.Expression, Is.Not.Null, 
             "expected expression not to be null");

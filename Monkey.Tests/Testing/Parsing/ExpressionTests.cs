@@ -15,8 +15,11 @@ public class ExpressionTests : ParsingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(expression.Value, Is.EqualTo("foobar"), $"expected 'foobar' got '{expression.Value}'");
-            Assert.That(expression.TokenLiteral(), Is.EqualTo("foobar"), $"expected 'foobar' got '{expression.TokenLiteral()}'");
+            Assert.That(expression.Value, Is.EqualTo("foobar"), 
+                $"expected 'foobar' got '{expression.Value}'");
+            
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("foobar"), 
+                $"expected 'foobar' got '{expression.TokenLiteral()}'");
         });
     }
 
@@ -29,8 +32,11 @@ public class ExpressionTests : ParsingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(expression.Value, Is.EqualTo(5), $"expected '5' got '{expression.Value}'");
-            Assert.That(expression.TokenLiteral(), Is.EqualTo("5"), $"expected '5' got '{expression.TokenLiteral()}'");
+            Assert.That(expression.Value, Is.EqualTo(5), 
+                $"expected '5' got '{expression.Value}'");
+            
+            Assert.That(expression.TokenLiteral(), Is.EqualTo("5"), 
+                $"expected '5' got '{expression.TokenLiteral()}'");
         });
     }
 
@@ -51,13 +57,15 @@ public class ExpressionTests : ParsingTestBase
             var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
             var expression = AssertCast<PrefixNode>(statement.Expression);
 
-            Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
+            Assert.That(expression.Operator, Is.EqualTo(test.op), 
+                $"expected '{test.op}' got '{expression.Operator}'");
             
             dynamic right = expression.Right is IntegerNode
                 ? AssertCast<IntegerNode>(expression.Right)
                 : AssertCast<BooleanNode>(expression.Right);
 
-            Assert.AreEqual(test.value, right.Value, $"expected '{test.value}' got '{right.Value}'");
+            Assert.AreEqual(test.value, right.Value, 
+                $"expected '{test.value}' got '{right.Value}'");
         });
     }
 
@@ -85,19 +93,22 @@ public class ExpressionTests : ParsingTestBase
             var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
             var expression = AssertCast<InfixNode>(statement.Expression);
 
-            Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
+            Assert.That(expression.Operator, Is.EqualTo(test.op), 
+                $"expected '{test.op}' got '{expression.Operator}'");
 
             dynamic left = expression.Left is IntegerNode
                 ? AssertCast<IntegerNode>(expression.Left)
                 : AssertCast<BooleanNode>(expression.Left);
             
-            Assert.AreEqual(test.leftValue, left.Value, $"expected '{test.leftValue}' got '{left.Value}'");
+            Assert.AreEqual(test.leftValue, left.Value, 
+                $"expected '{test.leftValue}' got '{left.Value}'");
             
             dynamic right = expression.Right is IntegerNode
                 ? AssertCast<IntegerNode>(expression.Right)
                 : AssertCast<BooleanNode>(expression.Right);
             
-            Assert.AreEqual(test.rightValue, right.Value, $"expected '{test.rightValue}' got '{right.Value}'");
+            Assert.AreEqual(test.rightValue, right.Value,
+                $"expected '{test.rightValue}' got '{right.Value}'");
         });
     }
 
@@ -175,7 +186,8 @@ public class ExpressionTests : ParsingTestBase
             
             var actual = programme.ToString();
             
-            Assert.That(actual, Is.EqualTo(test.expected), $"expected '{test.expected}' got '{actual}'");
+            Assert.That(actual, Is.EqualTo(test.expected), 
+                $"expected '{test.expected}' got '{actual}'");
         });
     }
 
@@ -348,15 +360,23 @@ public class ExpressionTests : ParsingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(expression.Function.ToString(), Is.EqualTo("add"), $"expected 'add' got '{expression.Function}'");
-            Assert.That(expression.Arguments, Has.Count.EqualTo(3), $"expected 3 arguments got {expression.Arguments.Count}");
+            Assert.That(expression.Function.ToString(), Is.EqualTo("add"), 
+                $"expected 'add' got '{expression.Function}'");
+            
+            Assert.That(expression.Arguments, Has.Count.EqualTo(3), 
+                $"expected 3 arguments got {expression.Arguments.Count}");
         });
         
         Assert.Multiple(() =>
         {
-            Assert.That(expression.Arguments[0].ToString(), Is.EqualTo("1"), $"expected '1' got '{expression.Arguments[0]}'");
-            Assert.That(expression.Arguments[1].ToString(), Is.EqualTo("(2 * 3)"), $"expected '(2 * 3)' got '{expression.Arguments[1]}'");
-            Assert.That(expression.Arguments[2].ToString(), Is.EqualTo("(4 + 5)"), $"expected '(4 + 5)' got '{expression.Arguments[2]}'");
+            Assert.That(expression.Arguments[0].ToString(), Is.EqualTo("1"), 
+                $"expected '1' got '{expression.Arguments[0]}'");
+            
+            Assert.That(expression.Arguments[1].ToString(), Is.EqualTo("(2 * 3)"), 
+                $"expected '(2 * 3)' got '{expression.Arguments[1]}'");
+            
+            Assert.That(expression.Arguments[2].ToString(), Is.EqualTo("(4 + 5)"), 
+                $"expected '(4 + 5)' got '{expression.Arguments[2]}'");
         });
     }
     
