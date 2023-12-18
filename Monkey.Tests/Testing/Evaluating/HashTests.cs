@@ -85,7 +85,7 @@ public class HashTests : EvaluatingTestBase
                 Assert.True(false, $"Unexpected error, got={error.Message}");
                 return;
             case NullObject:
-                Assert.IsNull(expected);
+                Assert.That(expected, Is.Null);
                 return;
             case IntegerObject integer:
                 Assert.That(expected, Is.EqualTo(integer.Value));

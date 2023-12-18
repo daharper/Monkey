@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using Monkey.Lexing;
-using Monkey.Utils;
 
 namespace Monkey.Parsing;
 

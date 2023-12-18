@@ -17,7 +17,7 @@ public class LexerTests
         TestToken(new HashLexerFixture());
     }
     
-    private void TestToken(LexerFixture data)
+    private static void TestToken(LexerFixture data)
     {
         var lexer = new Lexer(data.Input);
 

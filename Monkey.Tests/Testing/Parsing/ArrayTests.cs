@@ -19,16 +19,19 @@ public class ArrayTests : ParsingTestBase
         
         var array = AssertCast<ArrayNode>(statement.Expression);
         
-        Assert.That(array.Elements.Count, Is.EqualTo(3), 
+        Assert.That(array.Elements, Has.Count.EqualTo(3), 
             $"expected 3 elements in array got {array.Elements.Count}");
         
-        Assert.That(array.Elements[0].ToString(), Is.EqualTo("1"), 
-            $"expected '1' got '{array.Elements[0]}'");
-        
-        Assert.That(array.Elements[1].ToString(), Is.EqualTo("(2 * 2)"),
-            $"expected '(2 * 2)' got '{array.Elements[1]}'");
-        
-        Assert.That(array.Elements[2].ToString(), Is.EqualTo("(3 + 3)"),
-            $"expected '(3 + 3)' got '{array.Elements[2]}'");
+        Assert.Multiple(() =>
+        {
+            Assert.That(array.Elements[0].ToString(), Is.EqualTo("1"),
+                $"expected '1' got '{array.Elements[0]}'");
+
+            Assert.That(array.Elements[1].ToString(), Is.EqualTo("(2 * 2)"),
+                $"expected '(2 * 2)' got '{array.Elements[1]}'");
+
+            Assert.That(array.Elements[2].ToString(), Is.EqualTo("(3 + 3)"),
+                $"expected '(3 + 3)' got '{array.Elements[2]}'");
+        });
     }
 }

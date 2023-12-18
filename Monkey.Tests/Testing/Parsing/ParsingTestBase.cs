@@ -14,7 +14,7 @@ public abstract class ParsingTestBase : TestBase
         
         CheckErrors(parser);        
         
-        Assert.That(programme.Statements.Count, Is.EqualTo(expectedStatements), 
+        Assert.That(programme.Statements, Has.Count.EqualTo(expectedStatements), 
             $"expected {expectedStatements} got {programme.Statements.Count}");
         
         return programme;

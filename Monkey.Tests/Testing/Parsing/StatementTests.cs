@@ -57,8 +57,8 @@ public class StatementTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        
         var programme = parser.ParseProgramme();
+        
         CheckErrors(parser);
         
         Assert.That(programme.Statements, Has.Count.EqualTo(3));

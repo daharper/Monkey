@@ -32,7 +32,6 @@ public class HashTests : ParsingTestBase
             
             var keyLiteral = AssertCast<StringNode>(key);
             var valueLiteral = AssertCast<IntegerNode>(value);
-            
             var expectedValue = expected[keyLiteral.Value];
             
             Assert.That(valueLiteral.Value, Is.EqualTo(expectedValue),
@@ -66,11 +65,10 @@ public class HashTests : ParsingTestBase
                              """;
 
         var programme = AssertParse(input, 1);
-        
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
         var hash = AssertCast<HashNode>(statement.Expression);
 
-        Assert.That(hash.Pairs.Count, Is.EqualTo(3),
+        Assert.That(hash.Pairs, Has.Count.EqualTo(3),
             $"expected 3 pairs in hash got {hash.Pairs.Count}");
 
         var tests = new Dictionary<string, Action<Node>>
@@ -83,7 +81,6 @@ public class HashTests : ParsingTestBase
         foreach (var (key, value) in hash.Pairs)
         {
             var keyLiteral = AssertCast<StringNode>(key);
-            
             var test = tests[keyLiteral.Value];
             
             test(value);
