@@ -1,10 +1,10 @@
 namespace Monkey.Evaluating.Objects;
 
-public class MHash : IMObject
+public class AstHash : IAstObject
 {
-    public Dictionary<int, KeyValuePair<IMObject, IMObject?>> Pairs { get; set; } = new();
+    public Dictionary<int, KeyValuePair<IAstObject, IAstObject?>> Pairs { get; set; } = new();
     
-    public string Type() => Types.HashObj;
+    public string Type() => AstTypes.HashObj;
 
     public string Inspect()
     {

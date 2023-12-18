@@ -8,7 +8,7 @@ public class FunctionEvaluationTests :  EvaluatingTestBase
     public void TestFunctionObject()
     {
         var evaluated = TestEval("fn(x) { x + 2; };");
-        var fn = AssertCast<MFunction>(evaluated);
+        var fn = AssertCast<AstFunction>(evaluated);
         
         Assert.That(fn, Is.Not.Null);
         Assert.That(fn!.Parameters, Has.Count.EqualTo(1));

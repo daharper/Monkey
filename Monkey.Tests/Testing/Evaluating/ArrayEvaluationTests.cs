@@ -9,7 +9,7 @@ public class ArrayEvaluationTests : EvaluatingTestBase
     {
         var input = "[1, 2 * 2, 3 + 3]";
         var evaluated = TestEval(input);
-        var result = AssertCast<MArray>(evaluated);
+        var result = AssertCast<AstArray>(evaluated);
         
         Assert.That(result.Elements.Count, Is.EqualTo(3), 
             $"expected 3 elements in array got {result.Elements.Count}");

@@ -10,7 +10,7 @@ public class StringEvaluationTests : EvaluatingTestBase
         const string input = "\"Hello World!\"";
         
         var evaluated = TestEval(input);
-        var str = AssertCast<MString>(evaluated);
+        var str = AssertCast<AstString>(evaluated);
         
         Assert.That(str.Value, Is.EqualTo("Hello World!"));
     }
@@ -22,12 +22,12 @@ public class StringEvaluationTests : EvaluatingTestBase
 
         var evaluated = TestEval(input);
         
-        if (evaluated is MError error)
+        if (evaluated is AstError error)
         {
             Assert.Fail(error.Message);
         }
         
-        var str = AssertCast<MString>(evaluated);
+        var str = AssertCast<AstString>(evaluated);
 
         Assert.That(str.Value, Is.EqualTo("Hello World!"));
     }

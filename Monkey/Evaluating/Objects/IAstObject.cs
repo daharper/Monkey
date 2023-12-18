@@ -1,6 +1,6 @@
 namespace Monkey.Evaluating.Objects;
 
-public interface IMObject
+public interface IAstObject
 {
     string Type();
     

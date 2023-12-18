@@ -23,7 +23,7 @@ public class BuiltinFunctionsTests : EvaluatingTestBase
         }
         else if (expected is string expectedString)
         {
-            if (evaluated is MError error)
+            if (evaluated is AstError error)
             {
                 Assert.That(error.Message, Is.EqualTo(expectedString));
                 return;

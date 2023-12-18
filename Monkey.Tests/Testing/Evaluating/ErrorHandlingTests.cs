@@ -15,7 +15,7 @@ public class ErrorHandlingTests : EvaluatingTestBase
     public void TestErrorHandling(string input, string expectedMessage)
     {
         var evaluated = TestEval(input);
-        var error = evaluated as MError;
+        var error = evaluated as AstError;
         
         Assert.That(error, Is.Not.Null, $"no error object returned, got {evaluated}=({evaluated.Inspect()})");
         Assert.That(error!.Message, Is.EqualTo(expectedMessage), $"wrong error message, got {error.Message}");

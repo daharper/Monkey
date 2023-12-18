@@ -7,10 +7,10 @@ public class HashEvaluationTests : EvaluatingTestBase
     [Test]
     public void TestStringHashKey()
     {
-        var hello1 = new MString("Hello World");
-        var hello2 = new MString("Hello World");
-        var diff1 = new MString("My name is johnny");
-        var diff2 = new MString("My name is johnny");
+        var hello1 = new AstString("Hello World");
+        var hello2 = new AstString("Hello World");
+        var diff1 = new AstString("My name is johnny");
+        var diff2 = new AstString("My name is johnny");
         
         Assert.Multiple(() =>
         {
@@ -42,7 +42,7 @@ public class HashEvaluationTests : EvaluatingTestBase
         
         var evaluated = TestEval(input);
         
-        var hash = AssertCast<MHash>(evaluated);
+        var hash = AssertCast<AstHash>(evaluated);
         
         List<(object key, object value)> expected = [
             ("one", 1),
@@ -81,16 +81,16 @@ public class HashEvaluationTests : EvaluatingTestBase
 
         switch (evaluated)
         {
-            case MError error:
+            case AstError error:
                 Assert.True(false, $"Unexpected error, got={error.Message}");
                 return;
-            case MNull:
+            case AstNull:
                 Assert.IsNull(expected);
                 return;
-            case MInteger integer:
+            case AstInteger integer:
                 Assert.That(expected, Is.EqualTo(integer.Value));
                 return;
-            case MBoolean boolean:
+            case AstBoolean boolean:
                 Assert.That(expected, Is.EqualTo(boolean.Value));
                 return;
             default:

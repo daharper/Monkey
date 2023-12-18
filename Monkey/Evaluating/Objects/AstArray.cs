@@ -1,11 +1,10 @@
 namespace Monkey.Evaluating.Objects;
 
-public class MArray : IMObject
+public class AstArray : IAstObject
 {
-    public List<IMObject> Elements { get; set; } = new();
+    public List<IAstObject> Elements { get; init; } = [];
     
-    
-    public string Type() => Types.ArrayObj;
+    public string Type() => AstTypes.ArrayObj;
 
     public string Inspect()
     {

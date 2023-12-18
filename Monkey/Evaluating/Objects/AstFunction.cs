@@ -4,14 +4,14 @@ using Monkey.Parsing.Statements;
 
 namespace Monkey.Evaluating.Objects;
 
-public class MFunction : IMObject
+public class AstFunction : IAstObject
 {
-    public List<Identifier> Parameters { get; set; } = new();
-    public BlockStatement? Body { get; set; }
+    public List<Identifier> Parameters { get; init; } = [];
+    public BlockStatement? Body { get; init; }
     
-    public Environment? Env { get; set; }
+    public Environment? Env { get; init; }
 
-    public string Type() => Types.FunctionObj;
+    public string Type() => AstTypes.FunctionObj;
 
     public string Inspect()
     {
