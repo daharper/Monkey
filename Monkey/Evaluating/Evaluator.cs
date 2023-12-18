@@ -58,11 +58,11 @@ public static partial class Evaluator
                   return new StringObject(str.Value);
              
              case CallNode call:
-                 var fn = Eval(call.Function, context);
-                 if (fn is ErrorObject) return fn;
+                 var func = Eval(call.Function, context);
+                 if (func is ErrorObject) return func;
                  var args = EvalExpressions(call.Arguments, context);
                  if (args.Count == 1 && args[0] is ErrorObject) return args[0];
-                 return ApplyFunction(fn, args);
+                 return ApplyFunction(func, args);
              
              case ArrayNode array:
                  var elements = EvalExpressions(array.Elements, context);

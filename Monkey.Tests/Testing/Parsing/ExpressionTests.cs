@@ -9,8 +9,8 @@ public class ExpressionTests : ParsingTestBase
     [Test]
     public void TestIdentifierExpression()
     {
-        var programme = AssertParse("foobar", 1);
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var program = AssertParse("foobar", 1);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var expression = AssertCast<IdentifierNode>(statement.Expression);
         
         Assert.Multiple(() =>
@@ -26,8 +26,8 @@ public class ExpressionTests : ParsingTestBase
     [Test]
     public void TestIntegerExpression()
     {
-        var programme = AssertParse("5", 1);
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var program = AssertParse("5", 1);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var expression = AssertCast<IntegerNode>(statement.Expression);
         
         Assert.Multiple(() =>
@@ -53,8 +53,8 @@ public class ExpressionTests : ParsingTestBase
 
         tests.ForEach(test =>
         {
-            var programme = AssertParse(test.input, 1);
-            var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+            var program = AssertParse(test.input, 1);
+            var statement = AssertCast<ExpressionNode>(program.Statements[0]);
             var expression = AssertCast<PrefixNode>(statement.Expression);
 
             Assert.That(expression.Operator, Is.EqualTo(test.op), 
@@ -89,8 +89,8 @@ public class ExpressionTests : ParsingTestBase
         
         tests.ForEach(test =>
         {
-            var programme = AssertParse(test.input, 1);
-            var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+            var program = AssertParse(test.input, 1);
+            var statement = AssertCast<ExpressionNode>(program.Statements[0]);
             var expression = AssertCast<InfixNode>(statement.Expression);
 
             Assert.That(expression.Operator, Is.EqualTo(test.op), 
@@ -149,11 +149,11 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var programme = parser.ParseProgramme();
+            var program = parser.ParseProgramme();
 
             CheckErrors(parser);
             
-            var actual = programme.ToString();
+            var actual = program.ToString();
             
             Assert.That(actual, Is.EqualTo(test.expected), 
                 $"expected '{test.expected}' got '{actual}'");
@@ -180,11 +180,11 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var programme = parser.ParseProgramme();
+            var program = parser.ParseProgramme();
 
             CheckErrors(parser);
             
-            var actual = programme.ToString();
+            var actual = program.ToString();
             
             Assert.That(actual, Is.EqualTo(test.expected), 
                 $"expected '{test.expected}' got '{actual}'");
@@ -198,13 +198,13 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        Assert.That(programme.Statements.Count, Is.EqualTo(1));
+        Assert.That(program.Statements.Count, Is.EqualTo(1));
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var expression = AssertCast<IfNode>(statement.Expression);
         
         Assert.Multiple(() =>
@@ -238,13 +238,13 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        Assert.That(programme.Statements.Count, Is.EqualTo(1));
+        Assert.That(program.Statements.Count, Is.EqualTo(1));
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var expression = AssertCast<IfNode>(statement.Expression);
         
         Assert.Multiple(() =>
@@ -283,14 +283,13 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        Assert.That(programme.Statements, Has.Count.EqualTo(1));
+        Assert.That(program.Statements, Has.Count.EqualTo(1));
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var function = AssertCast<FunctionNode>(statement.Expression);
         
         Assert.That(function.Parameters, Has.Count.EqualTo(2), 
@@ -328,13 +327,12 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var programme = parser.ParseProgramme();
+            var program = parser.ParseProgramme();
             
             CheckErrors(parser);
             
-            var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+            var statement = AssertCast<ExpressionNode>(program.Statements[0]);
             var function = AssertCast<FunctionNode>(statement.Expression);
-
             var parameters = string.Join(", ", function.Parameters.Select(p => p.ToString()));
 
             Assert.That(parameters, Is.EqualTo(test.expectedParams), 
@@ -349,13 +347,13 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
-        Assert.That(programme.Statements, Has.Count.EqualTo(1));
+        Assert.That(program.Statements, Has.Count.EqualTo(1));
         
-        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
         var expression = AssertCast<CallNode>(statement.Expression);
         
         Assert.Multiple(() =>

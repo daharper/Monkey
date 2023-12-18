@@ -6,7 +6,7 @@ namespace Monkey.Tests.Testing.Parsing;
 
 public abstract class ParsingTestBase : TestBase
 {
-    protected static ProgramNode AssertParse(string input, int expectedStatements)
+    protected static ProgramNode AssertParse(string input, int expectedStatementsCount)
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
@@ -14,8 +14,8 @@ public abstract class ParsingTestBase : TestBase
         
         CheckErrors(parser);        
         
-        Assert.That(program.Statements, Has.Count.EqualTo(expectedStatements), 
-            $"expected {expectedStatements} got {program.Statements.Count}");
+        Assert.That(program.Statements, Has.Count.EqualTo(expectedStatementsCount), 
+            $"expected {expectedStatementsCount} got {program.Statements.Count}");
         
         return program;
     }
