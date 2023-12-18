@@ -5,15 +5,15 @@ namespace Monkey.Tests.Testing.Parsing;
 
 public class ErrorTests : ParsingTestBase
 {
-    [Test]
-    public void TestErrorReporting()
+    [TestCase("let x 5;")]
+    [TestCase("let y = 10;")]
+    [TestCase("let 838383;")]
+    public void TestErrorReporting(string input)
     {
-        var lexer = new Lexer( "let x 5; let = 10; let 838383;");
-        var parser = new Parser(lexer);
-        
-        parser.ParseProgramme();
-
-        var result = Assert.Throws<AssertionException>(() => CheckErrors(parser));
-        Console.WriteLine(result?.Message);
+        Assert.Throws<InvalidProgramException>(() =>
+        {
+            var parser = new Parser(new Lexer("let x 5;"));
+            parser.ParseProgramme();
+        });
     }
 }

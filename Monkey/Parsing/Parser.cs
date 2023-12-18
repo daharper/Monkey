@@ -1,6 +1,6 @@
-using System.Collections.Immutable;
 using Monkey.Lexing;
 using Monkey.Parsing.Nodes;
+using Monkey.Utils;
 
 namespace Monkey.Parsing;
 
@@ -9,22 +9,7 @@ public class Parser
     private readonly List<string> _errors = [];
 
     private readonly Dictionary<string, Func<Node>> _prefixParseFns = new();
-    
     private readonly Dictionary<string, Func<Node, Node>> _infixParseFns = new();
-
-    private readonly ImmutableDictionary<string, Precedence> _precedences = new Dictionary<string, Precedence>
-    {
-        { Token.Eq, Precedence.Equals },
-        { Token.NotEq, Precedence.Equals },
-        { Token.Lt, Precedence.LessGreater },
-        { Token.Gt, Precedence.LessGreater },
-        { Token.Plus, Precedence.Sum },
-        { Token.Minus, Precedence.Sum },
-        { Token.Slash, Precedence.Product },
-        { Token.Asterisk, Precedence.Product },
-        { Token.LParen, Precedence.Call },
-        { Token.LBracket, Precedence.Index }
-    }.ToImmutableDictionary();
     
     public Parser(Lexer lexer)
     {
@@ -86,8 +71,7 @@ public class Parser
     private Node ParseHashLiteral()
     {
         var hash = new HashNode(CurrentToken);
-
-        // is it an empty hash?
+        
         if (PeekToken.Is(Token.RBrace))
         {
             NextToken();
@@ -96,13 +80,11 @@ public class Parser
         
         while (!PeekToken.Is(Token.Eof)) 
         {
-            // read key
             NextToken();
             var key = ParseExpression(Precedence.Lowest);
             
-            if (!TryAdvanceTo(Token.Colon)) return null;
-            
-            // read value
+            Consume(Token.Colon);
+
             NextToken();
             var value = ParseExpression(Precedence.Lowest);
             
@@ -118,7 +100,7 @@ public class Parser
             NextToken();
         }
         
-        return null;
+        throw Fatal.Error($"expected next token to be {Token.RBrace}, got {PeekToken.Type} instead");
     }
 
     private Node ParseIndexExpression(Node left)
@@ -128,11 +110,8 @@ public class Parser
         NextToken();
         
         expression.Index = ParseExpression(Precedence.Lowest);
-        
-        if (!TryAdvanceTo(Token.RBracket))
-        {
-            return null;
-        }
+
+        Consume(Token.RBracket);
         
         return expression;
     }
@@ -151,67 +130,32 @@ public class Parser
         }
         
         NextToken();
-        list.Add(ParseExpression(Precedence.Lowest)!);
+        list.Add(ParseExpression(Precedence.Lowest));
         
         while (PeekToken.Is(Token.Comma))
         {
             NextToken();
             NextToken();
-            list.Add(ParseExpression(Precedence.Lowest)!);
+            list.Add(ParseExpression(Precedence.Lowest));
         }
 
-        return TryAdvanceTo(end) ? list : [];
+        Consume(end);
+
+        return list;
     }
 
     private Node ParseCallExpression(Node function)
         => new CallNode(CurrentToken, function, ParseExpressionList(Token.RParen));
-
-    private List<Node> ParseCallArguments()
-    {
-        var arguments = new List<Node>();
-        
-        if (PeekToken.Is(Token.RParen))
-        {
-            NextToken();
-            return arguments;
-        }
-        
-        NextToken();
-        
-        arguments.Add(ParseExpression(Precedence.Lowest));
-        
-        while (PeekToken.Is(Token.Comma))
-        {
-            NextToken();
-            NextToken();
-            
-            arguments.Add(ParseExpression(Precedence.Lowest));
-        }
-        
-        if (!TryAdvanceTo(Token.RParen))
-        {
-            return null;
-        }
-        
-        return arguments;    
-    }
-    
     
     private Node ParseFunctionExpression()
     {
         var expression = new FunctionNode(CurrentToken);
         
-        if (!TryAdvanceTo(Token.LParen))
-        {
-            return null;
-        }
+        Consume(Token.LParen);
         
         expression.Parameters = ParseFunctionParameters();
         
-        if (!TryAdvanceTo(Token.LBrace))
-        {
-            return null;
-        }
+        Consume(Token.LBrace);
         
         expression.Body = ParseBlockStatement();
         
@@ -240,14 +184,10 @@ public class Parser
             NextToken();
             
             identifier = new IdentifierNode(token: CurrentToken, value: CurrentToken.Literal);
-            
             identifiers.Add(identifier);
         }
         
-        if (!TryAdvanceTo(Token.RParen))
-        {
-            return null;
-        }
+        Consume(Token.RParen);
         
         return identifiers;
     }
@@ -267,7 +207,7 @@ public class Parser
     {
         var expression = new InfixNode(CurrentToken, CurrentToken.Literal, left);
 
-        var precedence = CurrentPrecedence();
+        var precedence = Precedences.Resolve(CurrentToken.Type);
         
         NextToken();
         
@@ -282,10 +222,7 @@ public class Parser
         
         var expression = ParseExpression(Precedence.Lowest);
         
-        if (!TryAdvanceTo(Token.RParen))
-        {
-            return null;
-        }
+        Consume(Token.RParen);
         
         return expression;
     }
@@ -293,40 +230,26 @@ public class Parser
     private Node ParseIfExpression()
     {
         var expression = new IfNode(CurrentToken);
-        
-        if (!TryAdvanceTo(Token.LParen))
-        {
-            return null;
-        }
+
+        Consume(Token.LParen);
         
         NextToken();
         
         expression.Condition = ParseExpression(Precedence.Lowest);
         
-        if (!TryAdvanceTo(Token.RParen))
-        {
-            return null;
-        }
-        
-        if (!TryAdvanceTo(Token.LBrace))
-        {
-            return null;
-        }
+        Consume(Token.RParen);
+        Consume(Token.LBrace);
         
         expression.Consequence = ParseBlockStatement();
+
+        if (!PeekToken.Is(Token.Else)) return expression;
         
-        if (PeekToken.Is(Token.Else))
-        {
-            NextToken();
+        NextToken();
             
-            if (!TryAdvanceTo(Token.LBrace))
-            {
-                return null;
-            }
+        Consume(Token.LBrace);
             
-            expression.Alternative = ParseBlockStatement();
-        }
-        
+        expression.Alternative = ParseBlockStatement();
+
         return expression;
     }
     
@@ -340,7 +263,8 @@ public class Parser
         {
             var statement = ParseStatement();
             
-            if (statement != null)
+            // should we exit if null?
+            if (statement != Node.Null)
             {
                 block.Statements.Add(statement);
             }
@@ -351,12 +275,6 @@ public class Parser
         return block;
     }
     
-    public void NextToken()
-    {
-        CurrentToken = PeekToken;
-        PeekToken = Lexer.NextToken();
-    }
-    
     public ProgramNode ParseProgramme()
     {
         var programme = ProgramNode.Create();
@@ -365,7 +283,8 @@ public class Parser
         {
             var statement = ParseStatement();
             
-            if (statement != null)
+            // should we exit if null?
+            if (statement != Node.Null)
             {
                 programme.Statements.Add(statement);
             }
@@ -376,7 +295,7 @@ public class Parser
         return programme;
     }
 
-    private Node? ParseStatement()
+    private Node ParseStatement()
     {
         return CurrentToken.Type switch
         {
@@ -386,7 +305,7 @@ public class Parser
         };
     }
 
-    private Node? ParseExpressionStatement()
+    private Node ParseExpressionStatement()
     {
         var statement = new ExpressionNode(CurrentToken, ParseExpression(Precedence.Lowest));
 
@@ -398,17 +317,17 @@ public class Parser
         return statement;
     }
 
-    private Node? ParseExpression(Precedence precedence)
+    private Node ParseExpression(Precedence precedence)
     {
         if (!_prefixParseFns.TryGetValue(CurrentToken.Type, out var prefix))
         {
             _errors.Add($"no prefix parse function for {CurrentToken.Type} found");
-            return null;
+            return Node.Null;
         }
         
         var leftExpression = prefix();
         
-        while (!PeekToken.Is(Token.Semicolon) && precedence < PeekPrecedence())
+        while (!PeekToken.Is(Token.Semicolon) && precedence < Precedences.Resolve(PeekToken.Type))
         {
             if (!_infixParseFns.TryGetValue(PeekToken.Type, out var infix))
             {
@@ -423,7 +342,7 @@ public class Parser
         return leftExpression;
     }
 
-    private Node? ParseReturnStatement()
+    private Node ParseReturnStatement()
     {
         var statement = new ReturnNode(CurrentToken);
         
@@ -439,26 +358,21 @@ public class Parser
         return statement;
     }
 
-    private LetNode? ParseLetStatement()
+    private Node ParseLetStatement()
     {
         var statement = new LetNode(CurrentToken);
         
-        if (!TryAdvanceTo(Token.Identifier))
-        {
-            return null;
-        }
+        Consume(Token.Identifier);
         
         statement.Name = new IdentifierNode(CurrentToken, CurrentToken.Literal);
-        
-        if (!TryAdvanceTo(Token.Assign))
-        {
-            return null;
-        }
+
+        Consume(Token.Assign);
         
         NextToken();
 
         statement.Value = ParseExpression(Precedence.Lowest);
         
+        // todo: shouldn't this be an error if it is not a semicolon?
         if (PeekToken.Is(Token.Semicolon))
         {
             NextToken();
@@ -467,18 +381,21 @@ public class Parser
         return statement;
     }
     
-    // this was called 'expectPeek' in the book, renamed to better reflect what it does
-    private bool TryAdvanceTo(string type)
+    private void NextToken()
+    {
+        CurrentToken = PeekToken;
+        PeekToken = Lexer.NextToken();
+    }
+
+    private void Consume(string type)
     {
         if (PeekToken.Is(type))
         {
             NextToken();
-            return true;
+            return;
         }
-
-        _errors.Add($"expected next token to be {type}, got {PeekToken.Type} instead");
         
-        return false;
+        throw Fatal.Error($"expected next token to be {type}, got {PeekToken.Type} instead");
     }
     
     private void RegisterPrefix(string type, Func<Node> fn)
@@ -486,10 +403,4 @@ public class Parser
     
     private void RegisterInfix(string type, Func<Node, Node> fn)
         => _infixParseFns[type] = fn;
- 
-    private Precedence PeekPrecedence()
-        => CollectionExtensions.GetValueOrDefault(_precedences, PeekToken.Type, Precedence.Lowest);
-    
-    private Precedence CurrentPrecedence()
-        => CollectionExtensions.GetValueOrDefault(_precedences, CurrentToken.Type, Precedence.Lowest);
 }
