@@ -232,7 +232,7 @@ public partial class Parser
         return block;
     }
     
-    public ProgramNode ParseProgramme()
+    public ProgramNode ParseProgram()
     {
         var programme = ProgramNode.Create();
         

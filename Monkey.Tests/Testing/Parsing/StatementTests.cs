@@ -20,7 +20,7 @@ public class StatementTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var program = parser.ParseProgramme();
+            var program = parser.ParseProgram();
             
             CheckErrors(parser);
             
@@ -57,7 +57,7 @@ public class StatementTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);
         

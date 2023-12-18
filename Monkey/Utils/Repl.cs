@@ -40,7 +40,7 @@ public static class Repl
 
             var lexer = new Lexer(input);
             var parser = new Parser(lexer);
-            var programme = parser.ParseProgramme();
+            var program = parser.ParseProgram();
             
             if (parser.HasErrors)
             {
@@ -54,7 +54,7 @@ public static class Repl
                 continue;
             }
             
-            var evaluated = Evaluator.Eval(programme, context);
+            var evaluated = Evaluator.Eval(program, context);
             
             if (evaluated is not NullObject)
             {

@@ -149,7 +149,7 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var program = parser.ParseProgramme();
+            var program = parser.ParseProgram();
 
             CheckErrors(parser);
             
@@ -180,7 +180,7 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var program = parser.ParseProgramme();
+            var program = parser.ParseProgram();
 
             CheckErrors(parser);
             
@@ -198,7 +198,7 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);
         
@@ -238,7 +238,7 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);
         
@@ -283,7 +283,7 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);
         
@@ -327,7 +327,7 @@ public class ExpressionTests : ParsingTestBase
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
-            var program = parser.ParseProgramme();
+            var program = parser.ParseProgram();
             
             CheckErrors(parser);
             
@@ -347,7 +347,7 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);
         
@@ -385,7 +385,7 @@ public class ExpressionTests : ParsingTestBase
         
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var programme = parser.ParseProgram();
         
         CheckErrors(parser);
         

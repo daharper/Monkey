@@ -13,7 +13,7 @@ public class ErrorTests : ParsingTestBase
         Assert.Throws<InvalidProgramException>(() =>
         {
             var parser = new Parser(new Lexer("let x 5;"));
-            parser.ParseProgramme();
+            parser.ParseProgram();
         });
     }
 }

@@ -10,7 +10,7 @@ public abstract class ParsingTestBase : TestBase
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgramme();
+        var program = parser.ParseProgram();
         
         CheckErrors(parser);        
         
