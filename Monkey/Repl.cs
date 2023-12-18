@@ -60,7 +60,7 @@ public static class Repl
             
             if (evaluated is not null)
             {
-                WriteLine(evaluated.Inspect());
+                WriteLine(evaluated);
             }
             
             WriteLine();

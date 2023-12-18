@@ -44,7 +44,7 @@ public static class Builtin
             },
             ["puts"] = new()
             {
-                Function = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
+                Function = args => { foreach (var arg in args) Console.WriteLine(arg); return Null; } 
             }
         }.ToImmutableDictionary();
 

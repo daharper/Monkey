@@ -17,7 +17,7 @@ public class ErrorHandlingTests : EvaluatingTestBase
         var evaluated = TestEval(input);
         var error = evaluated as AstError;
         
-        Assert.That(error, Is.Not.Null, $"no error object returned, got {evaluated}=({evaluated.Inspect()})");
+        Assert.That(error, Is.Not.Null, $"no error object returned, got {evaluated}=({evaluated})");
         Assert.That(error!.Message, Is.EqualTo(expectedMessage), $"wrong error message, got {error.Message}");
     }
 }

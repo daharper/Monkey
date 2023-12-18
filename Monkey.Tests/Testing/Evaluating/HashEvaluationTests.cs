@@ -62,8 +62,8 @@ public class HashEvaluationTests : EvaluatingTestBase
             {
                 Assert.That(hash.Pairs.TryGetValue(key.GetHashCode(), out var pair), Is.True);
 
-                Assert.That(pair.Key.Inspect(), Is.EqualTo(key.ToString()));
-                Assert.That(pair.Value?.Inspect(), Is.EqualTo(value.ToString()));
+                Assert.That(pair.Key.ToString(), Is.EqualTo(key.ToString()));
+                Assert.That(pair.Value?.ToString() ?? "", Is.EqualTo(value.ToString()));
             });
         }
     }

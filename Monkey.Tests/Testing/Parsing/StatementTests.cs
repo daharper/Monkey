@@ -1,7 +1,6 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Parsing.Statements;
-using Monkey.Utils;
 
 namespace Monkey.Tests.Testing.Parsing;
 
@@ -17,7 +16,7 @@ public class StatementTests : ParsingTestBase
             ("let foobar = y;", "foobar", "y")
         };
         
-        tests.ForEach((i, test) =>
+        tests.ForEach(test =>
         {
             var lexer = new Lexer(test.input);
             var parser = new Parser(lexer);
@@ -25,27 +24,27 @@ public class StatementTests : ParsingTestBase
             
             CheckErrors(parser);
             
-            Assert.AreEqual(1, programme.Statements.Count);
+            Assert.That(programme.Statements, Has.Count.EqualTo(1));
             
             var statement = programme.Statements[0];
             
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(statement.TokenLiteral(), "let", 
+                Assert.That(statement.TokenLiteral(), Is.EqualTo("let"), 
                     $"expected 'let' got '{statement.TokenLiteral()}'");
                 
-                Assert.IsTrue(statement is LetStatement, 
+                Assert.That(statement is LetStatement, Is.True, 
                     $"expected 'LetStatement' got '{statement.GetType().Name}'");
                 
                 var letStatement = (LetStatement) statement;
                 
-                Assert.AreEqual(letStatement.Name.Value, test.identifier,
+                Assert.That(test.identifier, Is.EqualTo(letStatement.Name.Value),
                     $"expected '{test.identifier}' got '{letStatement.Name.Value}'");
                 
-                Assert.AreEqual(letStatement.Name.TokenLiteral(), test.identifier,
+                Assert.That(test.identifier, Is.EqualTo(letStatement.Name.TokenLiteral()),
                     $"expected '{test.identifier}' got '{letStatement.Name.TokenLiteral()}'");
                 
-                Assert.AreEqual(letStatement.Value.TokenLiteral(), test.value.ToString(),
+                Assert.That(test.value.ToString(), Is.EqualTo(letStatement.Value.TokenLiteral()),
                     $"expected '{test.value}' got '{letStatement.Value.TokenLiteral()}'");
             });
         });
@@ -62,16 +61,16 @@ public class StatementTests : ParsingTestBase
         var programme = parser.ParseProgramme();
         CheckErrors(parser);
         
-        Assert.AreEqual(3, programme.Statements.Count);
+        Assert.That(programme.Statements, Has.Count.EqualTo(3));
         
-        programme.Statements.ForEach((i, statement) =>
+        programme.Statements.ForEach(statement =>
         {
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(statement.TokenLiteral(), "return", 
+                Assert.That(statement.TokenLiteral(), Is.EqualTo("return"), 
                     $"expected 'return' got '{statement.TokenLiteral()}'");
                 
-                Assert.IsTrue(statement is ReturnStatement, 
+                Assert.That(statement is ReturnStatement, Is.True, 
                     $"expected 'ReturnStatement' got '{statement.GetType().Name}'");
             });
         });

@@ -5,6 +5,6 @@ public class AstBuiltin : IAstObject
     public Func<List<IAstObject>, IAstObject> Function { get; init; } = null!;
     
     public string Type() => AstTypes.BuiltinObj;
-
-    public string Inspect() => "builtin function";
+    
+    public override string ToString() => "builtin function";
 }

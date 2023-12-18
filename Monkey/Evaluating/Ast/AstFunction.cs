@@ -4,17 +4,17 @@ using Monkey.Parsing.Statements;
 
 namespace Monkey.Evaluating.Ast;
 
-public class AstFunction : IAstObject
+public class AstFunction(List<Identifier> parameters, BlockStatement? body, Environment? env) : IAstObject
 {
-    public List<Identifier> Parameters { get; init; } = [];
-    
-    public BlockStatement? Body { get; init; }
-    
-    public Environment? Env { get; init; }
+    public List<Identifier> Parameters { get; private set; } = parameters;
+
+    public BlockStatement? Body { get; init; } = body;
+
+    public Environment? Env { get; init; } = env;
 
     public string Type() => AstTypes.FunctionObj;
 
-    public string Inspect()
+    public override string ToString()
     {
         var sb = new StringBuilder();
 

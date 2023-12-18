@@ -6,5 +6,5 @@ public class AstReturnValue(IAstObject? value) : IAstObject
 
     public string Type() => AstTypes.ReturnValueObj;
 
-    public string Inspect() => Value.Inspect();
+    public override string ToString() => Value.ToString() ?? "";
 }

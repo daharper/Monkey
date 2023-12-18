@@ -6,8 +6,8 @@ public class AstError(string message) : IAstObject
 
     public string Type() => AstTypes.ErrorObj;
 
-    public string Inspect() => $"ERROR: {Message}";
-    
+    public override string ToString() => $"ERROR: {Message}";
+
     public static IAstObject Create(string message, params object[] args)
         => new AstError(string.Format(message, args));
 }
