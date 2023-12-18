@@ -4,16 +4,16 @@ namespace Monkey.Tests;
 
 public class TestBase
 {
-    protected T AssertCast<T>(object obj)
+    protected static T AssertCast<T>(object obj)
     {
-        Assert.IsInstanceOf<T>(obj, $"expected {typeof(T).Name} got {obj.GetType().Name}");
+        Assert.That(obj, Is.InstanceOf<T>(), $"expected {typeof(T).Name} got {obj.GetType().Name}");
         return (T)obj;
     }
     
-    protected void CheckErrors(Parser parser)
+    protected static void CheckErrors(Parser parser)
     {
-        Assert.IsFalse(
-            parser.HasErrors, 
+        Assert.That(
+            parser.HasErrors, Is.False, 
             $"parser has the following errors:{Environment.NewLine}{string.Join(Environment.NewLine, parser.Errors)}");
     }
 }
