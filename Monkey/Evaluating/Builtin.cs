@@ -48,6 +48,8 @@ public static class Builtin
             }
         }.ToImmutableDictionary();
 
+    #region private methods
+    
     private static MObject EvalPush(MObject container, MObject item)
         => container switch
         {
@@ -81,8 +83,10 @@ public static class Builtin
     private static MObject EvalLen(MObject obj)
         => obj switch
         {
-            ArrayObject array => new IntegerObject { Value = array.Elements.Count },
-            StringObject str => new IntegerObject { Value = str.Value.Length },
+            ArrayObject array => new IntegerObject(array.Elements.Count),
+            StringObject str => new IntegerObject(str.Value.Length),
             _ => ErrorObject.Create("argument to `len` not supported, got {0}", obj.Type)
         };
+    
+    #endregion
 }

@@ -1,5 +1,4 @@
 using Monkey.Evaluating.Objects;
-using Monkey.Parsing;
 using Monkey.Parsing.Nodes;
 
 namespace Monkey.Evaluating;
@@ -15,7 +14,7 @@ public static class Evaluator
              case ExpressionNode expressionStatement:
                  return Eval(expressionStatement.Expression, environment);
              case IntegerNode integerExpression:
-                 return new IntegerObject { Value = integerExpression.Value };
+                 return new IntegerObject(integerExpression.Value);
              case BooleanNode booleanExpression:
                  return booleanExpression.Value ? Builtin.True : Builtin.False;
              case PrefixNode prefixExpression:
@@ -69,6 +68,8 @@ public static class Evaluator
         return Builtin.Null;
     }
 
+    #region private methods
+    
     private static MObject EvalHashLiteral(Node node, Environment environment)
     {   
         var pairs = new Dictionary<int, KeyValuePair<MObject, MObject>>();
@@ -134,7 +135,7 @@ public static class Evaluator
             case FunctionObject fn:
             {
                 var extendedEnv = ExtendFunctionEnv(fn, args);
-                var evaluated = Eval(fn.Body!, extendedEnv);
+                var evaluated = Eval(fn.Body, extendedEnv);
             
                 return UnwrapReturnValue(evaluated);
             }
@@ -248,10 +249,10 @@ public static class Evaluator
 
         return op switch
         {
-            "+" => new IntegerObject { Value = left + right },
-            "-" => new IntegerObject { Value = left - right },
-            "*" => new IntegerObject { Value = left * right },
-            "/" => new IntegerObject { Value = left / right },
+            "+" => new IntegerObject(left + right),
+            "-" => new IntegerObject(left - right),
+            "*" => new IntegerObject(left * right),
+            "/" => new IntegerObject(left / right),
             "<" => left < right ? Builtin.True : Builtin.False,
             ">" => left > right ? Builtin.True : Builtin.False,
             "==" => left == right ? Builtin.True : Builtin.False,
@@ -285,8 +286,8 @@ public static class Evaluator
             return ErrorObject.Create("unknown operator: -{0}", right.Type);
         }
 
-        integer.Value = -integer.Value;
-        return integer;
+        var value = integer.Value;
+        return new IntegerObject(-value);
     }
 
     private static MObject EvalProgramme(List<Node> statements, Environment environment)    
@@ -325,4 +326,6 @@ public static class Evaluator
 
         return result;
     }
+    
+    #endregion
 }

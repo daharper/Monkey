@@ -7,7 +7,7 @@ public class HashObject(Dictionary<int, KeyValuePair<MObject, MObject>> pairs)
 
     public override string ToString() 
     {
-        var p = Pairs.Values.Select(pair => $"{pair.Key}: {pair.Value}");
-        return $"{{{string.Join(", ", p)}}}";
+        var items = Pairs.Values.Select(pair => $"{pair.Key}: {pair.Value}");
+        return $"{{{string.Join(", ", items)}}}";
     }
 }

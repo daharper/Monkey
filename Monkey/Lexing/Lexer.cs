@@ -4,11 +4,6 @@ namespace Monkey.Lexing;
 
 public class Lexer
 {
-    /// <summary>
-    /// Creates a new instance of the Lexer class with the specified input.
-    /// </summary>
-    /// <param name="input">The input string to be processed by the Lexer.</param>
-    /// <returns>A new instance of the Lexer class initialized with the specified input.</returns>
     public Lexer(string input)
     {
         Input = input;
@@ -29,7 +24,7 @@ public class Lexer
 
     public Token NextToken()
     {
-        Token tok;
+        Token token;
         
         SkipWhitespace();
         
@@ -41,18 +36,18 @@ public class Lexer
                     var ch = Ch;
                     ReadChar();
                     var literal = $"{ch}{Ch}";
-                    tok = new Token(Token.Eq, literal);
+                    token = new Token(Token.Eq, literal);
                 }
                 else
                 {
-                    tok = new Token(Token.Assign, Ch);
+                    token = new Token(Token.Assign, Ch);
                 }
                 break;
             case '+':
-                tok = new Token(Token.Plus, Ch);
+                token = new Token(Token.Plus, Ch);
                 break;
             case '-':
-                tok = new Token(Token.Minus, Ch);
+                token = new Token(Token.Minus, Ch);
                 break;
             case '!':
                 if (PeekChar() == '=')
@@ -60,63 +55,63 @@ public class Lexer
                     var ch = Ch;
                     ReadChar();
                     var literal = $"{ch}{Ch}";
-                    tok = new Token(Token.NotEq, literal);
+                    token = new Token(Token.NotEq, literal);
                 }
                 else
                 {
-                    tok = new Token(Token.Bang, Ch);
+                    token = new Token(Token.Bang, Ch);
                 }
                 break;
             case '/':
-                tok = new Token(Token.Slash, Ch);
+                token = new Token(Token.Slash, Ch);
                 break;
             case '*':
-                tok = new Token(Token.Asterisk, Ch);
+                token = new Token(Token.Asterisk, Ch);
                 break;
             case '<':
-                tok = new Token(Token.Lt, Ch);
+                token = new Token(Token.Lt, Ch);
                 break;
             case '>':
-                tok = new Token(Token.Gt, Ch);
+                token = new Token(Token.Gt, Ch);
                 break;
             case ';':
-                tok = new Token(Token.Semicolon, Ch);
+                token = new Token(Token.Semicolon, Ch);
                 break;
             case ',':
-                tok = new Token(Token.Comma, Ch);
+                token = new Token(Token.Comma, Ch);
                 break;
             case ':':
-                tok = new Token(Token.Colon, Ch);
+                token = new Token(Token.Colon, Ch);
                 break;
             case '(':
-                tok = new Token(Token.LParen, Ch);
+                token = new Token(Token.LParen, Ch);
                 break;
             case ')':
-                tok = new Token(Token.RParen, Ch);
+                token = new Token(Token.RParen, Ch);
                 break;
             case '{':
-                tok = new Token(Token.LBrace, Ch);
+                token = new Token(Token.LBrace, Ch);
                 break;
             case '}':
-                tok = new Token(Token.RBrace, Ch);
+                token = new Token(Token.RBrace, Ch);
                 break;
             case '[':
-                tok = new Token(Token.LBracket, Ch);
+                token = new Token(Token.LBracket, Ch);
                 break;
             case ']':
-                tok = new Token(Token.RBracket, Ch);
+                token = new Token(Token.RBracket, Ch);
                 break;
             case '"':
                 ReadChar();
                 var str = ReadSubstring(ch => ch != '"');
-                tok = new Token(Token.String, str);
+                token = new Token(Token.String, str);
                 if (PeekChar() == '"')
                 {
                     ReadChar();    
                 }
                 break;
             case '\0':
-                tok = new Token(Token.Eof);
+                token = new Token(Token.Eof);
                 break;
             default:
                 if (char.IsLetter(Ch))
@@ -124,22 +119,22 @@ public class Lexer
                     var identifier = ReadLiteral();
                     var type = LookupIdent(identifier);
                     
-                    tok = new Token(type, identifier);
+                    token = new Token(type, identifier);
                 }
                 else if (char.IsDigit(Ch))
                 {
                     var value = ReadNumber();
-                    tok = new Token(Token.Int, value);
+                    token = new Token(Token.Int, value);
                 }
                 else
                 {
-                    tok = new Token(Token.Illegal, Ch);
+                    token = new Token(Token.Illegal, Ch);
                 }
                 break;
         }
 
         ReadChar();
-        return tok;
+        return token;
     }
     
     #region private methods

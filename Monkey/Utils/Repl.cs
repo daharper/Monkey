@@ -2,12 +2,10 @@ using Monkey.Evaluating;
 using Monkey.Evaluating.Objects;
 using Monkey.Lexing;
 using Monkey.Parsing;
-using Monkey.Utils;
-
 using static System.Console;
 using Environment = Monkey.Evaluating.Environment;
 
-namespace Monkey;
+namespace Monkey.Utils;
 
 public static class Repl
 {

@@ -12,7 +12,10 @@ public class ArrayObject() : MObject(ObjectTypes.Array)
 
     public override string ToString()
     {
-        var s = _elements is null ? "" : string.Join(", ", Elements.Select(e => e.ToString()));
-        return $"[{s}]";
+        var str = _elements is null 
+            ? "" 
+            : string.Join(", ", Elements.Select(e => e.ToString()));
+        
+        return $"[{str}]";
     }
 }
