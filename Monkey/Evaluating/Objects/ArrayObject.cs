@@ -1,16 +1,16 @@
-namespace Monkey.Evaluating.Ast;
+namespace Monkey.Evaluating.Objects;
 
-public class AstArray : IAstObject
+public class ArrayObject : IObject
 {
-    private List<IAstObject>? _elements;
+    private List<IObject>? _elements;
 
-    public List<IAstObject> Elements
+    public List<IObject> Elements
     {
         get => _elements ??= [];
         init => _elements = value;
     }
     
-    public string Type() => AstTypes.ArrayObj;
+    public string Type() => ObjectTypes.ArrayObj;
 
     public override string ToString()
     {

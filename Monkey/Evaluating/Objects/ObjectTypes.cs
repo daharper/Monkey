@@ -1,6 +1,6 @@
-namespace Monkey.Evaluating.Ast;
+namespace Monkey.Evaluating.Objects;
 
-public static class AstTypes
+public static class ObjectTypes
 {
     public const string IntegerObj = "INTEGER";
     public const string BooleanObj = "BOOLEAN";

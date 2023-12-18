@@ -1,10 +1,10 @@
-namespace Monkey.Evaluating.Ast;
+namespace Monkey.Evaluating.Objects;
 
-public class AstInteger : IAstObject
+public class IntegerObject : IObject
 {
     public int Value { get; set; }
 
-    public string Type() => AstTypes.IntegerObj;
+    public string Type() => ObjectTypes.IntegerObj;
 
     public override string ToString() => Convert.ToString(Value);
 

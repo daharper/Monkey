@@ -22,19 +22,19 @@ public abstract class ParsingTestBase : TestBase
     
     protected void TestInfixExpression(Node expression, object leftValue, string op, object rightValue)
     {
-        var infix = AssertCast<InfixExpression>(expression);
+        var infix = AssertCast<InfixNode>(expression);
         
         Assert.That(infix.Operator, Is.EqualTo(op), $"expected '{op}' got '{infix.Operator}'");
 
-        dynamic left = infix.Left is IntegerLiteral
-            ? AssertCast<IntegerLiteral>(infix.Left)
-            : AssertCast<BooleanLiteral>(infix.Left);
+        dynamic left = infix.Left is IntegerNode
+            ? AssertCast<IntegerNode>(infix.Left)
+            : AssertCast<BooleanNode>(infix.Left);
             
         Assert.AreEqual(leftValue, left.Value, $"expected '{leftValue}' got '{left.Value}'");
             
-        dynamic right = infix.Right is IntegerLiteral
-            ? AssertCast<IntegerLiteral>(infix.Right)
-            : AssertCast<BooleanLiteral>(infix.Right);
+        dynamic right = infix.Right is IntegerNode
+            ? AssertCast<IntegerNode>(infix.Right)
+            : AssertCast<BooleanNode>(infix.Right);
             
         Assert.AreEqual(rightValue, right.Value, $"expected '{rightValue}' got '{right.Value}'");
     }

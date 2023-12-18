@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -15,7 +15,7 @@ public class ErrorHandlingTests : EvaluatingTestBase
     public void TestErrorHandling(string input, string expectedMessage)
     {
         var evaluated = TestEval(input);
-        var error = evaluated as AstError;
+        var error = evaluated as ErrorObject;
         
         Assert.That(error, Is.Not.Null, $"no error object returned, got {evaluated}=({evaluated})");
         Assert.That(error!.Message, Is.EqualTo(expectedMessage), $"wrong error message, got {error.Message}");

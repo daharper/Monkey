@@ -1,17 +1,17 @@
 using System.Text;
 using Monkey.Parsing.Nodes;
 
-namespace Monkey.Evaluating.Ast;
+namespace Monkey.Evaluating.Objects;
 
-public class AstFunction(List<Identifier> parameters, BlockStatement? body, Environment? env) : IAstObject
+public class FunctionObject(List<IdentifierNode> parameters, BlockNode? body, Environment? env) : IObject
 {
-    public List<Identifier> Parameters { get; private set; } = parameters;
+    public List<IdentifierNode> Parameters { get; private set; } = parameters;
 
-    public BlockStatement? Body { get; init; } = body;
+    public BlockNode? Body { get; init; } = body;
 
     public Environment? Env { get; init; } = env;
 
-    public string Type() => AstTypes.FunctionObj;
+    public string Type() => ObjectTypes.FunctionObj;
 
     public override string ToString()
     {

@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class IntegerLiteral(Token token, int value) : Node(token)
+public class IntegerNode(Token token, int value) : Node(token)
 {
     public int Value { get; private set; } = value;
 

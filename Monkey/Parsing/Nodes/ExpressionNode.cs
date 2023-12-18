@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class ExpressionStatement(Token token, Node expression) : Node(token)
+public class ExpressionNode(Token token, Node expression) : Node(token)
 {
     public Node Expression { get; } = expression;
 

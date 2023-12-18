@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class CallExpression(Token token, Node function, List<Node> arguments) : Node(token)
+public class CallNode(Token token, Node function, List<Node> arguments) : Node(token)
 {
     public Node Function { get; } = function;
 

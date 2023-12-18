@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class HashLiteral(Token token) : Node(token)
+public class HashNode(Token token) : Node(token)
 {
     public Dictionary<Node, Node> Pairs { get; set; } = new();
     

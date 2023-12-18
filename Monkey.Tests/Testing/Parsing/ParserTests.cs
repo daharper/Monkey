@@ -23,10 +23,10 @@ public class ParserTests : ParsingTestBase
     {
         var programme = Programme.Create(
         [
-            new LetStatement(new Token(Token.Let, "let"))
+            new LetNode(new Token(Token.Let, "let"))
             {
-                Name = new Identifier(token: new Token(Token.Identifier, "myVar"), value: "myVar"),
-                Value = new Identifier(token: new Token(Token.Identifier, "anotherVar"), value: "anotherVar")
+                Name = new IdentifierNode(token: new Token(Token.Identifier, "myVar"), value: "myVar"),
+                Value = new IdentifierNode(token: new Token(Token.Identifier, "anotherVar"), value: "anotherVar")
             }
         ]);
         

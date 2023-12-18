@@ -12,12 +12,12 @@ public class ArrayParsingTests : ParserTests
         Assert.That(programme.Statements, Has.Count.EqualTo(1), 
             $"expected 1 statement got {programme.Statements.Count}");
         
-        var statement = AssertCast<ExpressionStatement>(programme.Statements[0]);
+        var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
         
         Assert.That(statement.Expression, Is.Not.Null, 
             "expected expression not to be null");
         
-        var array = AssertCast<ArrayLiteral>(statement.Expression!);
+        var array = AssertCast<ArrayNode>(statement.Expression!);
         
         Assert.That(array.Elements.Count, Is.EqualTo(3), 
             $"expected 3 elements in array got {array.Elements.Count}");

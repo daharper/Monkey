@@ -1,10 +1,10 @@
-namespace Monkey.Evaluating.Ast;
+namespace Monkey.Evaluating.Objects;
 
-public class AstBoolean : IAstObject
+public class BooleanObject : IObject
 {
     public bool Value { get; init; }
 
-    public string Type() => AstTypes.BooleanObj;
+    public string Type() => ObjectTypes.BooleanObj;
     
     public override string ToString() => Convert.ToString(Value);
 

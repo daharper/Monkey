@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class InfixExpression(Token token, string @operator, Node left) : Node(token)
+public class InfixNode(Token token, string @operator, Node left) : Node(token)
 {
     public Node Left { get; } = left;
 

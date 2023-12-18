@@ -2,7 +2,7 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class Identifier(Token token, string value) : Node(token)
+public class IdentifierNode(Token token, string value) : Node(token)
 {
     public string Value { get; } = value;
    

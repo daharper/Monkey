@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -8,7 +8,7 @@ public class FunctionEvaluationTests :  EvaluatingTestBase
     public void TestFunctionObject()
     {
         var evaluated = TestEval("fn(x) { x + 2; };");
-        var fn = AssertCast<AstFunction>(evaluated);
+        var fn = AssertCast<FunctionObject>(evaluated);
         
         Assert.That(fn, Is.Not.Null);
         Assert.That(fn.Parameters, Has.Count.EqualTo(1));

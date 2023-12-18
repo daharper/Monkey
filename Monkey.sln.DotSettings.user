@@ -1,4 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=42822294_002DDD39_002D4C29_002DAAAE_002DD7D0DF80B1ED_002Fd_003AParsing_002Fd_003ANodes_002Ff_003AStringLiteralNode_002Ecs/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/home/david/.cache/JetBrains/Rider2023.3/resharper-host/temp/Rider/vAny/CoverageData/_Monkey.-371556911/Snapshot/snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=613203f8_002D3894_002D411e_002D8256_002D9c0d12d369ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestNextToken" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;

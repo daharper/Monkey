@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -7,10 +7,10 @@ public class HashEvaluationTests : EvaluatingTestBase
     [Test]
     public void TestStringHashKey()
     {
-        var hello1 = new AstString("Hello World");
-        var hello2 = new AstString("Hello World");
-        var diff1 = new AstString("My name is johnny");
-        var diff2 = new AstString("My name is johnny");
+        var hello1 = new StringObject("Hello World");
+        var hello2 = new StringObject("Hello World");
+        var diff1 = new StringObject("My name is johnny");
+        var diff2 = new StringObject("My name is johnny");
         
         Assert.Multiple(() =>
         {
@@ -42,7 +42,7 @@ public class HashEvaluationTests : EvaluatingTestBase
         
         var evaluated = TestEval(input);
         
-        var hash = AssertCast<AstHash>(evaluated);
+        var hash = AssertCast<HashObject>(evaluated);
         
         List<(object key, object value)> expected = [
             ("one", 1),
@@ -81,16 +81,16 @@ public class HashEvaluationTests : EvaluatingTestBase
 
         switch (evaluated)
         {
-            case AstError error:
+            case ErrorObject error:
                 Assert.True(false, $"Unexpected error, got={error.Message}");
                 return;
-            case AstNull:
+            case NullObject:
                 Assert.IsNull(expected);
                 return;
-            case AstInteger integer:
+            case IntegerObject integer:
                 Assert.That(expected, Is.EqualTo(integer.Value));
                 return;
-            case AstBoolean boolean:
+            case BooleanObject boolean:
                 Assert.That(expected, Is.EqualTo(boolean.Value));
                 return;
             default:

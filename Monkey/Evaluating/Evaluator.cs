@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 using Monkey.Parsing;
 using Monkey.Parsing.Nodes;
 
@@ -6,61 +6,61 @@ namespace Monkey.Evaluating;
 
 public static class Evaluator
 {
-    public static IAstObject Eval(Node node, Environment environment)
+    public static IObject Eval(Node node, Environment environment)
     {
         switch (node)
         {
              case Programme programme:
                  return EvalProgramme(programme.Statements, environment);
-             case ExpressionStatement expressionStatement:
+             case ExpressionNode expressionStatement:
                  return Eval(expressionStatement.Expression!, environment);
-             case IntegerLiteral integerExpression:
-                 return new AstInteger { Value = integerExpression.Value };
-             case BooleanLiteral booleanExpression:
+             case IntegerNode integerExpression:
+                 return new IntegerObject { Value = integerExpression.Value };
+             case BooleanNode booleanExpression:
                  return booleanExpression.Value ? Builtin.True : Builtin.False;
-             case PrefixExpression prefixExpression:
+             case PrefixNode prefixExpression:
                  var right = Eval(prefixExpression.Right, environment);
-                 return right is AstError ? right : EvalPrefixExpression(prefixExpression.Operator, right);
-             case InfixExpression infixExpression:
+                 return right is ErrorObject ? right : EvalPrefixExpression(prefixExpression.Operator, right);
+             case InfixNode infixExpression:
                   var left = Eval(infixExpression.Left, environment);
-                  if (left is AstError) return left;
+                  if (left is ErrorObject) return left;
                   var right1 = Eval(infixExpression.Right, environment);
-                  return right1 is AstError ? right1 : EvalInfixExpression(infixExpression.Operator, left, right1);
-             case IfExpression ifExpression:
+                  return right1 is ErrorObject ? right1 : EvalInfixExpression(infixExpression.Operator, left, right1);
+             case IfNode ifExpression:
                   return EvalIfExpression(ifExpression, environment);
-             case Identifier identifierExpression:
+             case IdentifierNode identifierExpression:
                   return EvalIdentifierExpression(identifierExpression, environment);
-             case BlockStatement blockStatement:
+             case BlockNode blockStatement:
                   return EvalBlockStatement(blockStatement, environment);
-             case ReturnStatement returnStatement:
+             case ReturnNode returnStatement:
                   var value = Eval(returnStatement.ReturnValue, environment);
-                  return value is AstError ? value : new AstReturnValue(value);
-             case LetStatement letStatement:
+                  return value is ErrorObject ? value : new ReturnObject(value);
+             case LetNode letStatement:
                   var val = Eval(letStatement.Value, environment);
-                  if (val is AstError) return val;
+                  if (val is ErrorObject) return val;
                   environment.Set(letStatement.Name.Value, val);
                   break;
-             case FunctionLiteral functionExpression:
-                  return new AstFunction(functionExpression.Parameters, functionExpression.Body, environment);
-             case StringLiteral stringLiteral:
-                  return new AstString(stringLiteral.Value);
-             case CallExpression callExpression:
+             case FunctionNode functionExpression:
+                  return new FunctionObject(functionExpression.Parameters, functionExpression.Body, environment);
+             case StringNode stringLiteral:
+                  return new StringObject(stringLiteral.Value);
+             case CallNode callExpression:
                  var function = Eval(callExpression.Function, environment);
-                 if (function is AstError) return function;
+                 if (function is ErrorObject) return function;
                  var args = EvalExpressions(callExpression.Arguments, environment);
-                 if (args.Count == 1 && args[0] is AstError) return args[0];
+                 if (args.Count == 1 && args[0] is ErrorObject) return args[0];
                  return ApplyFunction(function, args);
-             case ArrayLiteral arrayLiteral:
+             case ArrayNode arrayLiteral:
                  var elements = EvalExpressions(arrayLiteral.Elements, environment);
-                 if (elements.Count == 1 && elements[0] is AstError) return elements[0];
-                 return new AstArray { Elements = elements };
-             case IndexExpression indexExpression:
+                 if (elements.Count == 1 && elements[0] is ErrorObject) return elements[0];
+                 return new ArrayObject { Elements = elements };
+             case IndexNode indexExpression:
                  var left1 = Eval(indexExpression.Left, environment);
-                 if (left1 is AstError) return left1;
+                 if (left1 is ErrorObject) return left1;
                  var index = Eval(indexExpression.Index, environment);
-                 if (index is AstError) return index;
+                 if (index is ErrorObject) return index;
                  return EvalIndexExpression(left1, index);
-             case HashLiteral:
+             case HashNode:
                  return EvalHashLiteral(node, environment);
              default:
                  throw new ArgumentException($"Unknown node type: {node.GetType().Name}");
@@ -69,52 +69,52 @@ public static class Evaluator
         return Builtin.Null;
     }
 
-    private static IAstObject EvalHashLiteral(Node node, Environment environment)
+    private static IObject EvalHashLiteral(Node node, Environment environment)
     {   
-        var pairs = new Dictionary<int, KeyValuePair<IAstObject, IAstObject>>();
+        var pairs = new Dictionary<int, KeyValuePair<IObject, IObject>>();
 
-        if (node is not HashLiteral hashLiteral) 
-            return AstError.Create("node is not HashLiteral");
+        if (node is not HashNode hashLiteral) 
+            return ErrorObject.Create("node is not HashLiteral");
         
         foreach (var (keyNode, valueNode) in hashLiteral.Pairs)
         {
             var key = Eval(keyNode, environment);
-            if (key is AstError) return key;
+            if (key is ErrorObject) return key;
             
-            if (key is not AstInteger and not AstBoolean and not AstString) 
-                return AstError.Create("unusable as hash key: {0}", key.Type());
+            if (key is not IntegerObject and not BooleanObject and not StringObject) 
+                return ErrorObject.Create("unusable as hash key: {0}", key.Type());
 
             var value = Eval(valueNode, environment);
-            if (value is AstError) return value;
+            if (value is ErrorObject) return value;
 
             var hashed = key.GetHashCode();
-            pairs[hashed] = new KeyValuePair<IAstObject, IAstObject>(key, value);
+            pairs[hashed] = new KeyValuePair<IObject, IObject>(key, value);
         }
 
-        return new AstHash(pairs); 
+        return new HashObject(pairs); 
     }
 
-    private static IAstObject EvalIndexExpression(IAstObject? left1, IAstObject index)
+    private static IObject EvalIndexExpression(IObject? left1, IObject index)
     {
         return (left1, index) switch
         {
-            (AstArray array, AstInteger integer) => EvalArrayIndexExpression(array, integer),
-            (AstHash hash, _) => EvalHashIndexExpression(hash, index),
-            _ => AstError.Create("index operator not supported: {0}", left1?.Type() ?? "null")
+            (ArrayObject array, IntegerObject integer) => EvalArrayIndexExpression(array, integer),
+            (HashObject hash, _) => EvalHashIndexExpression(hash, index),
+            _ => ErrorObject.Create("index operator not supported: {0}", left1?.Type() ?? "null")
         };
     }
 
-    private static IAstObject EvalHashIndexExpression(AstHash hash, IAstObject index)
+    private static IObject EvalHashIndexExpression(HashObject hash, IObject index)
     {
-        if (index is not AstInteger and not AstBoolean and not AstString) 
-            return AstError.Create("unusable as hash key: {0}", index.Type());
+        if (index is not IntegerObject and not BooleanObject and not StringObject) 
+            return ErrorObject.Create("unusable as hash key: {0}", index.Type());
 
         var hashed = index.GetHashCode();
 
         return !hash.Pairs.TryGetValue(hashed, out var pair) ? Builtin.Null : pair.Value;
     }
 
-    private static IAstObject EvalArrayIndexExpression(AstArray array, AstInteger integer)
+    private static IObject EvalArrayIndexExpression(ArrayObject array, IntegerObject integer)
     {   
         var index = integer.Value;
         var max = array.Elements.Count - 1;
@@ -127,32 +127,32 @@ public static class Evaluator
         return array.Elements[index];
     }
 
-    private static IAstObject ApplyFunction(IAstObject? function, List<IAstObject> args)
+    private static IObject ApplyFunction(IObject? function, List<IObject> args)
     {
         switch (function)
         {
-            case AstFunction fn:
+            case FunctionObject fn:
             {
                 var extendedEnv = ExtendFunctionEnv(fn, args);
                 var evaluated = Eval(fn.Body!, extendedEnv);
             
                 return UnwrapReturnValue(evaluated);
             }
-            case AstBuiltin builtin:
+            case BuiltinObject builtin:
                 return builtin.Function(args);
             default:
-                return AstError.Create("not a function: {0}", function?.Type() ?? "null");
+                return ErrorObject.Create("not a function: {0}", function?.Type() ?? "null");
         }
     }
 
-    private static IAstObject UnwrapReturnValue(IAstObject obj)
+    private static IObject UnwrapReturnValue(IObject obj)
         => obj switch
             {
-                AstReturnValue returnValue => returnValue.Value,
+                ReturnObject returnValue => returnValue.Value,
                 _ => obj
             };
     
-    private static Environment ExtendFunctionEnv(AstFunction fn, IReadOnlyList<IAstObject> args)
+    private static Environment ExtendFunctionEnv(FunctionObject fn, IReadOnlyList<IObject> args)
     {
         var env = new Environment { Outer = fn.Env };
 
@@ -164,14 +164,14 @@ public static class Evaluator
         return env;
     }
 
-    private static List<IAstObject> EvalExpressions(List<Node> exps, Environment env)
+    private static List<IObject> EvalExpressions(List<Node> exps, Environment env)
     {
-        var result = new List<IAstObject>();
+        var result = new List<IObject>();
 
         foreach (var exp in exps)
         {
             var evaluated = Eval(exp, env);
-            if (evaluated is AstError) return [evaluated];
+            if (evaluated is ErrorObject) return [evaluated];
             
             result.Add(evaluated);
         }
@@ -179,20 +179,20 @@ public static class Evaluator
         return result;
     }
 
-    private static IAstObject EvalIdentifierExpression(Identifier identifier, Environment environment)
+    private static IObject EvalIdentifierExpression(IdentifierNode identifier, Environment environment)
     {
         if (environment.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
         
         return Builtin.Functions.TryGetValue(identifier.Value, out var builtin) 
             ? builtin 
-            : AstError.Create("identifier not found: " + identifier.Value);
+            : ErrorObject.Create("identifier not found: " + identifier.Value);
     }
     
-    private static IAstObject EvalIfExpression(IfExpression ifExpression, Environment environment)
+    private static IObject EvalIfExpression(IfNode ifExpression, Environment environment)
     {
         var condition = Eval(ifExpression.Condition, environment);
         
-        if (condition is AstError) return condition;
+        if (condition is ErrorObject) return condition;
         if (IsTruthy(condition)) return Eval(ifExpression.Consequence, environment);
         
         return ifExpression.Alternative != null 
@@ -200,30 +200,30 @@ public static class Evaluator
             : Builtin.Null;
     }
 
-    private static bool IsTruthy(IAstObject? condition)
+    private static bool IsTruthy(IObject? condition)
     {
         return condition switch
         {
-            AstNull => false,
-            AstBoolean boolean => boolean.Value,
-            AstInteger { Value: 0 } => false,
+            NullObject => false,
+            BooleanObject boolean => boolean.Value,
+            IntegerObject { Value: 0 } => false,
             _ => true
         };
     }
 
-    private static IAstObject EvalInfixExpression(string op, IAstObject? left, IAstObject? right)
+    private static IObject EvalInfixExpression(string op, IObject? left, IObject? right)
     {
         if (left is null || right is null) 
-            return AstError.Create("missing value: {0} {1} {2}", left?.Type() ?? "null", op, right?.Type() ?? "null");
+            return ErrorObject.Create("missing value: {0} {1} {2}", left?.Type() ?? "null", op, right?.Type() ?? "null");
         
         if (left.Type() != right.Type()) 
-            return AstError.Create("type mismatch: {0} {1} {2}", left.Type(), op, right.Type());
+            return ErrorObject.Create("type mismatch: {0} {1} {2}", left.Type(), op, right.Type());
 
-        if (left is AstInteger integer)
-            return EvalIntegerInfixExpression(op, integer, (AstInteger)right);
+        if (left is IntegerObject integer)
+            return EvalIntegerInfixExpression(op, integer, (IntegerObject)right);
         
-        if (left is AstString str)
-            return EvalStringInfixExpression(op, str, (AstString)right);
+        if (left is StringObject str)
+            return EvalStringInfixExpression(op, str, (StringObject)right);
         
         if (op == "==")
             return left == right ? Builtin.True : Builtin.False;
@@ -231,67 +231,67 @@ public static class Evaluator
         if (op == "!=")
             return left != right ? Builtin.True : Builtin.False;
         
-        return AstError.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type());
+        return ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type());
     }
 
-    private static IAstObject EvalStringInfixExpression(string op, AstString left, AstString right)
+    private static IObject EvalStringInfixExpression(string op, StringObject left, StringObject right)
     {
         return op == "+" 
-            ? new AstString(left.Value + right.Value)
-            : AstError.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type()); 
+            ? new StringObject(left.Value + right.Value)
+            : ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type()); 
     }
 
-    private static IAstObject EvalIntegerInfixExpression(string op, AstInteger leftInteger, AstInteger rightInteger)
+    private static IObject EvalIntegerInfixExpression(string op, IntegerObject leftInteger, IntegerObject rightInteger)
     {
         var left = leftInteger.Value;
         var right = rightInteger.Value;
 
         return op switch
         {
-            "+" => new AstInteger { Value = left + right },
-            "-" => new AstInteger { Value = left - right },
-            "*" => new AstInteger { Value = left * right },
-            "/" => new AstInteger { Value = left / right },
+            "+" => new IntegerObject { Value = left + right },
+            "-" => new IntegerObject { Value = left - right },
+            "*" => new IntegerObject { Value = left * right },
+            "/" => new IntegerObject { Value = left / right },
             "<" => left < right ? Builtin.True : Builtin.False,
             ">" => left > right ? Builtin.True : Builtin.False,
             "==" => left == right ? Builtin.True : Builtin.False,
             "!=" => left != right ? Builtin.True : Builtin.False,
-            _ => AstError.Create("unknown operator: {0} {1} {2}", left, op, right)
+            _ => ErrorObject.Create("unknown operator: {0} {1} {2}", left, op, right)
         };
     }
     
-    private static IAstObject EvalPrefixExpression(string op, IAstObject right)
+    private static IObject EvalPrefixExpression(string op, IObject right)
     {
         return op switch
         {
             "!" => EvalBangOperatorExpression(right),
             "-" => EvalMinusPrefixOperatorExpression(right),
-            _ => AstError.Create("unknown operator: {0}{1}", op, right.Type())
+            _ => ErrorObject.Create("unknown operator: {0}{1}", op, right.Type())
         };
     }
     
-    private static AstBoolean EvalBangOperatorExpression(IAstObject right)
+    private static BooleanObject EvalBangOperatorExpression(IObject right)
         => right switch
         {
-            AstBoolean boolean => boolean.Value ? Builtin.False : Builtin.True,
-            AstNull => Builtin.True,
+            BooleanObject boolean => boolean.Value ? Builtin.False : Builtin.True,
+            NullObject => Builtin.True,
             _ => Builtin.False
         };
 
-    private static IAstObject EvalMinusPrefixOperatorExpression(IAstObject right)
+    private static IObject EvalMinusPrefixOperatorExpression(IObject right)
     {
-        if (right is not AstInteger integer)
+        if (right is not IntegerObject integer)
         {
-            return AstError.Create("unknown operator: -{0}", right.Type());
+            return ErrorObject.Create("unknown operator: -{0}", right.Type());
         }
 
         integer.Value = -integer.Value;
         return integer;
     }
 
-    private static IAstObject EvalProgramme(List<Node> statements, Environment environment)    
+    private static IObject EvalProgramme(List<Node> statements, Environment environment)    
     {
-        IAstObject result = Builtin.Null;
+        IObject result = Builtin.Null;
         
         foreach (var statement in statements)
         {
@@ -299,9 +299,9 @@ public static class Evaluator
             
             switch (result)
             {
-                case AstReturnValue returnValue:
+                case ReturnObject returnValue:
                     return returnValue.Value;
-                case AstError:
+                case ErrorObject:
                     return result;
             }
         }
@@ -309,15 +309,15 @@ public static class Evaluator
         return result;
     }
 
-    private static IAstObject EvalBlockStatement(BlockStatement block, Environment environment)
+    private static IObject EvalBlockStatement(BlockNode block, Environment environment)
     {
-        IAstObject result = Builtin.Null;
+        IObject result = Builtin.Null;
         
         foreach (var statement in block.Statements)
         {
             result = Eval(statement, environment);
 
-            if (result is AstReturnValue or AstError) 
+            if (result is ReturnObject or ErrorObject) 
             {
                 return result;
             }

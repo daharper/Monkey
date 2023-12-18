@@ -33,10 +33,10 @@ public class StatementTests : ParsingTestBase
                 Assert.That(statement.TokenLiteral(), Is.EqualTo("let"), 
                     $"expected 'let' got '{statement.TokenLiteral()}'");
                 
-                Assert.That(statement is LetStatement, Is.True, 
+                Assert.That(statement is LetNode, Is.True, 
                     $"expected 'LetStatement' got '{statement.GetType().Name}'");
                 
-                var letStatement = (LetStatement) statement;
+                var letStatement = (LetNode) statement;
                 
                 Assert.That(test.identifier, Is.EqualTo(letStatement.Name.Value),
                     $"expected '{test.identifier}' got '{letStatement.Name.Value}'");
@@ -70,7 +70,7 @@ public class StatementTests : ParsingTestBase
                 Assert.That(statement.TokenLiteral(), Is.EqualTo("return"), 
                     $"expected 'return' got '{statement.TokenLiteral()}'");
                 
-                Assert.That(statement is ReturnStatement, Is.True, 
+                Assert.That(statement is ReturnNode, Is.True, 
                     $"expected 'ReturnStatement' got '{statement.GetType().Name}'");
             });
         });

@@ -1,5 +1,5 @@
 using Monkey.Evaluating;
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Utils;
@@ -59,7 +59,7 @@ public static class Repl
             
             var evaluated = Evaluator.Eval(programme, environment);
             
-            if (evaluated is not AstNull)
+            if (evaluated is not NullObject)
             {
                 WriteLine(evaluated);
             }

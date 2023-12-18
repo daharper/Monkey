@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -23,7 +23,7 @@ public class BuiltinFunctionsTests : EvaluatingTestBase
         }
         else if (expected is string expectedString)
         {
-            if (evaluated is AstError error)
+            if (evaluated is ErrorObject error)
             {
                 Assert.That(error.Message, Is.EqualTo(expectedString));
                 return;

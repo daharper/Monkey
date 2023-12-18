@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -9,7 +9,7 @@ public class ArrayEvaluationTests : EvaluatingTestBase
     {
         var input = "[1, 2 * 2, 3 + 3]";
         var evaluated = TestEval(input);
-        var result = AssertCast<AstArray>(evaluated);
+        var result = AssertCast<ArrayObject>(evaluated);
         
         Assert.That(result.Elements.Count, Is.EqualTo(3), 
             $"expected 3 elements in array got {result.Elements.Count}");

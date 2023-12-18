@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Ast;
+using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -10,7 +10,7 @@ public class StringEvaluationTests : EvaluatingTestBase
         const string input = "\"Hello World!\"";
         
         var evaluated = TestEval(input);
-        var str = AssertCast<AstString>(evaluated);
+        var str = AssertCast<StringObject>(evaluated);
         
         Assert.That(str.Value, Is.EqualTo("Hello World!"));
     }
@@ -22,12 +22,12 @@ public class StringEvaluationTests : EvaluatingTestBase
 
         var evaluated = TestEval(input);
         
-        if (evaluated is AstError error)
+        if (evaluated is ErrorObject error)
         {
             Assert.Fail(error.Message);
         }
         
-        var str = AssertCast<AstString>(evaluated);
+        var str = AssertCast<StringObject>(evaluated);
 
         Assert.That(str.Value, Is.EqualTo("Hello World!"));
     }
