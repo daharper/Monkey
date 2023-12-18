@@ -4,11 +4,11 @@ namespace Monkey.Evaluating;
 
 public class Environment(Environment? outer = null)
 {
-    private readonly Dictionary<string, IObject> _store = new();
+    private readonly Dictionary<string, MObject> _store = new();
 
     public Environment? Outer { get; init; } = outer;
 
-    public bool TryGet(string name, out IObject? result)
+    public bool TryGet(string name, out MObject? result)
     {
         if (_store.TryGetValue(name, out result)) 
             return true;
@@ -20,7 +20,7 @@ public class Environment(Environment? outer = null)
         return false;
     }
     
-    public IObject Set(string name, IObject value)
+    public MObject Set(string name, MObject value)
     {
         _store[name] = value;
         return value;

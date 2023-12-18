@@ -6,7 +6,7 @@ namespace Monkey.Evaluating;
 
 public static class Evaluator
 {
-    public static IObject Eval(Node node, Environment environment)
+    public static MObject Eval(Node node, Environment environment)
     {
         switch (node)
         {
@@ -69,9 +69,9 @@ public static class Evaluator
         return Builtin.Null;
     }
 
-    private static IObject EvalHashLiteral(Node node, Environment environment)
+    private static MObject EvalHashLiteral(Node node, Environment environment)
     {   
-        var pairs = new Dictionary<int, KeyValuePair<IObject, IObject>>();
+        var pairs = new Dictionary<int, KeyValuePair<MObject, MObject>>();
 
         if (node is not HashNode hashLiteral) 
             return ErrorObject.Create("node is not HashLiteral");
@@ -82,39 +82,39 @@ public static class Evaluator
             if (key is ErrorObject) return key;
             
             if (key is not IntegerObject and not BooleanObject and not StringObject) 
-                return ErrorObject.Create("unusable as hash key: {0}", key.Type());
+                return ErrorObject.Create("unusable as hash key: {0}", key.Type);
 
             var value = Eval(valueNode, environment);
             if (value is ErrorObject) return value;
 
             var hashed = key.GetHashCode();
-            pairs[hashed] = new KeyValuePair<IObject, IObject>(key, value);
+            pairs[hashed] = new KeyValuePair<MObject, MObject>(key, value);
         }
 
         return new HashObject(pairs); 
     }
 
-    private static IObject EvalIndexExpression(IObject? left1, IObject index)
+    private static MObject EvalIndexExpression(MObject? left1, MObject index)
     {
         return (left1, index) switch
         {
             (ArrayObject array, IntegerObject integer) => EvalArrayIndexExpression(array, integer),
             (HashObject hash, _) => EvalHashIndexExpression(hash, index),
-            _ => ErrorObject.Create("index operator not supported: {0}", left1?.Type() ?? "null")
+            _ => ErrorObject.Create("index operator not supported: {0}", left1?.Type ?? "null")
         };
     }
 
-    private static IObject EvalHashIndexExpression(HashObject hash, IObject index)
+    private static MObject EvalHashIndexExpression(HashObject hash, MObject index)
     {
         if (index is not IntegerObject and not BooleanObject and not StringObject) 
-            return ErrorObject.Create("unusable as hash key: {0}", index.Type());
+            return ErrorObject.Create("unusable as hash key: {0}", index.Type);
 
         var hashed = index.GetHashCode();
 
         return !hash.Pairs.TryGetValue(hashed, out var pair) ? Builtin.Null : pair.Value;
     }
 
-    private static IObject EvalArrayIndexExpression(ArrayObject array, IntegerObject integer)
+    private static MObject EvalArrayIndexExpression(ArrayObject array, IntegerObject integer)
     {   
         var index = integer.Value;
         var max = array.Elements.Count - 1;
@@ -127,7 +127,7 @@ public static class Evaluator
         return array.Elements[index];
     }
 
-    private static IObject ApplyFunction(IObject? function, List<IObject> args)
+    private static MObject ApplyFunction(MObject? function, List<MObject> args)
     {
         switch (function)
         {
@@ -141,18 +141,18 @@ public static class Evaluator
             case BuiltinObject builtin:
                 return builtin.Function(args);
             default:
-                return ErrorObject.Create("not a function: {0}", function?.Type() ?? "null");
+                return ErrorObject.Create("not a function: {0}", function?.Type ?? "null");
         }
     }
 
-    private static IObject UnwrapReturnValue(IObject obj)
+    private static MObject UnwrapReturnValue(MObject obj)
         => obj switch
             {
                 ReturnObject returnValue => returnValue.Value,
                 _ => obj
             };
     
-    private static Environment ExtendFunctionEnv(FunctionObject fn, IReadOnlyList<IObject> args)
+    private static Environment ExtendFunctionEnv(FunctionObject fn, IReadOnlyList<MObject> args)
     {
         var env = new Environment { Outer = fn.Env };
 
@@ -164,9 +164,9 @@ public static class Evaluator
         return env;
     }
 
-    private static List<IObject> EvalExpressions(List<Node> exps, Environment env)
+    private static List<MObject> EvalExpressions(List<Node> exps, Environment env)
     {
-        var result = new List<IObject>();
+        var result = new List<MObject>();
 
         foreach (var exp in exps)
         {
@@ -179,7 +179,7 @@ public static class Evaluator
         return result;
     }
 
-    private static IObject EvalIdentifierExpression(IdentifierNode identifier, Environment environment)
+    private static MObject EvalIdentifierExpression(IdentifierNode identifier, Environment environment)
     {
         if (environment.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
         
@@ -188,7 +188,7 @@ public static class Evaluator
             : ErrorObject.Create("identifier not found: " + identifier.Value);
     }
     
-    private static IObject EvalIfExpression(IfNode ifExpression, Environment environment)
+    private static MObject EvalIfExpression(IfNode ifExpression, Environment environment)
     {
         var condition = Eval(ifExpression.Condition, environment);
         
@@ -200,7 +200,7 @@ public static class Evaluator
             : Builtin.Null;
     }
 
-    private static bool IsTruthy(IObject? condition)
+    private static bool IsTruthy(MObject? condition)
     {
         return condition switch
         {
@@ -211,13 +211,13 @@ public static class Evaluator
         };
     }
 
-    private static IObject EvalInfixExpression(string op, IObject? left, IObject? right)
+    private static MObject EvalInfixExpression(string op, MObject? left, MObject? right)
     {
         if (left is null || right is null) 
-            return ErrorObject.Create("missing value: {0} {1} {2}", left?.Type() ?? "null", op, right?.Type() ?? "null");
+            return ErrorObject.Create("missing value: {0} {1} {2}", left?.Type ?? "null", op, right?.Type ?? "null");
         
-        if (left.Type() != right.Type()) 
-            return ErrorObject.Create("type mismatch: {0} {1} {2}", left.Type(), op, right.Type());
+        if (left.Type != right.Type) 
+            return ErrorObject.Create("type mismatch: {0} {1} {2}", left.Type, op, right.Type);
 
         if (left is IntegerObject integer)
             return EvalIntegerInfixExpression(op, integer, (IntegerObject)right);
@@ -231,17 +231,17 @@ public static class Evaluator
         if (op == "!=")
             return left != right ? Builtin.True : Builtin.False;
         
-        return ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type());
+        return ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type, op, right.Type);
     }
 
-    private static IObject EvalStringInfixExpression(string op, StringObject left, StringObject right)
+    private static MObject EvalStringInfixExpression(string op, StringObject left, StringObject right)
     {
         return op == "+" 
             ? new StringObject(left.Value + right.Value)
-            : ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type(), op, right.Type()); 
+            : ErrorObject.Create("unknown operator: {0} {1} {2}", left.Type, op, right.Type); 
     }
 
-    private static IObject EvalIntegerInfixExpression(string op, IntegerObject leftInteger, IntegerObject rightInteger)
+    private static MObject EvalIntegerInfixExpression(string op, IntegerObject leftInteger, IntegerObject rightInteger)
     {
         var left = leftInteger.Value;
         var right = rightInteger.Value;
@@ -260,17 +260,17 @@ public static class Evaluator
         };
     }
     
-    private static IObject EvalPrefixExpression(string op, IObject right)
+    private static MObject EvalPrefixExpression(string op, MObject right)
     {
         return op switch
         {
             "!" => EvalBangOperatorExpression(right),
             "-" => EvalMinusPrefixOperatorExpression(right),
-            _ => ErrorObject.Create("unknown operator: {0}{1}", op, right.Type())
+            _ => ErrorObject.Create("unknown operator: {0}{1}", op, right.Type)
         };
     }
     
-    private static BooleanObject EvalBangOperatorExpression(IObject right)
+    private static BooleanObject EvalBangOperatorExpression(MObject right)
         => right switch
         {
             BooleanObject boolean => boolean.Value ? Builtin.False : Builtin.True,
@@ -278,20 +278,20 @@ public static class Evaluator
             _ => Builtin.False
         };
 
-    private static IObject EvalMinusPrefixOperatorExpression(IObject right)
+    private static MObject EvalMinusPrefixOperatorExpression(MObject right)
     {
         if (right is not IntegerObject integer)
         {
-            return ErrorObject.Create("unknown operator: -{0}", right.Type());
+            return ErrorObject.Create("unknown operator: -{0}", right.Type);
         }
 
         integer.Value = -integer.Value;
         return integer;
     }
 
-    private static IObject EvalProgramme(List<Node> statements, Environment environment)    
+    private static MObject EvalProgramme(List<Node> statements, Environment environment)    
     {
-        IObject result = Builtin.Null;
+        MObject result = Builtin.Null;
         
         foreach (var statement in statements)
         {
@@ -309,9 +309,9 @@ public static class Evaluator
         return result;
     }
 
-    private static IObject EvalBlockStatement(BlockNode block, Environment environment)
+    private static MObject EvalBlockStatement(BlockNode block, Environment environment)
     {
-        IObject result = Builtin.Null;
+        MObject result = Builtin.Null;
         
         foreach (var statement in block.Statements)
         {

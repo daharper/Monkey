@@ -1,8 +1,6 @@
 namespace Monkey.Evaluating.Objects;
 
-public class NullObject : IObject
+public class NullObject() : MObject(ObjectTypes.Null)
 {
-    public string Type() => ObjectTypes.NullObj;
-    
     public override string ToString() => "null";
 }

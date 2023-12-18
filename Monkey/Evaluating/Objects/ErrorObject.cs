@@ -1,13 +1,11 @@
 namespace Monkey.Evaluating.Objects;
 
-public class ErrorObject(string message) : IObject
+public class ErrorObject(string message) : MObject(ObjectTypes.Error)
 {
     public string Message { get; } = message;
 
-    public string Type() => ObjectTypes.ErrorObj;
-
     public override string ToString() => $"ERROR: {Message}";
 
-    public static IObject Create(string message, params object[] args)
+    public static MObject Create(string message, params object[] args)
         => new ErrorObject(string.Format(message, args));
 }

@@ -1,16 +1,14 @@
 namespace Monkey.Evaluating.Objects;
 
-public class ArrayObject : IObject
+public class ArrayObject() : MObject(ObjectTypes.Array)
 {
-    private List<IObject>? _elements;
+    private List<MObject>? _elements;
 
-    public List<IObject> Elements
+    public List<MObject> Elements
     {
         get => _elements ??= [];
         init => _elements = value;
     }
-    
-    public string Type() => ObjectTypes.ArrayObj;
 
     public override string ToString()
     {

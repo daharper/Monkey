@@ -48,41 +48,41 @@ public static class Builtin
             }
         }.ToImmutableDictionary();
 
-    private static IObject EvalPush(IObject container, IObject item)
+    private static MObject EvalPush(MObject container, MObject item)
         => container switch
         {
             ArrayObject array => new ArrayObject { Elements = array.Elements.Append(item).ToList() },
-            _ => ErrorObject.Create("argument to `push` must be ARRAY, got {0}", container.Type())
+            _ => ErrorObject.Create("argument to `push` must be ARRAY, got {0}", container.Type)
         };        
     
-    private static IObject EvalRest(IObject container)
+    private static MObject EvalRest(MObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 
                 ? new ArrayObject { Elements = array.Elements.Skip(1).ToList() } 
                 : Null,
-            _ => ErrorObject.Create("argument to `rest` must be ARRAY, got {0}", container.Type())
+            _ => ErrorObject.Create("argument to `rest` must be ARRAY, got {0}", container.Type)
         };
     
-    private static IObject EvalLast(IObject container)
+    private static MObject EvalLast(MObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 ? array.Elements[^1] : Null,
-            _ => ErrorObject.Create("argument to `last` must be ARRAY, got {0}", container.Type())
+            _ => ErrorObject.Create("argument to `last` must be ARRAY, got {0}", container.Type)
         };
     
-    private static IObject EvalFirst(IObject container)
+    private static MObject EvalFirst(MObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 ? array.Elements[0] : Null,
-            _ => ErrorObject.Create("argument to `first` must be ARRAY, got {0}", container.Type())
+            _ => ErrorObject.Create("argument to `first` must be ARRAY, got {0}", container.Type)
         };
 
-    private static IObject EvalLen(IObject obj)
+    private static MObject EvalLen(MObject obj)
         => obj switch
         {
             ArrayObject array => new IntegerObject { Value = array.Elements.Count },
             StringObject str => new IntegerObject { Value = str.Value.Length },
-            _ => ErrorObject.Create("argument to `len` not supported, got {0}", obj.Type())
+            _ => ErrorObject.Create("argument to `len` not supported, got {0}", obj.Type)
         };
 }

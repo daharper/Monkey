@@ -1,10 +1,9 @@
 namespace Monkey.Evaluating.Objects;
 
-public class HashObject(Dictionary<int, KeyValuePair<IObject, IObject>> pairs) : IObject
+public class HashObject(Dictionary<int, KeyValuePair<MObject, MObject>> pairs) 
+    : MObject(ObjectTypes.Hash)
 {
-    public Dictionary<int, KeyValuePair<IObject, IObject>> Pairs { get; } = pairs;
-
-    public string Type() => ObjectTypes.HashObj;
+    public Dictionary<int, KeyValuePair<MObject, MObject>> Pairs { get; } = pairs;
 
     public override string ToString() 
     {

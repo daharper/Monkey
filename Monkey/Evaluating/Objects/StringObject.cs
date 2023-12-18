@@ -1,10 +1,8 @@
 namespace Monkey.Evaluating.Objects;
 
-public class StringObject(string value = "") : IObject
+public class StringObject(string value = "") : MObject(ObjectTypes.String)
 {
     public string Value { get; } = value;
-
-    public string Type() => ObjectTypes.StringObj;
     
     public override string ToString() => Value;
 

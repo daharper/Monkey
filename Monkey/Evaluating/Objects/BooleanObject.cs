@@ -1,10 +1,8 @@
 namespace Monkey.Evaluating.Objects;
 
-public class BooleanObject : IObject
+public class BooleanObject() : MObject(ObjectTypes.Boolean)
 {
     public bool Value { get; init; }
-
-    public string Type() => ObjectTypes.BooleanObj;
     
     public override string ToString() => Convert.ToString(Value);
 

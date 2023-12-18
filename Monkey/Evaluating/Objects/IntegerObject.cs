@@ -1,10 +1,8 @@
 namespace Monkey.Evaluating.Objects;
 
-public class IntegerObject : IObject
+public class IntegerObject() : MObject(ObjectTypes.Integer)
 {
     public int Value { get; set; }
-
-    public string Type() => ObjectTypes.IntegerObj;
 
     public override string ToString() => Convert.ToString(Value);
 
