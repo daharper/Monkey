@@ -1,5 +1,6 @@
 using Monkey.Evaluating.Objects;
 using Monkey.Parsing.Nodes;
+using Monkey.Utils;
 
 namespace Monkey.Evaluating;
 
@@ -11,58 +12,74 @@ public static class Evaluator
         {
              case ProgramNode programme:
                  return EvalProgramme(programme.Statements, environment);
+             
              case ExpressionNode expressionStatement:
                  return Eval(expressionStatement.Expression, environment);
+             
              case IntegerNode integerExpression:
                  return new IntegerObject(integerExpression.Value);
+             
              case BooleanNode booleanExpression:
                  return booleanExpression.Value ? Builtin.True : Builtin.False;
+             
              case PrefixNode prefixExpression:
                  var right = Eval(prefixExpression.Right, environment);
                  return right is ErrorObject ? right : EvalPrefixExpression(prefixExpression.Operator, right);
+             
              case InfixNode infixExpression:
                   var left = Eval(infixExpression.Left, environment);
                   if (left is ErrorObject) return left;
                   var right1 = Eval(infixExpression.Right, environment);
                   return right1 is ErrorObject ? right1 : EvalInfixExpression(infixExpression.Operator, left, right1);
+             
              case IfNode ifExpression:
                   return EvalIfExpression(ifExpression, environment);
+             
              case IdentifierNode identifierExpression:
                   return EvalIdentifierExpression(identifierExpression, environment);
+             
              case BlockNode blockStatement:
                   return EvalBlockStatement(blockStatement, environment);
+             
              case ReturnNode returnStatement:
                   var value = Eval(returnStatement.ReturnValue, environment);
                   return value is ErrorObject ? value : new ReturnObject(value);
+             
              case LetNode letStatement:
                   var val = Eval(letStatement.Value, environment);
                   if (val is ErrorObject) return val;
                   environment.Set(letStatement.Name.Value, val);
                   break;
+             
              case FunctionNode functionExpression:
                   return new FunctionObject(functionExpression.Parameters, functionExpression.Body, environment);
+             
              case StringNode stringLiteral:
                   return new StringObject(stringLiteral.Value);
+             
              case CallNode callExpression:
                  var function = Eval(callExpression.Function, environment);
                  if (function is ErrorObject) return function;
                  var args = EvalExpressions(callExpression.Arguments, environment);
                  if (args.Count == 1 && args[0] is ErrorObject) return args[0];
                  return ApplyFunction(function, args);
+             
              case ArrayNode arrayLiteral:
                  var elements = EvalExpressions(arrayLiteral.Elements, environment);
                  if (elements.Count == 1 && elements[0] is ErrorObject) return elements[0];
                  return new ArrayObject { Elements = elements };
+             
              case IndexNode indexExpression:
                  var left1 = Eval(indexExpression.Left, environment);
                  if (left1 is ErrorObject) return left1;
                  var index = Eval(indexExpression.Index, environment);
-                 if (index is ErrorObject) return index;
-                 return EvalIndexExpression(left1, index);
+                 return index is ErrorObject ? index : EvalIndexExpression(left1, index);
+
              case HashNode:
                  return EvalHashLiteral(node, environment);
+             
              default:
-                 throw new ArgumentException($"Unknown node type: {node.GetType().Name}");
+                 throw Fatal.Error($"Unknown node type: {node.GetType().Name}");
          }
 
         return Builtin.Null;
