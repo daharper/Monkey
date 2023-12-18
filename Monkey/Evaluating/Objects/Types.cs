@@ -11,5 +11,5 @@ public static class Types
     public const string StringObj = "STRING";
     public const string BuiltinObj = "BUILTIN";
     public const string ArrayObj = "ARRAY";
-    // const string HashObj = "HASH";
+    public const string HashObj = "HASH";
 }

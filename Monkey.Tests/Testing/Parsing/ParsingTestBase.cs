@@ -1,5 +1,9 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
+using Monkey.Parsing.Expressions;
+using Monkey.Parsing.Interfaces;
+using Monkey.Parsing.Literals;
+using Monkey.Parsing.Statements;
 
 namespace Monkey.Tests.Testing.Parsing;
 
@@ -17,5 +21,24 @@ public abstract class ParsingTestBase : TestBase
             $"expected {expectedStatements} got {programme.Statements.Count}");
         
         return programme;
+    }
+    
+    protected void TestInfixExpression(IExpression expression, object leftValue, string op, object rightValue)
+    {
+        var infix = AssertCast<InfixExpression>(expression);
+        
+        Assert.That(infix.Operator, Is.EqualTo(op), $"expected '{op}' got '{infix.Operator}'");
+
+        dynamic left = infix.Left is IntegerLiteral
+            ? AssertCast<IntegerLiteral>(infix.Left)
+            : AssertCast<BooleanLiteral>(infix.Left);
+            
+        Assert.AreEqual(leftValue, left.Value, $"expected '{leftValue}' got '{left.Value}'");
+            
+        dynamic right = infix.Right is IntegerLiteral
+            ? AssertCast<IntegerLiteral>(infix.Right)
+            : AssertCast<BooleanLiteral>(infix.Right);
+            
+        Assert.AreEqual(rightValue, right.Value, $"expected '{rightValue}' got '{right.Value}'");
     }
 }

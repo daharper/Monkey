@@ -46,10 +46,10 @@ public static class Evaluator
                 ? EvalPush(args[0], args[1]) 
                 : NewError("wrong number of arguments. got={0}, want=2", args.Count)
         },
-        // ["puts"] = new()
-        // {
-        //     Fn = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
-        // }
+        ["puts"] = new()
+        {
+             Fn = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
+        }
     }.ToImmutableDictionary();
 
     private static IMObject EvalPush(IMObject mObject, IMObject o)
@@ -140,7 +140,7 @@ public static class Evaluator
                      Env = environment
                  };
             case StringLiteral stringLiteral:
-                 return new MString { Value = stringLiteral.Value };
+                 return new MString(stringLiteral.Value);
             case CallExpression callExpression:
                 var function = Eval(callExpression.Function, environment);
                 if (function is MError) return function;
@@ -157,6 +157,8 @@ public static class Evaluator
                 var index = Eval(indexExpression.Index, environment);
                 if (index is MError) return index;
                 return EvalIndexExpression(left1, index);
+            case HashLiteral:
+                return EvalHashLiteral(node, environment);
             default:
                 throw new ArgumentException($"Unknown node type: {node.GetType().Name}");
         }
@@ -164,14 +166,54 @@ public static class Evaluator
         return null;
     }
 
+    private static IMObject? EvalHashLiteral(INode node, Environment environment)
+    {   
+        var pairs = new Dictionary<int, KeyValuePair<IMObject, IMObject?>>();
+
+        if (node is not HashLiteral hashLiteral) return NewError("node is not HashLiteral");
+        
+        foreach (var (keyNode, valueNode) in hashLiteral.Pairs)
+        {
+            var key = Eval(keyNode, environment);
+            if (key is MError) return key;
+            
+            if (key is not MInteger and not MBoolean and not MString) 
+                return NewError("unusable as hash key: {0}", key?.Type() ?? "null");
+
+            var value = Eval(valueNode, environment);
+            if (value is MError) return value;
+
+            var hashed = key.GetHashCode();
+            pairs[hashed] = new KeyValuePair<IMObject, IMObject?>(key, value);
+        }
+
+        return new MHash { Pairs = pairs };
+    }
+
     private static IMObject? EvalIndexExpression(IMObject? left1, IMObject? index)
     {
         return (left1, index) switch
         {
             (MArray array, MInteger integer) => EvalArrayIndexExpression(array, integer),
+            (MHash hash, _) => EvalHashIndexExpression(hash, index),
             //(MString str, MInteger integer) => EvalStringIndexExpression(str, integer),
             _ => NewError("index operator not supported: {0}", left1?.Type() ?? "null")
         };
+    }
+
+    private static IMObject? EvalHashIndexExpression(MHash hash, IMObject? index)
+    {
+        if (index is not MInteger and not MBoolean and not MString) 
+            return NewError("unusable as hash key: {0}", index?.Type() ?? "null");
+
+        var hashed = index.GetHashCode();
+
+        if (!hash.Pairs.TryGetValue(hashed, out var pair))
+        {
+            return Null;
+        }
+
+        return pair.Value;
     }
 
     private static IMObject? EvalArrayIndexExpression(MArray array, MInteger integer)
@@ -325,7 +367,7 @@ public static class Evaluator
             return NewError("unknown operator: {0} {1} {2}", leftString.Type(), infixExpressionOperator, rightString.Type());
         }
 
-        return new MString { Value = leftString.Value + rightString.Value };
+        return new MString(leftString.Value + rightString.Value);
     }
 
     private static IMObject? EvalIntegerInfixExpression(string infixExpressionOperator, MInteger leftInteger, MInteger rightInteger)

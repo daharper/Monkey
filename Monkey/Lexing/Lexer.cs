@@ -92,6 +92,9 @@ public class Lexer
             case ',':
                 tok = new Token(Token.Comma, Ch);
                 break;
+            case ':':
+                tok = new Token(Token.Colon, Ch);
+                break;
             case '(':
                 tok = new Token(Token.LParen, Ch);
                 break;

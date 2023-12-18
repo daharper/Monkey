@@ -31,6 +31,7 @@ public class Token(TokenType type, string literal = "")
     // Delimiters
     public const string Comma = ",";
     public const string Semicolon = ";";
+    public const string Colon = ":";
    
     public const string LParen = "(";
     public const string RParen = ")";

@@ -14,6 +14,7 @@ public class LexerTests
         TestToken(new CompleteLexerFixture());
         TestToken(new StringLexerFixture());
         TestToken(new ArrayLexerFixture());
+        TestToken(new HashLexerFixture());
     }
     
     private void TestToken(LexerFixture data)

@@ -65,6 +65,7 @@ public class Parser
         RegisterPrefix(Token.If, ParseIfExpression);
         RegisterPrefix(Token.Function, ParseFunctionExpression);
         RegisterPrefix(Token.LBracket, ParseArrayLiteral);
+        RegisterPrefix(Token.LBrace, ParseHashLiteral);
         
         RegisterInfix(Token.Plus, ParseInfixExpression);
         RegisterInfix(Token.Minus, ParseInfixExpression);
@@ -76,6 +77,44 @@ public class Parser
         RegisterInfix(Token.Gt, ParseInfixExpression);
         RegisterInfix(Token.LParen, ParseCallExpression);
         RegisterInfix(Token.LBracket, ParseIndexExpression);
+    }
+
+    private IExpression ParseHashLiteral()
+    {
+        var hash = new HashLiteral { Token = CurrentToken };
+
+        // is it an empty hash?
+        if (PeekToken.Is(Token.RBrace))
+        {
+            NextToken();
+            return hash;
+        }
+        
+        while (!PeekToken.Is(Token.Eof)) 
+        {
+            // read key
+            NextToken();
+            var key = ParseExpression(Precedence.Lowest);
+            
+            if (!TryAdvanceTo(Token.Colon)) return null;
+            
+            // read value
+            NextToken();
+            var value = ParseExpression(Precedence.Lowest);
+            
+            hash.Pairs.Add(key, value);
+
+            if (PeekToken.Is(Token.RBrace))
+            {
+                NextToken();
+                return hash;
+            }
+
+            if (!PeekToken.Is(Token.Comma)) break;
+            NextToken();
+        }
+        
+        return null;
     }
 
     private IExpression ParseIndexExpression(IExpression left)
