@@ -1,5 +1,3 @@
-using Monkey.Utils;
-
 namespace Monkey.Tests.Testing.Evaluating;
 
 public class BooleanEvaluationTests : EvaluatingTestBase
@@ -30,7 +28,7 @@ public class BooleanEvaluationTests : EvaluatingTestBase
             ("(1 > 2) == false", true),
         };
         
-        tests.ForEach((i, test) =>
+        tests.ForEach(test =>
         {
             var evaluated = TestEval(test.input);
             TestBoolean(evaluated, test.expected);

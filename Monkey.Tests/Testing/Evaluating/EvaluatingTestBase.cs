@@ -17,7 +17,7 @@ public class EvaluatingTestBase : TestBase
         CheckErrors(parser);
         
         var environment = new Environment();
-        return Evaluator.Eval(programme, environment)!;
+        return Evaluator.Eval(programme, environment);
     }
     
     protected void TestString(IAstObject obj, string expected)

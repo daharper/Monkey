@@ -94,7 +94,7 @@ public class HashEvaluationTests : EvaluatingTestBase
                 Assert.That(expected, Is.EqualTo(boolean.Value));
                 return;
             default:
-                TestString(evaluated, Convert.ToString(expected));
+                TestString(evaluated, Convert.ToString(expected) ?? "");
                 break;
         }
     }
