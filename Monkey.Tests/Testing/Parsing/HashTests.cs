@@ -4,7 +4,7 @@ using Monkey.Parsing.Nodes;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public class HashParsingTests : ParserTests
+public class HashTests : ParsingTestBase
 {
     [Test]
     public void TestHashParsing()
@@ -15,9 +15,9 @@ public class HashParsingTests : ParserTests
         
         var programme = AssertParse(input, 1);
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var hash = AssertCast<HashNode>(statement.Expression!);
+        var hash = AssertCast<HashNode>(statement.Expression);
 
-        Assert.That(hash.Pairs.Count, Is.EqualTo(3),
+        Assert.That(hash.Pairs, Has.Count.EqualTo(3),
             $"expected 3 pairs in hash got {hash.Pairs.Count}");
 
         var expected = new Dictionary<string, int>
@@ -52,9 +52,9 @@ public class HashParsingTests : ParserTests
         CheckErrors(parser);
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var hash = AssertCast<HashNode>(statement.Expression!);
+        var hash = AssertCast<HashNode>(statement.Expression);
 
-        Assert.That(hash.Pairs.Count, Is.EqualTo(0),
+        Assert.That(hash.Pairs, Is.Empty,
             $"expected 0 pairs in hash got {hash.Pairs.Count}");
     }
     
@@ -68,7 +68,7 @@ public class HashParsingTests : ParserTests
         var programme = AssertParse(input, 1);
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var hash = AssertCast<HashNode>(statement.Expression!);
+        var hash = AssertCast<HashNode>(statement.Expression);
 
         Assert.That(hash.Pairs.Count, Is.EqualTo(3),
             $"expected 3 pairs in hash got {hash.Pairs.Count}");

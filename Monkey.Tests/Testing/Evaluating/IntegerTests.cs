@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class IntegerEvaluationTests : EvaluatingTestBase
+public class IntegerTests : EvaluatingTestBase
 {
     [TestCase("5", 5)]
     [TestCase("10", 10)]

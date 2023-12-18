@@ -2,7 +2,7 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class FunctionEvaluationTests :  EvaluatingTestBase
+public class FunctionTests :  EvaluatingTestBase
 {
     [Test]
     public void TestFunctionObject()

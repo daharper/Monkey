@@ -2,7 +2,7 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class HashEvaluationTests : EvaluatingTestBase
+public class HashTests : EvaluatingTestBase
 {
     [Test]
     public void TestStringHashKey()

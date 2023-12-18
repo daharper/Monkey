@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class BooleanEvaluationTests : EvaluatingTestBase
+public class BooleanTests : EvaluatingTestBase
 {
     [Test]
     public void TestEvalBooleanExpressions()

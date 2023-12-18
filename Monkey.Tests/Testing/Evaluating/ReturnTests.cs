@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class ReturnStatementTests : EvaluatingTestBase
+public class ReturnTests : EvaluatingTestBase
 {
     [TestCase("return 10;", 10)]
     [TestCase("return 10; 9;", 10)]

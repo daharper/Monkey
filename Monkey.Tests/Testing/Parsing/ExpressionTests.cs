@@ -11,7 +11,7 @@ public class ExpressionTests : ParsingTestBase
     {
         var programme = AssertParse("foobar", 1);
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<IdentifierNode>(statement.Expression!);
+        var expression = AssertCast<IdentifierNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {
@@ -25,7 +25,7 @@ public class ExpressionTests : ParsingTestBase
     {
         var programme = AssertParse("5", 1);
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<IntegerNode>(statement.Expression!);
+        var expression = AssertCast<IntegerNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {
@@ -49,7 +49,7 @@ public class ExpressionTests : ParsingTestBase
         {
             var programme = AssertParse(test.input, 1);
             var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-            var expression = AssertCast<PrefixNode>(statement.Expression!);
+            var expression = AssertCast<PrefixNode>(statement.Expression);
 
             Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
             
@@ -83,7 +83,7 @@ public class ExpressionTests : ParsingTestBase
         {
             var programme = AssertParse(test.input, 1);
             var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-            var expression = AssertCast<InfixNode>(statement.Expression!);
+            var expression = AssertCast<InfixNode>(statement.Expression);
 
             Assert.That(expression.Operator, Is.EqualTo(test.op), $"expected '{test.op}' got '{expression.Operator}'");
 
@@ -193,7 +193,7 @@ public class ExpressionTests : ParsingTestBase
         Assert.That(programme.Statements.Count, Is.EqualTo(1));
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<IfNode>(statement.Expression!);
+        var expression = AssertCast<IfNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {
@@ -211,7 +211,7 @@ public class ExpressionTests : ParsingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(consequence.Expression!.ToString(), Is.EqualTo("x"), 
+            Assert.That(consequence.Expression.ToString(), Is.EqualTo("x"), 
                 $"expected 'x' got '{consequence.Expression}'");
             
             Assert.That(expression.Alternative, Is.Null, 
@@ -233,7 +233,7 @@ public class ExpressionTests : ParsingTestBase
         Assert.That(programme.Statements.Count, Is.EqualTo(1));
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<IfNode>(statement.Expression!);
+        var expression = AssertCast<IfNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {
@@ -251,7 +251,7 @@ public class ExpressionTests : ParsingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(consequence.Expression!.ToString(), Is.EqualTo("x"),
+            Assert.That(consequence.Expression.ToString(), Is.EqualTo("x"),
                 $"expected 'x' got '{consequence.Expression}'");
 
             Assert.That(expression.Alternative!.Statements, Has.Count.EqualTo(1),
@@ -260,7 +260,7 @@ public class ExpressionTests : ParsingTestBase
         
         var alternative = AssertCast<ExpressionNode>(expression.Alternative!.Statements[0]);
         
-        Assert.That(alternative.Expression!.ToString(), Is.EqualTo("y"), 
+        Assert.That(alternative.Expression.ToString(), Is.EqualTo("y"), 
             $"expected 'y' got '{alternative.Expression}'");
     }
 
@@ -279,7 +279,7 @@ public class ExpressionTests : ParsingTestBase
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
         
-        var function = AssertCast<FunctionNode>(statement.Expression!);
+        var function = AssertCast<FunctionNode>(statement.Expression);
         
         Assert.That(function.Parameters, Has.Count.EqualTo(2), 
             $"expected 2 parameters got {function.Parameters.Count}");
@@ -298,7 +298,7 @@ public class ExpressionTests : ParsingTestBase
         
         var body = AssertCast<ExpressionNode>(function.Body.Statements[0]);
         
-        Assert.That(body.Expression!.ToString(), Is.EqualTo("(x + y)"), 
+        Assert.That(body.Expression.ToString(), Is.EqualTo("(x + y)"), 
             $"expected '(x + y)' got '{body.Expression}'");
     }
 
@@ -321,7 +321,7 @@ public class ExpressionTests : ParsingTestBase
             CheckErrors(parser);
             
             var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-            var function = AssertCast<FunctionNode>(statement.Expression!);
+            var function = AssertCast<FunctionNode>(statement.Expression);
 
             var parameters = string.Join(", ", function.Parameters.Select(p => p.ToString()));
 
@@ -344,7 +344,7 @@ public class ExpressionTests : ParsingTestBase
         Assert.That(programme.Statements, Has.Count.EqualTo(1));
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<CallNode>(statement.Expression!);
+        var expression = AssertCast<CallNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {
@@ -374,7 +374,7 @@ public class ExpressionTests : ParsingTestBase
         Assert.That(programme.Statements, Has.Count.EqualTo(1));
         
         var statement = AssertCast<ExpressionNode>(programme.Statements[0]);
-        var expression = AssertCast<IndexNode>(statement.Expression!);
+        var expression = AssertCast<IndexNode>(statement.Expression);
         
         Assert.Multiple(() =>
         {

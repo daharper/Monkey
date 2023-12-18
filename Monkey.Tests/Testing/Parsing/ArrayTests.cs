@@ -2,7 +2,7 @@ using Monkey.Parsing.Nodes;
 
 namespace Monkey.Tests.Testing.Parsing;
 
-public class ArrayParsingTests : ParserTests
+public class ArrayTests : ParsingTestBase
 {
     [Test]
     public void TestArrayParsing()
@@ -17,7 +17,7 @@ public class ArrayParsingTests : ParserTests
         Assert.That(statement.Expression, Is.Not.Null, 
             "expected expression not to be null");
         
-        var array = AssertCast<ArrayNode>(statement.Expression!);
+        var array = AssertCast<ArrayNode>(statement.Expression);
         
         Assert.That(array.Elements.Count, Is.EqualTo(3), 
             $"expected 3 elements in array got {array.Elements.Count}");

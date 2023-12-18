@@ -2,16 +2,15 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class ArrayEvaluationTests : EvaluatingTestBase 
+public class ArrayTests : EvaluatingTestBase 
 {
     [Test]
     public void TestArrayLiterals()
     {
-        var input = "[1, 2 * 2, 3 + 3]";
-        var evaluated = TestEval(input);
+        var evaluated = TestEval("[1, 2 * 2, 3 + 3]");
         var result = AssertCast<ArrayObject>(evaluated);
         
-        Assert.That(result.Elements.Count, Is.EqualTo(3), 
+        Assert.That(result.Elements, Has.Count.EqualTo(3), 
             $"expected 3 elements in array got {result.Elements.Count}");
         
         TestInteger(result.Elements[0], 1);

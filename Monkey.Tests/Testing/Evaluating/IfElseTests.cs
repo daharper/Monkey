@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class IfElseEvaluationTests : EvaluatingTestBase
+public class IfElseTests : EvaluatingTestBase
 {
     [TestCase("if (true) { 10 }", 10)]
     [TestCase("if (false) { 10 }", null)]

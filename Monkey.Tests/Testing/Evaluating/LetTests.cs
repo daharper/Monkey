@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class LetEvaluationTests : EvaluatingTestBase
+public class LetTests : EvaluatingTestBase
 {
     [TestCase("let a = 5; a;", 5)]
     [TestCase("let a = 5 * 5; a;", 25)]

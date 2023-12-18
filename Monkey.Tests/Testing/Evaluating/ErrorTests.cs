@@ -2,7 +2,7 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class ErrorHandlingTests : EvaluatingTestBase
+public class ErrorTests : EvaluatingTestBase
 {
     [TestCase("5 + true;", "type mismatch: INTEGER + BOOLEAN")]
     [TestCase("5 + true; 5;", "type mismatch: INTEGER + BOOLEAN")]

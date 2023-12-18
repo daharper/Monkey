@@ -1,6 +1,6 @@
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class BangEvaluationTests : EvaluatingTestBase
+public class BangTests : EvaluatingTestBase
 {
     [TestCase("!true", false)]
     [TestCase("!false", true)]

@@ -2,7 +2,7 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
-public class StringEvaluationTests : EvaluatingTestBase
+public class StringTests : EvaluatingTestBase
 {
     [Test]
     public void TestStringLiteral()
