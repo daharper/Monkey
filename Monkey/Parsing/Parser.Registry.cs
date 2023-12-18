@@ -6,7 +6,7 @@ namespace Monkey.Parsing;
 /// <summary>
 /// Function and error registry for the parser.
 /// </summary>
-public partial class Parser
+partial class Parser
 {
     #region private
     
