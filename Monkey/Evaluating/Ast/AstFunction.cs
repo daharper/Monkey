@@ -2,11 +2,12 @@ using System.Text;
 using Monkey.Parsing.Literals;
 using Monkey.Parsing.Statements;
 
-namespace Monkey.Evaluating.Objects;
+namespace Monkey.Evaluating.Ast;
 
 public class AstFunction : IAstObject
 {
     public List<Identifier> Parameters { get; init; } = [];
+    
     public BlockStatement? Body { get; init; }
     
     public Environment? Env { get; init; }

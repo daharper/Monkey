@@ -1,4 +1,4 @@
-namespace Monkey.Evaluating.Objects;
+namespace Monkey.Evaluating.Ast;
 
 public class AstString(string value = "") : IAstObject
 {

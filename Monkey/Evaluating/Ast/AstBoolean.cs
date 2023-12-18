@@ -1,4 +1,4 @@
-namespace Monkey.Evaluating.Objects;
+namespace Monkey.Evaluating.Ast;
 
 public class AstBoolean : IAstObject
 {

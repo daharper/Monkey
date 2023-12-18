@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-using Monkey.Evaluating.Objects;
+using Monkey.Evaluating.Ast;
 
 namespace Monkey.Evaluating;
 
@@ -14,37 +14,37 @@ public static class Builtin
         {
             ["len"] = new()
             {
-                Fn = args => args.Count == 1 
+                Function = args => args.Count == 1 
                     ? EvalLen(args[0])   
                     : AstError.Create("wrong number of arguments. got={0}, want=1", args.Count)
             },
             ["first"] = new()
             {
-                Fn = args => args.Count == 1 
+                Function = args => args.Count == 1 
                     ? EvalFirst(args[0]) 
                     : AstError.Create("wrong number of arguments. got={0}, want=1", args.Count)
             },
             ["last"] = new()
             {
-                Fn = args => args.Count == 1 
+                Function = args => args.Count == 1 
                     ? EvalLast(args[0])  
                     : AstError.Create("wrong number of arguments. got={0}, want=1", args.Count)
             },
             ["rest"] = new()
             {
-                Fn = args => args.Count == 1 
+                Function = args => args.Count == 1 
                     ? EvalRest(args[0])  
                     : AstError.Create("wrong number of arguments. got={0}, want=1", args.Count)
             },
             ["push"] = new()
             {
-                Fn = args => args.Count == 2 
+                Function = args => args.Count == 2 
                     ? EvalPush(args[0], args[1]) 
                     : AstError.Create("wrong number of arguments. got={0}, want=2", args.Count)
             },
             ["puts"] = new()
             {
-                Fn = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
+                Function = args => { foreach (var arg in args) Console.WriteLine(arg.Inspect()); return Null; } 
             }
         }.ToImmutableDictionary();
 

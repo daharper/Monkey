@@ -1,4 +1,4 @@
-using Monkey.Evaluating.Objects;
+using Monkey.Evaluating.Ast;
 using Monkey.Parsing;
 using Monkey.Parsing.Expressions;
 using Monkey.Parsing.Interfaces;
@@ -37,7 +37,7 @@ public static class Evaluator
                  return EvalBlockStatement(blockStatement, environment);
             case ReturnStatement returnStatement:
                  var value = Eval(returnStatement.ReturnValue, environment);
-                 return value is AstError ? value : new AstReturnValue { Value = value };
+                 return value is AstError ? value : new AstReturnValue(value);
             case LetStatement letStatement:
                  var val = Eval(letStatement.Value, environment);
                  if (val is AstError) return val;
@@ -99,7 +99,7 @@ public static class Evaluator
             pairs[hashed] = new KeyValuePair<IAstObject, IAstObject?>(key, value);
         }
 
-        return new AstHash { Pairs = pairs };
+        return new AstHash(pairs); 
     }
 
     private static IAstObject? EvalIndexExpression(IAstObject? left1, IAstObject? index)
@@ -147,7 +147,7 @@ public static class Evaluator
                 return UnwrapReturnValue(evaluated);
             }
             case AstBuiltin builtin:
-                return builtin.Fn(args);
+                return builtin.Function(args);
             default:
                 return AstError.Create("not a function: {0}", function?.Type() ?? "null");
         }
@@ -195,10 +195,7 @@ public static class Evaluator
             ? builtin 
             : AstError.Create("identifier not found: " + identifier.Value);
     }
-
-    // private static IAstObject NewError(string message, params object[] args)
-    //     => new AstError { Message = string.Format(message, args) };
-
+    
     private static IAstObject? EvalIfExpression(IfExpression ifExpression, Environment environment)
     {
         var condition = Eval(ifExpression.Condition, environment);
