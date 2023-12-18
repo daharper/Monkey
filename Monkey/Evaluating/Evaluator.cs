@@ -6,77 +6,77 @@ namespace Monkey.Evaluating;
 
 public static class Evaluator
 {
-    public static MObject Eval(Node node, Environment environment)
+    public static MObject Eval(Node node, Environment env)
     {
         switch (node)
         {
-             case ProgramNode programme:
-                 return EvalProgramme(programme.Statements, environment);
+             case ProgramNode program:
+                 return EvalProgramme(program.Statements, env);
              
-             case ExpressionNode expressionStatement:
-                 return Eval(expressionStatement.Expression, environment);
+             case ExpressionNode expression:
+                 return Eval(expression.Expression, env);
              
-             case IntegerNode integerExpression:
-                 return new IntegerObject(integerExpression.Value);
+             case IntegerNode integer:
+                 return new IntegerObject(integer.Value);
              
-             case BooleanNode booleanExpression:
-                 return booleanExpression.Value ? Builtin.True : Builtin.False;
+             case BooleanNode boolean:
+                 return boolean.Value ? Builtin.True : Builtin.False;
              
-             case PrefixNode prefixExpression:
-                 var right = Eval(prefixExpression.Right, environment);
-                 return right is ErrorObject ? right : EvalPrefixExpression(prefixExpression.Operator, right);
+             case PrefixNode prefix:
+                 var right = Eval(prefix.Right, env);
+                 return right is ErrorObject ? right : EvalPrefixExpression(prefix.Operator, right);
              
-             case InfixNode infixExpression:
-                  var left = Eval(infixExpression.Left, environment);
+             case InfixNode infix:
+                  var left = Eval(infix.Left, env);
                   if (left is ErrorObject) return left;
-                  var right1 = Eval(infixExpression.Right, environment);
-                  return right1 is ErrorObject ? right1 : EvalInfixExpression(infixExpression.Operator, left, right1);
+                  var right1 = Eval(infix.Right, env);
+                  return right1 is ErrorObject ? right1 : EvalInfixExpression(infix.Operator, left, right1);
              
              case IfNode ifExpression:
-                  return EvalIfExpression(ifExpression, environment);
+                  return EvalIfExpression(ifExpression, env);
              
-             case IdentifierNode identifierExpression:
-                  return EvalIdentifierExpression(identifierExpression, environment);
+             case IdentifierNode identifier:
+                  return EvalIdentifierExpression(identifier, env);
              
-             case BlockNode blockStatement:
-                  return EvalBlockStatement(blockStatement, environment);
+             case BlockNode block:
+                  return EvalBlockStatement(block, env);
              
              case ReturnNode returnStatement:
-                  var value = Eval(returnStatement.ReturnValue, environment);
+                  var value = Eval(returnStatement.ReturnValue, env);
                   return value is ErrorObject ? value : new ReturnObject(value);
              
-             case LetNode letStatement:
-                  var val = Eval(letStatement.Value, environment);
+             case LetNode let:
+                  var val = Eval(let.Value, env);
                   if (val is ErrorObject) return val;
-                  environment.Set(letStatement.Name.Value, val);
+                  env.Set(let.Name.Value, val);
                   break;
              
-             case FunctionNode functionExpression:
-                  return new FunctionObject(functionExpression.Parameters, functionExpression.Body, environment);
+             case FunctionNode function:
+                  return new FunctionObject(function.Parameters, function.Body, env);
              
-             case StringNode stringLiteral:
-                  return new StringObject(stringLiteral.Value);
+             case StringNode str:
+                  return new StringObject(str.Value);
              
-             case CallNode callExpression:
-                 var function = Eval(callExpression.Function, environment);
-                 if (function is ErrorObject) return function;
-                 var args = EvalExpressions(callExpression.Arguments, environment);
+             case CallNode call:
+                 var fn = Eval(call.Function, env);
+                 if (fn is ErrorObject) return fn;
+                 var args = EvalExpressions(call.Arguments, env);
                  if (args.Count == 1 && args[0] is ErrorObject) return args[0];
-                 return ApplyFunction(function, args);
+                 return ApplyFunction(fn, args);
              
-             case ArrayNode arrayLiteral:
-                 var elements = EvalExpressions(arrayLiteral.Elements, environment);
+             case ArrayNode array:
+                 var elements = EvalExpressions(array.Elements, env);
                  if (elements.Count == 1 && elements[0] is ErrorObject) return elements[0];
                  return new ArrayObject { Elements = elements };
              
-             case IndexNode indexExpression:
-                 var left1 = Eval(indexExpression.Left, environment);
+             case IndexNode index:
+                 var left1 = Eval(index.Left, env);
                  if (left1 is ErrorObject) return left1;
-                 var index = Eval(indexExpression.Index, environment);
-                 return index is ErrorObject ? index : EvalIndexExpression(left1, index);
+                 var idx = Eval(index.Index, env);
+                 return idx is ErrorObject ? idx : EvalIndexExpression(left1, idx);
 
              case HashNode:
-                 return EvalHashLiteral(node, environment);
+                 return EvalHashLiteral(node, env);
              
              default:
                  throw Fatal.Error($"Unknown node type: {node.GetType().Name}");
@@ -87,7 +87,7 @@ public static class Evaluator
 
     #region private methods
     
-    private static MObject EvalHashLiteral(Node node, Environment environment)
+    private static MObject EvalHashLiteral(Node node, Environment env)
     {   
         var pairs = new Dictionary<int, KeyValuePair<MObject, MObject>>();
 
@@ -96,13 +96,13 @@ public static class Evaluator
         
         foreach (var (keyNode, valueNode) in hashLiteral.Pairs)
         {
-            var key = Eval(keyNode, environment);
+            var key = Eval(keyNode, env);
             if (key is ErrorObject) return key;
             
             if (key is not IntegerObject and not BooleanObject and not StringObject) 
                 return ErrorObject.Create("unusable as hash key: {0}", key.Type);
 
-            var value = Eval(valueNode, environment);
+            var value = Eval(valueNode, env);
             if (value is ErrorObject) return value;
 
             var hashed = key.GetHashCode();
@@ -197,24 +197,24 @@ public static class Evaluator
         return result;
     }
 
-    private static MObject EvalIdentifierExpression(IdentifierNode identifier, Environment environment)
+    private static MObject EvalIdentifierExpression(IdentifierNode identifier, Environment env)
     {
-        if (environment.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
+        if (env.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
         
         return Builtin.Functions.TryGetValue(identifier.Value, out var builtin) 
             ? builtin 
             : ErrorObject.Create("identifier not found: " + identifier.Value);
     }
     
-    private static MObject EvalIfExpression(IfNode ifExpression, Environment environment)
+    private static MObject EvalIfExpression(IfNode ifExpression, Environment env)
     {
-        var condition = Eval(ifExpression.Condition, environment);
+        var condition = Eval(ifExpression.Condition, env);
         
         if (condition is ErrorObject) return condition;
-        if (IsTruthy(condition)) return Eval(ifExpression.Consequence, environment);
+        if (IsTruthy(condition)) return Eval(ifExpression.Consequence, env);
         
         return ifExpression.Alternative != null 
-            ? Eval(ifExpression.Alternative, environment) 
+            ? Eval(ifExpression.Alternative, env) 
             : Builtin.Null;
     }
 
@@ -307,13 +307,13 @@ public static class Evaluator
         return new IntegerObject(-value);
     }
 
-    private static MObject EvalProgramme(List<Node> statements, Environment environment)    
+    private static MObject EvalProgramme(List<Node> statements, Environment env)    
     {
         MObject result = Builtin.Null;
         
         foreach (var statement in statements)
         {
-            result = Eval(statement, environment);
+            result = Eval(statement, env);
             
             switch (result)
             {
@@ -327,13 +327,13 @@ public static class Evaluator
         return result;
     }
 
-    private static MObject EvalBlockStatement(BlockNode block, Environment environment)
+    private static MObject EvalBlockStatement(BlockNode block, Environment env)
     {
         MObject result = Builtin.Null;
         
         foreach (var statement in block.Statements)
         {
-            result = Eval(statement, environment);
+            result = Eval(statement, env);
 
             if (result is ReturnObject or ErrorObject) 
             {
