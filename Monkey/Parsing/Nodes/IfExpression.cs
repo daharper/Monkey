@@ -2,11 +2,9 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class IfExpression : INode
+public class IfExpression(Token token) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
-    public INode Condition { get; set; } = null!;
+    public Node Condition { get; set; } = null!;
     
     public BlockStatement Consequence { get; set; } = null!;
     
@@ -21,6 +19,4 @@ public class IfExpression : INode
 
         return result;
     }
-
-    public string TokenLiteral() => Token.Literal;
 }

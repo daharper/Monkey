@@ -2,23 +2,10 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class ArrayLiteral : INode
+public class ArrayLiteral(Token token, List<Node> elements) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-
-    public List<INode> Elements { get; set; } = [];
-    
-    public string TokenLiteral() => Token.Literal;
+    public List<Node> Elements { get; } = elements;
     
     public override string ToString()
-    {
-        var elements = new List<string>();
-        
-        foreach (var element in Elements)
-        {
-            elements.Add(element.ToString());
-        }
-        
-        return $"[{string.Join(", ", elements)}]";
-    }
+        =>$"[{string.Join(", ", Elements.Select(e => e.ToString()))}]";
 }

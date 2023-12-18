@@ -2,17 +2,13 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class InfixExpression : INode
+public class InfixExpression(Token token, string @operator, Node left) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
-    public INode Left { get; set; } = null!;
-    
-    public string Operator { get; set; } = null!;
-    
-    public INode Right { get; set; } = null!;
+    public Node Left { get; } = left;
+
+    public string Operator { get; } = @operator;
+
+    public Node Right { get; set; } = null!;
     
     public override string ToString() => $"({Left} {Operator} {Right})";
-    
-    public string TokenLiteral() => Token.Literal;
 }

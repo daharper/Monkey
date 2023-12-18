@@ -2,14 +2,9 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class ExpressionStatement : INode
+public class ExpressionStatement(Token token, Node expression) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
-    public INode? Expression { get; set; }
-    
-    public string TokenLiteral() => Token.Literal;
-    
-    public override string ToString()
-        => Expression?.ToString() ?? "";
+    public Node Expression { get; } = expression;
+
+    public override string ToString() => Expression.ToString()!;
 }

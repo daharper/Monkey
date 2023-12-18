@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Monkey.Lexing;
 using Monkey.Parsing.Nodes;
+
 using IndexExpression = Monkey.Parsing.Nodes.IndexExpression;
 
 namespace Monkey.Parsing;
@@ -9,9 +10,9 @@ public class Parser
 {
     private readonly List<string> _errors = new();
 
-    private readonly Dictionary<string, Func<INode>> _prefixParseFns = new();
+    private readonly Dictionary<string, Func<Node>> _prefixParseFns = new();
     
-    private readonly Dictionary<string, Func<INode, INode>> _infixParseFns = new();
+    private readonly Dictionary<string, Func<Node, Node>> _infixParseFns = new();
 
     private readonly ImmutableDictionary<string, Precedence> _precedences = new Dictionary<string, Precedence>
     {
@@ -40,19 +41,19 @@ public class Parser
     private void RegisterParserFunctions()
     {
         RegisterPrefix(Token.Identifier,
-            () => new Identifier { Token = CurrentToken, Value = CurrentToken.Literal });
+            () => new Identifier(CurrentToken, CurrentToken.Literal));
 
         RegisterPrefix(Token.Int,
-            () => new IntegerLiteral { Token = CurrentToken, Value = int.Parse(CurrentToken.Literal) });
+            () => new IntegerLiteral(CurrentToken, int.Parse(CurrentToken.Literal)));
 
         RegisterPrefix(Token.True, 
-            () => new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
+            () => new BooleanLiteral(CurrentToken, CurrentToken.Is(Token.True)));
 
         RegisterPrefix(Token.False, 
-            () => new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Is(Token.True) });
+            () => new BooleanLiteral(CurrentToken, CurrentToken.Is(Token.True)));
         
         RegisterPrefix(Token.String, 
-            () => new StringLiteral { Token = CurrentToken, Value = CurrentToken.Literal });
+            () => new StringLiteral(CurrentToken, CurrentToken.Literal));
         
         RegisterPrefix(Token.Bang, ParsePrefixExpression);
         RegisterPrefix(Token.Minus, ParsePrefixExpression);
@@ -74,9 +75,9 @@ public class Parser
         RegisterInfix(Token.LBracket, ParseIndexExpression);
     }
 
-    private INode ParseHashLiteral()
+    private Node ParseHashLiteral()
     {
-        var hash = new HashLiteral { Token = CurrentToken };
+        var hash = new HashLiteral(CurrentToken);
 
         // is it an empty hash?
         if (PeekToken.Is(Token.RBrace))
@@ -112,9 +113,9 @@ public class Parser
         return null;
     }
 
-    private INode ParseIndexExpression(INode left)
+    private Node ParseIndexExpression(Node left)
     {
-        var expression = new IndexExpression { Token = CurrentToken, Left = left };
+        var expression = new IndexExpression(CurrentToken, left);
         
         NextToken();
         
@@ -128,16 +129,12 @@ public class Parser
         return expression;
     }
 
-    private INode ParseArrayLiteral()
-        => new ArrayLiteral
-        {
-            Token = CurrentToken,
-            Elements = ParseExpressionList(Token.RBracket)
-        };
+    private Node ParseArrayLiteral()
+        => new ArrayLiteral(CurrentToken, ParseExpressionList(Token.RBracket));
 
-    private List<INode> ParseExpressionList(string end)
+    private List<Node> ParseExpressionList(string end)
     {
-        var list = new List<INode>();
+        var list = new List<Node>();
         
         if (PeekToken.Is(end))
         {
@@ -158,20 +155,12 @@ public class Parser
         return TryAdvanceTo(end) ? list : [];
     }
 
-    private INode ParseCallExpression(INode function)
-    {
-        var expression = new CallExpression
-        {
-            Token = CurrentToken, Function = function,
-            Arguments = ParseExpressionList(Token.RParen)
-        };
+    private Node ParseCallExpression(Node function)
+        => new CallExpression(CurrentToken, function, ParseExpressionList(Token.RParen));
 
-        return expression;
-    }
-
-    private List<INode> ParseCallArguments()
+    private List<Node> ParseCallArguments()
     {
-        var arguments = new List<INode>();
+        var arguments = new List<Node>();
         
         if (PeekToken.Is(Token.RParen))
         {
@@ -200,9 +189,9 @@ public class Parser
     }
     
     
-    private INode ParseFunctionExpression()
+    private Node ParseFunctionExpression()
     {
-        var expression = new FunctionLiteral { Token = CurrentToken };
+        var expression = new FunctionLiteral(CurrentToken);
         
         if (!TryAdvanceTo(Token.LParen))
         {
@@ -233,7 +222,7 @@ public class Parser
         
         NextToken();
         
-        var identifier = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+        var identifier = new Identifier(token: CurrentToken, value: CurrentToken.Literal);
         
         identifiers.Add(identifier);
         
@@ -242,7 +231,7 @@ public class Parser
             NextToken();
             NextToken();
             
-            identifier = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+            identifier = new Identifier(token: CurrentToken, value: CurrentToken.Literal);
             
             identifiers.Add(identifier);
         }
@@ -255,13 +244,9 @@ public class Parser
         return identifiers;
     }
     
-    private INode ParsePrefixExpression()
+    private Node ParsePrefixExpression()
     {
-        var expression = new PrefixExpression
-        {
-            Token = CurrentToken,
-            Operator = CurrentToken.Literal
-        };
+        var expression = new PrefixExpression(CurrentToken, CurrentToken.Literal);
         
         NextToken();
         
@@ -270,14 +255,9 @@ public class Parser
         return expression;
     }
     
-    private INode ParseInfixExpression(INode left)
+    private Node ParseInfixExpression(Node left)
     {
-        var expression = new InfixExpression
-        {
-            Token = CurrentToken,
-            Operator = CurrentToken.Literal,
-            Left = left
-        };
+        var expression = new InfixExpression(CurrentToken, CurrentToken.Literal, left);
 
         var precedence = CurrentPrecedence();
         
@@ -288,7 +268,7 @@ public class Parser
         return expression;
     }
     
-    private INode ParseGroupedExpression()
+    private Node ParseGroupedExpression()
     {
         NextToken();
         
@@ -302,9 +282,9 @@ public class Parser
         return expression;
     }
     
-    private INode ParseIfExpression()
+    private Node ParseIfExpression()
     {
-        var expression = new IfExpression { Token = CurrentToken };
+        var expression = new IfExpression(CurrentToken);
         
         if (!TryAdvanceTo(Token.LParen))
         {
@@ -344,7 +324,7 @@ public class Parser
     
     private BlockStatement ParseBlockStatement()
     {
-        var block = new BlockStatement { Token = CurrentToken };
+        var block = new BlockStatement(CurrentToken);
         
         NextToken();
         
@@ -381,7 +361,7 @@ public class Parser
     
     public Programme ParseProgramme()
     {
-        var programme = new Programme();
+        var programme = Programme.Create();
         
         while (!CurrentToken.Is(Token.Eof))
         {
@@ -398,7 +378,7 @@ public class Parser
         return programme;
     }
 
-    private INode? ParseStatement()
+    private Node? ParseStatement()
     {
         return CurrentToken.Type switch
         {
@@ -408,13 +388,9 @@ public class Parser
         };
     }
 
-    private INode? ParseExpressionStatement()
-    {   
-        var statement = new ExpressionStatement
-        {
-            Token = CurrentToken,
-            Expression = ParseExpression(Precedence.Lowest)
-        };
+    private Node? ParseExpressionStatement()
+    {
+        var statement = new ExpressionStatement(CurrentToken, ParseExpression(Precedence.Lowest));
 
         if (PeekToken.Is(Token.Semicolon))
         {
@@ -424,7 +400,7 @@ public class Parser
         return statement;
     }
 
-    private INode? ParseExpression(Precedence precedence)
+    private Node? ParseExpression(Precedence precedence)
     {
         if (!_prefixParseFns.TryGetValue(CurrentToken.Type, out var prefix))
         {
@@ -449,9 +425,9 @@ public class Parser
         return leftExpression;
     }
 
-    private INode? ParseReturnStatement()
+    private Node? ParseReturnStatement()
     {
-        var statement = new ReturnStatement { Token = CurrentToken };
+        var statement = new ReturnStatement(CurrentToken);
         
         NextToken();
         
@@ -467,14 +443,14 @@ public class Parser
 
     private LetStatement? ParseLetStatement()
     {
-        var statement = new LetStatement { Token = CurrentToken };
+        var statement = new LetStatement(CurrentToken);
         
         if (!TryAdvanceTo(Token.Identifier))
         {
             return null;
         }
         
-        statement.Name = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+        statement.Name = new Identifier(CurrentToken, CurrentToken.Literal);
         
         if (!TryAdvanceTo(Token.Assign))
         {
@@ -507,10 +483,10 @@ public class Parser
         return false;
     }
     
-    private void RegisterPrefix(string type, Func<INode> fn)
+    private void RegisterPrefix(string type, Func<Node> fn)
         => _prefixParseFns[type] = fn;
     
-    private void RegisterInfix(string type, Func<INode, INode> fn)
+    private void RegisterInfix(string type, Func<Node, Node> fn)
         => _infixParseFns[type] = fn;
  
     private Precedence PeekPrecedence()

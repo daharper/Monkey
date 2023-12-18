@@ -73,7 +73,7 @@ public class HashParsingTests : ParserTests
         Assert.That(hash.Pairs.Count, Is.EqualTo(3),
             $"expected 3 pairs in hash got {hash.Pairs.Count}");
 
-        var tests = new Dictionary<string, Action<INode>>
+        var tests = new Dictionary<string, Action<Node>>
         {
              ["one"] = expression => TestInfixExpression(expression, 0, "+", 1),
              ["two"] = expression => TestInfixExpression(expression, 10, "-", 8),

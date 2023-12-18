@@ -2,16 +2,12 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class LetStatement : INode
+public class LetStatement(Token token) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
     public Identifier Name { get; set; } = null!;
     
-    public INode Value { get; set; } = null!;
+    public Node Value { get; set; } = null!;
 
-    public string TokenLiteral() => Token.Literal;
-    
     public override string ToString()
         => $"{TokenLiteral()} {Name} = {Value};";
 }

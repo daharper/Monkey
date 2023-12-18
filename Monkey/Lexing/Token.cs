@@ -4,6 +4,9 @@ namespace Monkey.Lexing;
 
 public class Token(string type, string literal = "")
 {
+    public static readonly Token Null = new("", "");
+    public static readonly Token Root = new("ROOT", "");
+    
     public const string Illegal = "ILLEGAL";
     public const string Eof = "EOF";
  

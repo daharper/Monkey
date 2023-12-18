@@ -6,7 +6,7 @@ namespace Monkey.Evaluating;
 
 public static class Evaluator
 {
-    public static IAstObject Eval(INode node, Environment environment)
+    public static IAstObject Eval(Node node, Environment environment)
     {
         switch (node)
         {
@@ -69,7 +69,7 @@ public static class Evaluator
         return Builtin.Null;
     }
 
-    private static IAstObject EvalHashLiteral(INode node, Environment environment)
+    private static IAstObject EvalHashLiteral(Node node, Environment environment)
     {   
         var pairs = new Dictionary<int, KeyValuePair<IAstObject, IAstObject>>();
 
@@ -164,7 +164,7 @@ public static class Evaluator
         return env;
     }
 
-    private static List<IAstObject> EvalExpressions(List<INode> exps, Environment env)
+    private static List<IAstObject> EvalExpressions(List<Node> exps, Environment env)
     {
         var result = new List<IAstObject>();
 
@@ -289,7 +289,7 @@ public static class Evaluator
         return integer;
     }
 
-    private static IAstObject EvalProgramme(List<INode> statements, Environment environment)    
+    private static IAstObject EvalProgramme(List<Node> statements, Environment environment)    
     {
         IAstObject result = Builtin.Null;
         

@@ -20,7 +20,7 @@ public abstract class ParsingTestBase : TestBase
         return programme;
     }
     
-    protected void TestInfixExpression(INode expression, object leftValue, string op, object rightValue)
+    protected void TestInfixExpression(Node expression, object leftValue, string op, object rightValue)
     {
         var infix = AssertCast<InfixExpression>(expression);
         

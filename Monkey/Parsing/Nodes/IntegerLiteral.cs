@@ -2,13 +2,9 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class IntegerLiteral : INode
+public class IntegerLiteral(Token token, int value) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
-    public int Value { get; set; }
-    
-    public string TokenLiteral() => Token.Literal;
-    
+    public int Value { get; private set; } = value;
+
     public override string ToString() => Token.Literal;
 }

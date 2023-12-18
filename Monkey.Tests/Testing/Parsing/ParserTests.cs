@@ -21,26 +21,14 @@ public class ParserTests : ParsingTestBase
     [Test]
     public void TestToString()
     {
-        var programme = new Programme()
-        {
-            Statements =
-            [
-                new LetStatement
-                {
-                    Token = new Token(Token.Let, "let"),
-                    Name = new Identifier
-                    {
-                        Token = new Token(Token.Identifier, "myVar"),
-                        Value = "myVar"
-                    },
-                    Value = new Identifier
-                    {
-                        Token = new Token(Token.Identifier, "anotherVar"),
-                        Value = "anotherVar"
-                    }
-                }
-            ]
-        };
+        var programme = Programme.Create(
+        [
+            new LetStatement(new Token(Token.Let, "let"))
+            {
+                Name = new Identifier(token: new Token(Token.Identifier, "myVar"), value: "myVar"),
+                Value = new Identifier(token: new Token(Token.Identifier, "anotherVar"), value: "anotherVar")
+            }
+        ]);
         
         Assert.That(programme.ToString(), Is.EqualTo("let myVar = anotherVar;"),
             $"expected 'let myVar = anotherVar;' got '{programme}'");

@@ -2,15 +2,11 @@ using Monkey.Lexing;
 
 namespace Monkey.Parsing.Nodes;
 
-public class IndexExpression : INode
+public class IndexExpression(Token token, Node left) : Node(token)
 {
-    public Token Token { get; set; } = null!;
-    
-    public INode Left { get; set; } = null!;
-    
-    public INode Index { get; set; } = null!;
-    
-    public string TokenLiteral() => Token.Literal;
+    public Node Left { get; } = left;
+
+    public Node Index { get; set; } = null!;
     
     public override string ToString() => $"({Left}[{Index}])";
 }
