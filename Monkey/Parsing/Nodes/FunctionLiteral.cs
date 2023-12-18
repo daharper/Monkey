@@ -1,10 +1,8 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Statements;
 
-namespace Monkey.Parsing.Literals;
+namespace Monkey.Parsing.Nodes;
 
-public class FunctionLiteral : ILiteral
+public class FunctionLiteral : INode
 {
     public Token Token { get; set; } = null!;
     
@@ -13,8 +11,6 @@ public class FunctionLiteral : ILiteral
     public BlockStatement Body { get; set; } = null!;
     
     public string TokenLiteral() => Token.Literal;
-
-    public void ExpressionNode() { }
     
     public override string ToString()
     {

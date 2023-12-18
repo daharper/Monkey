@@ -1,9 +1,6 @@
 using Monkey.Evaluating.Ast;
 using Monkey.Parsing;
-using Monkey.Parsing.Expressions;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Literals;
-using Monkey.Parsing.Statements;
+using Monkey.Parsing.Nodes;
 
 namespace Monkey.Evaluating;
 
@@ -167,7 +164,7 @@ public static class Evaluator
         return env;
     }
 
-    private static List<IAstObject> EvalExpressions(List<IExpression> exps, Environment env)
+    private static List<IAstObject> EvalExpressions(List<INode> exps, Environment env)
     {
         var result = new List<IAstObject>();
 
@@ -292,7 +289,7 @@ public static class Evaluator
         return integer;
     }
 
-    private static IAstObject EvalProgramme(List<IStatement> statements, Environment environment)    
+    private static IAstObject EvalProgramme(List<INode> statements, Environment environment)    
     {
         IAstObject result = Builtin.Null;
         

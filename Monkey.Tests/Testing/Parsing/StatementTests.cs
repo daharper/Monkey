@@ -1,6 +1,6 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
-using Monkey.Parsing.Statements;
+using Monkey.Parsing.Nodes;
 
 namespace Monkey.Tests.Testing.Parsing;
 

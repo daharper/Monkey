@@ -1,14 +1,12 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Statements;
 
-namespace Monkey.Parsing.Expressions;
+namespace Monkey.Parsing.Nodes;
 
-public class IfExpression : IExpression
+public class IfExpression : INode
 {
     public Token Token { get; set; } = null!;
     
-    public IExpression Condition { get; set; } = null!;
+    public INode Condition { get; set; } = null!;
     
     public BlockStatement Consequence { get; set; } = null!;
     
@@ -25,6 +23,4 @@ public class IfExpression : IExpression
     }
 
     public string TokenLiteral() => Token.Literal;
-
-    public void ExpressionNode() { }
 }

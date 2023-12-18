@@ -1,12 +1,8 @@
-// ReSharper disable UseSymbolAlias
-
 using System.Collections.Immutable;
 
 namespace Monkey.Lexing;
 
-using TokenType = string;
-
-public class Token(TokenType type, string literal = "")
+public class Token(string type, string literal = "")
 {
     public const string Illegal = "ILLEGAL";
     public const string Eof = "EOF";
@@ -62,13 +58,13 @@ public class Token(TokenType type, string literal = "")
         {"return", Return}
     }.ToImmutableDictionary();
 
-    public Token(TokenType type, char ch) : this(type, ch.ToString()) { }
+    public Token(string type, char ch) : this(type, ch.ToString()) { }
     
-    public TokenType Type { get; set; } = type;
+    public string Type { get; set; } = type;
     
     public string Literal { get; set; } = literal;
 
-    public bool Is(TokenType tokenType) => Type == tokenType;
+    public bool Is(string tokenType) => Type == tokenType;
     
     public bool Is(Token token) => Type == token.Type;
     

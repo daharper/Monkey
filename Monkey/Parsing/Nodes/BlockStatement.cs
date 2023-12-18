@@ -1,18 +1,15 @@
 using System.Text;
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Statements;
+namespace Monkey.Parsing.Nodes;
 
-public class BlockStatement : IStatement
+public class BlockStatement : INode
 {
     public Token Token { get; set; } = null!;
 
-    public List<IStatement> Statements { get; set; } = [];
+    public List<INode> Statements { get; set; } = [];
     
     public string TokenLiteral() => Token.Literal;
-
-    public void StatementNode() { }
 
     public override string ToString()
     {

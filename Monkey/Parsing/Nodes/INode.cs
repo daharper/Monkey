@@ -1,4 +1,4 @@
-namespace Monkey.Parsing.Interfaces;
+namespace Monkey.Parsing.Nodes;
 
 public interface INode
 {

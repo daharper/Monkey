@@ -1,12 +1,7 @@
 using System.Collections.Immutable;
-using System.Linq.Expressions;
 using Monkey.Lexing;
-using Monkey.Parsing.Expressions;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Literals;
-using Monkey.Parsing.Statements;
-using IndexExpression = Monkey.Parsing.Expressions.IndexExpression;
-using TokenType = string;
+using Monkey.Parsing.Nodes;
+using IndexExpression = Monkey.Parsing.Nodes.IndexExpression;
 
 namespace Monkey.Parsing;
 
@@ -14,11 +9,11 @@ public class Parser
 {
     private readonly List<string> _errors = new();
 
-    private readonly Dictionary<TokenType, Func<IExpression>> _prefixParseFns = new();
+    private readonly Dictionary<string, Func<INode>> _prefixParseFns = new();
     
-    private readonly Dictionary<TokenType, Func<IExpression, IExpression>> _infixParseFns = new();
+    private readonly Dictionary<string, Func<INode, INode>> _infixParseFns = new();
 
-    private readonly ImmutableDictionary<TokenType, Precedence> _precedences = new Dictionary<TokenType, Precedence>
+    private readonly ImmutableDictionary<string, Precedence> _precedences = new Dictionary<string, Precedence>
     {
         { Token.Eq, Precedence.Equals },
         { Token.NotEq, Precedence.Equals },
@@ -79,7 +74,7 @@ public class Parser
         RegisterInfix(Token.LBracket, ParseIndexExpression);
     }
 
-    private IExpression ParseHashLiteral()
+    private INode ParseHashLiteral()
     {
         var hash = new HashLiteral { Token = CurrentToken };
 
@@ -117,7 +112,7 @@ public class Parser
         return null;
     }
 
-    private IExpression ParseIndexExpression(IExpression left)
+    private INode ParseIndexExpression(INode left)
     {
         var expression = new IndexExpression { Token = CurrentToken, Left = left };
         
@@ -133,16 +128,16 @@ public class Parser
         return expression;
     }
 
-    private IExpression ParseArrayLiteral()
+    private INode ParseArrayLiteral()
         => new ArrayLiteral
         {
             Token = CurrentToken,
             Elements = ParseExpressionList(Token.RBracket)
         };
 
-    private List<IExpression> ParseExpressionList(string end)
+    private List<INode> ParseExpressionList(string end)
     {
-        var list = new List<IExpression>();
+        var list = new List<INode>();
         
         if (PeekToken.Is(end))
         {
@@ -163,7 +158,7 @@ public class Parser
         return TryAdvanceTo(end) ? list : [];
     }
 
-    private IExpression ParseCallExpression(IExpression function)
+    private INode ParseCallExpression(INode function)
     {
         var expression = new CallExpression
         {
@@ -174,9 +169,9 @@ public class Parser
         return expression;
     }
 
-    private List<IExpression> ParseCallArguments()
+    private List<INode> ParseCallArguments()
     {
-        var arguments = new List<IExpression>();
+        var arguments = new List<INode>();
         
         if (PeekToken.Is(Token.RParen))
         {
@@ -205,7 +200,7 @@ public class Parser
     }
     
     
-    private IExpression ParseFunctionExpression()
+    private INode ParseFunctionExpression()
     {
         var expression = new FunctionLiteral { Token = CurrentToken };
         
@@ -260,7 +255,7 @@ public class Parser
         return identifiers;
     }
     
-    private IExpression ParsePrefixExpression()
+    private INode ParsePrefixExpression()
     {
         var expression = new PrefixExpression
         {
@@ -275,7 +270,7 @@ public class Parser
         return expression;
     }
     
-    private IExpression ParseInfixExpression(IExpression left)
+    private INode ParseInfixExpression(INode left)
     {
         var expression = new InfixExpression
         {
@@ -293,7 +288,7 @@ public class Parser
         return expression;
     }
     
-    private IExpression ParseGroupedExpression()
+    private INode ParseGroupedExpression()
     {
         NextToken();
         
@@ -307,7 +302,7 @@ public class Parser
         return expression;
     }
     
-    private IExpression ParseIfExpression()
+    private INode ParseIfExpression()
     {
         var expression = new IfExpression { Token = CurrentToken };
         
@@ -403,7 +398,7 @@ public class Parser
         return programme;
     }
 
-    private IStatement? ParseStatement()
+    private INode? ParseStatement()
     {
         return CurrentToken.Type switch
         {
@@ -413,7 +408,7 @@ public class Parser
         };
     }
 
-    private IStatement? ParseExpressionStatement()
+    private INode? ParseExpressionStatement()
     {   
         var statement = new ExpressionStatement
         {
@@ -429,7 +424,7 @@ public class Parser
         return statement;
     }
 
-    private IExpression? ParseExpression(Precedence precedence)
+    private INode? ParseExpression(Precedence precedence)
     {
         if (!_prefixParseFns.TryGetValue(CurrentToken.Type, out var prefix))
         {
@@ -454,7 +449,7 @@ public class Parser
         return leftExpression;
     }
 
-    private IStatement? ParseReturnStatement()
+    private INode? ParseReturnStatement()
     {
         var statement = new ReturnStatement { Token = CurrentToken };
         
@@ -499,7 +494,7 @@ public class Parser
     }
     
     // this was called 'expectPeek' in the book, renamed to better reflect what it does
-    private bool TryAdvanceTo(TokenType type)
+    private bool TryAdvanceTo(string type)
     {
         if (PeekToken.Is(type))
         {
@@ -512,10 +507,10 @@ public class Parser
         return false;
     }
     
-    private void RegisterPrefix(TokenType type, Func<IExpression> fn)
+    private void RegisterPrefix(string type, Func<INode> fn)
         => _prefixParseFns[type] = fn;
     
-    private void RegisterInfix(TokenType type, Func<IExpression, IExpression> fn)
+    private void RegisterInfix(string type, Func<INode, INode> fn)
         => _infixParseFns[type] = fn;
  
     private Precedence PeekPrecedence()

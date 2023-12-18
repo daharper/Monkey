@@ -1,8 +1,6 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Literals;
-using Monkey.Parsing.Statements;
+using Monkey.Parsing.Nodes;
 
 namespace Monkey.Tests.Testing.Parsing;
 
@@ -75,7 +73,7 @@ public class HashParsingTests : ParserTests
         Assert.That(hash.Pairs.Count, Is.EqualTo(3),
             $"expected 3 pairs in hash got {hash.Pairs.Count}");
 
-        var tests = new Dictionary<string, Action<IExpression>>
+        var tests = new Dictionary<string, Action<INode>>
         {
              ["one"] = expression => TestInfixExpression(expression, 0, "+", 1),
              ["two"] = expression => TestInfixExpression(expression, 10, "-", 8),

@@ -1,9 +1,6 @@
 using Monkey.Lexing;
 using Monkey.Parsing;
-using Monkey.Parsing.Expressions;
-using Monkey.Parsing.Interfaces;
-using Monkey.Parsing.Literals;
-using Monkey.Parsing.Statements;
+using Monkey.Parsing.Nodes;
 
 namespace Monkey.Tests.Testing.Parsing;
 
@@ -23,7 +20,7 @@ public abstract class ParsingTestBase : TestBase
         return programme;
     }
     
-    protected void TestInfixExpression(IExpression expression, object leftValue, string op, object rightValue)
+    protected void TestInfixExpression(INode expression, object leftValue, string op, object rightValue)
     {
         var infix = AssertCast<InfixExpression>(expression);
         

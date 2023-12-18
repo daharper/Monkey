@@ -1,10 +1,6 @@
-// ReSharper disable UseSymbolAlias
-
 using Monkey.Utils;
 
 namespace Monkey.Lexing;
-
-using TokenType = string;
 
 /// <summary>
 /// Class for tokenizing input strings.
@@ -187,7 +183,7 @@ public class Lexer
     private string ReadLiteral()
         => ReadSubstring(ch => char.IsLetter(ch) || ch == '_');
     
-    private static TokenType LookupIdent(string ident)
+    private static string LookupIdent(string ident)
         => Token.Keywords.GetValueOrDefault(ident, Token.Identifier);
     
     #endregion

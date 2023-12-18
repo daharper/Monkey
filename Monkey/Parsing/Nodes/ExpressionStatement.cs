@@ -1,17 +1,14 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Statements;
+namespace Monkey.Parsing.Nodes;
 
-public class ExpressionStatement : IStatement
+public class ExpressionStatement : INode
 {
     public Token Token { get; set; } = null!;
     
-    public IExpression? Expression { get; set; }
+    public INode? Expression { get; set; }
     
     public string TokenLiteral() => Token.Literal;
-
-    public void StatementNode() { }
     
     public override string ToString()
         => Expression?.ToString() ?? "";

@@ -1,17 +1,14 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Literals;
+namespace Monkey.Parsing.Nodes;
 
-public class BooleanLiteral : ILiteral
+public class BooleanLiteral : INode
 {
     public Token Token { get; set; } = null!;
     
     public bool Value { get; set; }
     
     public string TokenLiteral() => Token.Literal;
-    
-    public void ExpressionNode() { }
 
     public override string ToString() => Token.Literal;
 }

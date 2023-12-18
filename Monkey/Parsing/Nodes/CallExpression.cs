@@ -1,19 +1,16 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Expressions;
+namespace Monkey.Parsing.Nodes;
 
-public class CallExpression : IExpression
+public class CallExpression : INode
 {
     public Token Token { get; set; } = null!;
     
-    public IExpression Function { get; set; } = null!;
+    public INode Function { get; set; } = null!;
     
-    public List<IExpression> Arguments { get; set; } = null!;
+    public List<INode> Arguments { get; set; } = null!;
     
     public string TokenLiteral() => Token.Literal;
-
-    public void ExpressionNode() { }
     
     public override string ToString()
     {

@@ -1,18 +1,15 @@
 using System.Text;
 using Monkey.Lexing;
-using Monkey.Parsing.Interfaces;
 
-namespace Monkey.Parsing.Literals;
+namespace Monkey.Parsing.Nodes;
 
-public class HashLiteral : ILiteral
+public class HashLiteral : INode
 {
-    public Token Token { get; set; }
+    public Token Token { get; set; } 
     
-    public Dictionary<IExpression, IExpression> Pairs { get; set; } = new();
+    public Dictionary<INode, INode> Pairs { get; set; } = new();
     
     public string TokenLiteral() => Token.Literal;
-
-    public void ExpressionNode() { }
 
     public override string ToString()
     {
