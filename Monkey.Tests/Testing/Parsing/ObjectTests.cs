@@ -9,7 +9,7 @@ public class ObjectTests : ParsingTestBase
     [Test]
     public void TestToString()
     {
-        var programme = Programme.Create(
+        var programme = ProgramNode.Create(
         [
             new LetNode(new Token(Token.Let, "let"))
             {

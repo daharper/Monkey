@@ -6,7 +6,7 @@ namespace Monkey.Tests.Testing.Parsing;
 
 public abstract class ParsingTestBase : TestBase
 {
-    protected Programme AssertParse(string input, int expectedStatements)
+    protected ProgramNode AssertParse(string input, int expectedStatements)
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);

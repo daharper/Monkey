@@ -1,11 +1,10 @@
 using Monkey.Lexing;
-using Monkey.Parsing.Nodes;
 
-namespace Monkey.Parsing;
+namespace Monkey.Parsing.Nodes;
 
-public class Programme : Node
+public class ProgramNode : Node
 {
-    private Programme(Token token, List<Node> statements) : base(token)
+    private ProgramNode(Token token, List<Node> statements) : base(token)
         => Statements = statements;
 
     public List<Node> Statements { get; }
@@ -16,6 +15,6 @@ public class Programme : Node
     public override string ToString() 
         => string.Join("", Statements);
     
-    public static Programme Create(List<Node>? statements = null) 
+    public static ProgramNode Create(List<Node>? statements = null) 
         => new(Token.Root, statements ?? []);
 }

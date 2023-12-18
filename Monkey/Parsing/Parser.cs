@@ -357,9 +357,9 @@ public class Parser
         PeekToken = Lexer.NextToken();
     }
     
-    public Programme ParseProgramme()
+    public ProgramNode ParseProgramme()
     {
-        var programme = Programme.Create();
+        var programme = ProgramNode.Create();
         
         while (!CurrentToken.Is(Token.Eof))
         {

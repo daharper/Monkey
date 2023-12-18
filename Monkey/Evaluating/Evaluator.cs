@@ -10,7 +10,7 @@ public static class Evaluator
     {
         switch (node)
         {
-             case Programme programme:
+             case ProgramNode programme:
                  return EvalProgramme(programme.Statements, environment);
              case ExpressionNode expressionStatement:
                  return Eval(expressionStatement.Expression, environment);
