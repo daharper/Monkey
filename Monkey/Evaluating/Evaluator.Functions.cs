@@ -5,7 +5,7 @@ namespace Monkey.Evaluating;
 
 partial class Evaluator
 {
-    private static MObject EvalHashLiteral(Node node, Environment env)
+    private static MObject EvalHashLiteral(Node node, Context context)
     {   
         var pairs = new Dictionary<int, KeyValuePair<MObject, MObject>>();
 
@@ -14,13 +14,13 @@ partial class Evaluator
         
         foreach (var (keyNode, valueNode) in hash.Pairs)
         {
-            var key = Eval(keyNode, env);
+            var key = Eval(keyNode, context);
             if (key is ErrorObject) return key;
             
             if (key is not IntegerObject and not BooleanObject and not StringObject) 
                 return ErrorObject.Create("unusable as hash key: {0}", key.Type);
 
-            var value = Eval(valueNode, env);
+            var value = Eval(valueNode, context);
             if (value is ErrorObject) return value;
 
             var hashed = key.GetHashCode();
@@ -63,13 +63,13 @@ partial class Evaluator
         return array.Elements[index];
     }
     
-    private static List<MObject> EvalExpressions(List<Node> exps, Environment env)
+    private static List<MObject> EvalExpressions(List<Node> exps, Context context)
     {
         var result = new List<MObject>();
 
         foreach (var exp in exps)
         {
-            var evaluated = Eval(exp, env);
+            var evaluated = Eval(exp, context);
             if (evaluated is ErrorObject) return [evaluated];
             
             result.Add(evaluated);
@@ -78,24 +78,24 @@ partial class Evaluator
         return result;
     }
 
-    private static MObject EvalIdentifierExpression(IdentifierNode identifier, Environment env)
+    private static MObject EvalIdentifierExpression(IdentifierNode identifier, Context context)
     {
-        if (env.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
+        if (context.TryGet(identifier.Value, out var value)) return value ?? Builtin.Null;
         
         return Builtin.Functions.TryGetValue(identifier.Value, out var builtin) 
             ? builtin 
             : ErrorObject.Create("identifier not found: " + identifier.Value);
     }
     
-    private static MObject EvalIfExpression(IfNode ifExpression, Environment env)
+    private static MObject EvalIfExpression(IfNode ifExpression, Context context)
     {
-        var condition = Eval(ifExpression.Condition, env);
+        var condition = Eval(ifExpression.Condition, context);
         
         if (condition is ErrorObject) return condition;
-        if (IsTruthy(condition)) return Eval(ifExpression.Consequence, env);
+        if (IsTruthy(condition)) return Eval(ifExpression.Consequence, context);
         
         return ifExpression.Alternative != null 
-            ? Eval(ifExpression.Alternative, env) 
+            ? Eval(ifExpression.Alternative, context) 
             : Builtin.Null;
     }
     
@@ -177,13 +177,13 @@ partial class Evaluator
         return new IntegerObject(-value);
     }
 
-    private static MObject EvalProgramme(List<Node> statements, Environment env)    
+    private static MObject EvalProgramme(List<Node> statements, Context context)    
     {
         MObject result = Builtin.Null;
         
         foreach (var statement in statements)
         {
-            result = Eval(statement, env);
+            result = Eval(statement, context);
             
             switch (result)
             {
@@ -197,13 +197,13 @@ partial class Evaluator
         return result;
     }
 
-    private static MObject EvalBlockStatement(BlockNode block, Environment env)
+    private static MObject EvalBlockStatement(BlockNode block, Context context)
     {
         MObject result = Builtin.Null;
         
         foreach (var statement in block.Statements)
         {
-            result = Eval(statement, env);
+            result = Eval(statement, context);
 
             if (result is ReturnObject or ErrorObject) 
             {

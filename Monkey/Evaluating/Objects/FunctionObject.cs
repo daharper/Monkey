@@ -3,14 +3,14 @@ using Monkey.Parsing.Nodes;
 
 namespace Monkey.Evaluating.Objects;
 
-public class FunctionObject(List<IdentifierNode> parameters, BlockNode body, Environment env) 
+public class FunctionObject(List<IdentifierNode> parameters, BlockNode body, Context context) 
     : MObject(ObjectTypes.Function)
 {
     public List<IdentifierNode> Parameters { get; private set; } = parameters;
 
     public BlockNode Body { get; } = body;
 
-    public Environment Env { get; } = env;
+    public Context Context { get; } = context;
 
     public override string ToString()
     {

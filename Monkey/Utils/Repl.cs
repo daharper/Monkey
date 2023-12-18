@@ -3,7 +3,6 @@ using Monkey.Evaluating.Objects;
 using Monkey.Lexing;
 using Monkey.Parsing;
 using static System.Console;
-using Environment = Monkey.Evaluating.Environment;
 
 namespace Monkey.Utils;
 
@@ -29,7 +28,7 @@ public static class Repl
         WriteLine("Hello! This is the Monkey programming language!");
         WriteLine("Feel free to type in commands, or type 'exit' to exit.");
 
-        var environment = new Environment();
+        var context = new Context();
         
         while (true)
         {
@@ -55,7 +54,7 @@ public static class Repl
                 continue;
             }
             
-            var evaluated = Evaluator.Eval(programme, environment);
+            var evaluated = Evaluator.Eval(programme, context);
             
             if (evaluated is not NullObject)
             {

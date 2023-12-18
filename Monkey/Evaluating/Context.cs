@@ -2,11 +2,11 @@ using Monkey.Evaluating.Objects;
 
 namespace Monkey.Evaluating;
 
-public class Environment(Environment? outer = null)
+public class Context(Context? outer = null)
 {
     private readonly Dictionary<string, MObject> _store = new();
 
-    public Environment? Outer { get; init; } = outer;
+    public Context? Outer { get; init; } = outer;
 
     public bool TryGet(string name, out MObject? result)
     {

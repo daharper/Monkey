@@ -6,15 +6,15 @@ namespace Monkey.Evaluating;
 
 public static partial class Evaluator
 {
-    public static MObject Eval(Node node, Environment env)
+    public static MObject Eval(Node node, Context context)
     {
         switch (node)
         {
              case ProgramNode program:
-                 return EvalProgramme(program.Statements, env);
+                 return EvalProgramme(program.Statements, context);
              
              case ExpressionNode expression:
-                 return Eval(expression.Expression, env);
+                 return Eval(expression.Expression, context);
              
              case IntegerNode integer:
                  return new IntegerObject(integer.Value);
@@ -23,60 +23,60 @@ public static partial class Evaluator
                  return boolean.Value ? Builtin.True : Builtin.False;
              
              case PrefixNode prefix:
-                 var right = Eval(prefix.Right, env);
+                 var right = Eval(prefix.Right, context);
                  return right is ErrorObject ? right : EvalPrefixExpression(prefix.Operator, right);
 
              case InfixNode infix:
-                  var left = Eval(infix.Left, env);
+                  var left = Eval(infix.Left, context);
                   if (left is ErrorObject) return left;
-                  var r = Eval(infix.Right, env);
+                  var r = Eval(infix.Right, context);
                   return r is ErrorObject ? r : EvalInfixExpression(infix.Operator, left, r);
 
              case IfNode ifExpression:
-                  return EvalIfExpression(ifExpression, env);
+                  return EvalIfExpression(ifExpression, context);
              
              case IdentifierNode identifier:
-                  return EvalIdentifierExpression(identifier, env);
+                  return EvalIdentifierExpression(identifier, context);
              
              case BlockNode block:
-                  return EvalBlockStatement(block, env);
+                  return EvalBlockStatement(block, context);
              
              case ReturnNode returnStatement:
-                  var value = Eval(returnStatement.ReturnValue, env);
+                  var value = Eval(returnStatement.ReturnValue, context);
                   return value is ErrorObject ? value : new ReturnObject(value);
              
              case LetNode let:
-                  var val = Eval(let.Value, env);
+                  var val = Eval(let.Value, context);
                   if (val is ErrorObject) return val;
-                  env.Set(let.Name.Value, val);
+                  context.Set(let.Name.Value, val);
                   break;
              
              case FunctionNode function:
-                  return new FunctionObject(function.Parameters, function.Body, env);
+                  return new FunctionObject(function.Parameters, function.Body, context);
              
              case StringNode str:
                   return new StringObject(str.Value);
              
              case CallNode call:
-                 var fn = Eval(call.Function, env);
+                 var fn = Eval(call.Function, context);
                  if (fn is ErrorObject) return fn;
-                 var args = EvalExpressions(call.Arguments, env);
+                 var args = EvalExpressions(call.Arguments, context);
                  if (args.Count == 1 && args[0] is ErrorObject) return args[0];
                  return ApplyFunction(fn, args);
              
              case ArrayNode array:
-                 var elements = EvalExpressions(array.Elements, env);
+                 var elements = EvalExpressions(array.Elements, context);
                  if (elements.Count == 1 && elements[0] is ErrorObject) return elements[0];
                  return new ArrayObject { Elements = elements };
              
              case IndexNode index:
-                 var l = Eval(index.Left, env);
+                 var l = Eval(index.Left, context);
                  if (l is ErrorObject) return l;
-                 var idx = Eval(index.Index, env);
+                 var idx = Eval(index.Index, context);
                  return idx is ErrorObject ? idx : EvalIndexExpression(l, idx);
 
              case HashNode:
-                 return EvalHashLiteral(node, env);
+                 return EvalHashLiteral(node, context);
              
              default:
                  throw Fatal.Error($"Unknown node type: {node.GetType().Name}");
@@ -91,10 +91,10 @@ public static partial class Evaluator
     {
         switch (function)
         {
-            case FunctionObject fn:
+            case FunctionObject func:
             {
-                var extendedEnv = ExtendFunctionEnv(fn, args);
-                var evaluated = Eval(fn.Body, extendedEnv);
+                var extendedContext = ExtendContext(func, args);
+                var evaluated = Eval(func.Body, extendedContext);
             
                 return UnwrapReturnValue(evaluated);
             }
@@ -112,16 +112,16 @@ public static partial class Evaluator
                 _ => obj
             };
     
-    private static Environment ExtendFunctionEnv(FunctionObject fn, IReadOnlyList<MObject> args)
+    private static Context ExtendContext(FunctionObject function, IReadOnlyList<MObject> args)
     {
-        var env = new Environment { Outer = fn.Env };
+        var context = new Context { Outer = function.Context };
 
-        for (var i = 0; i < fn.Parameters.Count; i++)
+        for (var i = 0; i < function.Parameters.Count; i++)
         {
-            env.Set(fn.Parameters[i].Value, args[i]);
+            context.Set(function.Parameters[i].Value, args[i]);
         }
 
-        return env;
+        return context;
     }
     
     private static bool IsTruthy(MObject? condition)

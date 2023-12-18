@@ -2,7 +2,6 @@ using Monkey.Evaluating;
 using Monkey.Evaluating.Objects;
 using Monkey.Lexing;
 using Monkey.Parsing;
-using Environment = Monkey.Evaluating.Environment;
 
 namespace Monkey.Tests.Testing.Evaluating;
 
@@ -16,8 +15,8 @@ public class EvaluatingTestBase : TestBase
         
         CheckErrors(parser);
         
-        var environment = new Environment();
-        return Evaluator.Eval(program, environment);
+        var context = new Context();
+        return Evaluator.Eval(program, context);
     }
     
     protected static void TestString(MObject obj, string expected)
