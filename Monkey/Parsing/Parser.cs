@@ -6,7 +6,7 @@ namespace Monkey.Parsing;
 
 public class Parser
 {
-    private readonly List<string> _errors = new();
+    private readonly List<string> _errors = [];
 
     private readonly Dictionary<string, Func<Node>> _prefixParseFns = new();
     
@@ -36,6 +36,16 @@ public class Parser
         NextToken();
     }
 
+    public IEnumerable<string> Errors => _errors;
+
+    public bool HasErrors => _errors.Count > 0;
+
+    private Lexer Lexer { get; }
+
+    private Token CurrentToken { get; set; } = Token.Null;
+
+    private Token PeekToken { get; set; } = Token.Null;
+    
     private void RegisterParserFunctions()
     {
         RegisterPrefix(Token.Identifier,
@@ -340,16 +350,6 @@ public class Parser
         
         return block;
     }
-    
-    public IEnumerable<string> Errors => _errors;
-
-    public bool HasErrors => _errors.Count > 0;
-    
-    public Lexer Lexer { get; }
-    
-    public Token CurrentToken { get; set; }
-    
-    public Token PeekToken { get; set; }
     
     public void NextToken()
     {

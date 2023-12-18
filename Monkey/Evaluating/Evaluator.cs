@@ -13,7 +13,7 @@ public static class Evaluator
              case Programme programme:
                  return EvalProgramme(programme.Statements, environment);
              case ExpressionNode expressionStatement:
-                 return Eval(expressionStatement.Expression!, environment);
+                 return Eval(expressionStatement.Expression, environment);
              case IntegerNode integerExpression:
                  return new IntegerObject { Value = integerExpression.Value };
              case BooleanNode booleanExpression:

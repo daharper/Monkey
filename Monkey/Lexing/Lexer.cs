@@ -2,9 +2,6 @@ using Monkey.Utils;
 
 namespace Monkey.Lexing;
 
-/// <summary>
-/// Class for tokenizing input strings.
-/// </summary>
 public class Lexer
 {
     /// <summary>

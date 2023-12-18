@@ -57,7 +57,14 @@ public static class CollectionsExt
             action(item);
     }
 
-    /// <summary
+    /// <summary>
+    /// Takes a substring from the specified source string starting at the given startIndex and ending
+    /// when the predicate condition returns false.
+    /// </summary>
+    /// <param name="source">The source string.</param>
+    /// <param name="startIndex">The starting index of the substring.</param>
+    /// <param name="predicate">The predicate condition to determine when to stop taking characters .</param>
+    /// <returns>A tuple containing the index of the last character taken and the substring taken.</returns>
     public static (int index, string value) TakeFrom(this string source, int startIndex, Func<char, bool> predicate)
     {
         ArgumentOutOfRangeException.ThrowIfGreaterThan(startIndex, source.Length);
