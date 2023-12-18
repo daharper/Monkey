@@ -1,12 +1,13 @@
 using Monkey.Evaluating;
+using Monkey.Evaluating.Ast;
 using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Utils;
+
+using static System.Console;
 using Environment = Monkey.Evaluating.Environment;
 
 namespace Monkey;
-
-using static System.Console;
 
 public static class Repl
 {
@@ -48,7 +49,7 @@ public static class Repl
             {
                 WriteLine();
                 WriteLine(MonkeyFace);
-                WriteLine("Woops! We ran into some monkey business here!");
+                WriteLine("Whoops! We ran into some monkey business here!");
                 WriteLine();
                 WriteLine("parser errors:");
                 parser.Errors.ForEach((i, e) => WriteLine($"\t{i+1}. {e}"));
@@ -58,7 +59,7 @@ public static class Repl
             
             var evaluated = Evaluator.Eval(programme, environment);
             
-            if (evaluated is not null)
+            if (evaluated is not AstNull)
             {
                 WriteLine(evaluated);
             }

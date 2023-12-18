@@ -263,17 +263,17 @@ public static class Evaluator
         };
     }
     
-    private static IAstObject EvalPrefixExpression(string op, IAstObject? right)
+    private static IAstObject EvalPrefixExpression(string op, IAstObject right)
     {
         return op switch
         {
             "!" => EvalBangOperatorExpression(right),
             "-" => EvalMinusPrefixOperatorExpression(right),
-            _ => AstError.Create("unknown operator: {0}{1}", op, right?.Type() ?? "null")
+            _ => AstError.Create("unknown operator: {0}{1}", op, right.Type())
         };
     }
     
-    private static AstBoolean EvalBangOperatorExpression(IAstObject? right)
+    private static AstBoolean EvalBangOperatorExpression(IAstObject right)
         => right switch
         {
             AstBoolean boolean => boolean.Value ? Builtin.False : Builtin.True,
@@ -281,11 +281,11 @@ public static class Evaluator
             _ => Builtin.False
         };
 
-    private static IAstObject EvalMinusPrefixOperatorExpression(IAstObject? right)
+    private static IAstObject EvalMinusPrefixOperatorExpression(IAstObject right)
     {
         if (right is not AstInteger integer)
         {
-            return AstError.Create("unknown operator: -{0}", right?.Type() ?? "null");
+            return AstError.Create("unknown operator: -{0}", right.Type());
         }
 
         integer.Value = -integer.Value;
