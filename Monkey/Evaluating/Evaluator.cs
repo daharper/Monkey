@@ -81,7 +81,8 @@ public static class Evaluator
     {   
         var pairs = new Dictionary<int, KeyValuePair<IAstObject, IAstObject?>>();
 
-        if (node is not HashLiteral hashLiteral) return AstError.Create("node is not HashLiteral");
+        if (node is not HashLiteral hashLiteral) 
+            return AstError.Create("node is not HashLiteral");
         
         foreach (var (keyNode, valueNode) in hashLiteral.Pairs)
         {

@@ -49,42 +49,34 @@ public static class Builtin
         }.ToImmutableDictionary();
 
     private static IAstObject EvalPush(IAstObject container, IAstObject item)
-    {
-        return container switch
+        => container switch
         {
             AstArray array => new AstArray { Elements = array.Elements.Append(item).ToList() },
             _ => AstError.Create("argument to `push` must be ARRAY, got {0}", container.Type())
         };        
-    }
     
-    private static IAstObject EvalRest(IAstObject mObject)
-    {
-        return mObject switch
+    private static IAstObject EvalRest(IAstObject container)
+        => container switch
         {
             AstArray array => array.Elements.Count > 0 
                 ? new AstArray { Elements = array.Elements.Skip(1).ToList() } 
                 : Null,
-            _ => AstError.Create("argument to `rest` must be ARRAY, got {0}", mObject.Type())
+            _ => AstError.Create("argument to `rest` must be ARRAY, got {0}", container.Type())
         };
-    }
     
-    private static IAstObject EvalLast(IAstObject mObject)
-    {
-        return mObject switch
+    private static IAstObject EvalLast(IAstObject container)
+        => container switch
         {
             AstArray array => array.Elements.Count > 0 ? array.Elements[^1] : Null,
-            _ => AstError.Create("argument to `last` must be ARRAY, got {0}", mObject.Type())
+            _ => AstError.Create("argument to `last` must be ARRAY, got {0}", container.Type())
         };
-    }
     
-    private static IAstObject EvalFirst(IAstObject mObject)
-    {
-        return mObject switch
+    private static IAstObject EvalFirst(IAstObject container)
+        => container switch
         {
             AstArray array => array.Elements.Count > 0 ? array.Elements[0] : Null,
-            _ => AstError.Create("argument to `first` must be ARRAY, got {0}", mObject.Type())
+            _ => AstError.Create("argument to `first` must be ARRAY, got {0}", container.Type())
         };
-    }
 
     private static IAstObject EvalLen(IAstObject obj)
         => obj switch
