@@ -99,7 +99,7 @@ partial class Evaluator
             : Builtin.Null;
     }
     
-        private static MObject EvalInfixExpression(string op, MObject? left, MObject? right)
+    private static MObject EvalInfixExpression(string op, MObject? left, MObject? right)
     {
         if (left is null || right is null) 
             return ErrorObject.Create("missing value: {0} {1} {2}", left?.Type ?? "null", op, right?.Type ?? "null");

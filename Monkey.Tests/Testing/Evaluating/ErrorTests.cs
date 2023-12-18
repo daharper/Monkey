@@ -17,7 +17,10 @@ public class ErrorTests : EvaluatingTestBase
         var evaluated = TestEval(input);
         var error = evaluated as ErrorObject;
         
-        Assert.That(error, Is.Not.Null, $"no error object returned, got {evaluated}=({evaluated})");
-        Assert.That(error!.Message, Is.EqualTo(expectedMessage), $"wrong error message, got {error.Message}");
+        Assert.That(error, Is.Not.Null, 
+            $"no error object returned, got {evaluated}=({evaluated})");
+        
+        Assert.That(error!.Message, Is.EqualTo(expectedMessage), 
+            $"wrong error message, got {error.Message}");
     }
 }

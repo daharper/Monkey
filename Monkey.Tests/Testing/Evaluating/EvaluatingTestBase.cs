@@ -12,12 +12,12 @@ public class EvaluatingTestBase : TestBase
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var programme = parser.ParseProgramme();
+        var program = parser.ParseProgramme();
         
         CheckErrors(parser);
         
         var environment = new Environment();
-        return Evaluator.Eval(programme, environment);
+        return Evaluator.Eval(program, environment);
     }
     
     protected static void TestString(MObject obj, string expected)
