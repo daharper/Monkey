@@ -21,12 +21,11 @@ public static class Repl
                     '._ '-=-' _.'
                        '-----'
             """;
-    public static void Execute()
+    public static void Run()
     {
         const string prompt = ">> ";
      
-        WriteLine("Hello! This is the Monkey programming language!");
-        WriteLine("Feel free to type in commands, or type 'exit' to exit.");
+        DisplayWelcomeMessage();
 
         var context = new Context();
         
@@ -38,30 +37,66 @@ public static class Repl
             if (string.IsNullOrWhiteSpace(input)) continue;
             if (input == "exit") break;
 
-            var lexer = new Lexer(input);
-            var parser = new Parser(lexer);
-            var program = parser.ParseProgram();
-            
-            if (parser.HasErrors)
+            try
             {
-                WriteLine();
-                WriteLine(MonkeyFace);
-                WriteLine("Whoops! We ran into some monkey business here!");
-                WriteLine();
-                WriteLine("parser errors:");
-                parser.Errors.ForEach((i, e) => WriteLine($"\t{i+1}. {e}"));
-                WriteLine();
-                continue;
+                Execute(input, context);
             }
-            
-            var evaluated = Evaluator.Eval(program, context);
-            
-            if (evaluated is not NullObject)
+            catch (Exception e)
             {
-                WriteLine(evaluated);
+                DisplayException(e);
             }
             
             WriteLine();
         }
+        
+        DisplayGoodbyeMessage();
+    }
+
+    private static void Execute(string input, Context context)
+    {
+        var lexer = new Lexer(input);
+        var parser = new Parser(lexer);
+        var program = parser.ParseProgram();
+
+        if (parser.HasErrors)
+        {
+            DisplayParserErrors(parser.Errors);
+            return;
+        }
+                
+        var evaluated = Evaluator.Eval(program, context);
+                
+        if (evaluated is not NullObject)
+        {
+            WriteLine(evaluated);
+        }
+    }
+    
+    private static void DisplayWelcomeMessage()
+    {
+        WriteLine("Hello! This is the Monkey programming language!");
+        WriteLine("Feel free to type in commands");
+    }
+    
+    private static void DisplayGoodbyeMessage()
+    {
+        WriteLine("Goodbye!");
+    }
+    
+    private static void DisplayParserErrors(IEnumerable<string> errors)
+    {
+        WriteLine(MonkeyFace);
+        WriteLine("Whoops! We ran into some monkey business here!");
+        WriteLine();
+        WriteLine("parser errors:");
+        errors.ForEach((i, e) => WriteLine($"\t{i+1}. {e}"));
+    }
+    
+    private static void DisplayException(Exception exception)
+    {
+        WriteLine(MonkeyFace);
+        WriteLine("Whoops! We ran into some monkey business here!");
+        WriteLine();
+        WriteLine($"{exception.Message}");
     }
 }

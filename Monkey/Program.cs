@@ -1,1 +1,1 @@
-﻿Monkey.Utils.Repl.Execute();
+﻿Monkey.Utils.Repl.Run();
