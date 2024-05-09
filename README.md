@@ -2,9 +2,9 @@
 
 C# implementation of the Monkey language from "Writing an Interpreter in Go"
 
-I found coding a C# implementation of the Go Interpreter helped in understanding the demonstrated concepts, as I worked my way through the book. It was a process to help me understand concepts.
+I found coding a C# implementation of the Go Interpreter helped in understanding the demonstrated concepts.
 
-This served it's purpose, is write once, and read never. I have never rationalized the design nor code.
+I stayed close-ish to the Go structure so I could follow along in the book.
 
 Please see here for more details:
 
