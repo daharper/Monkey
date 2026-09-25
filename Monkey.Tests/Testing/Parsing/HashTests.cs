@@ -58,6 +58,16 @@ public class HashTests : ParsingTestBase
     }
     
     [Test]
+    public void TestHashToString()
+    {
+        var program = AssertParse("""{"one": 1, "two": 2}""", 1);
+        var statement = AssertCast<ExpressionNode>(program.Statements[0]);
+        var hash = AssertCast<HashNode>(statement.Expression);
+
+        Assert.That(hash.ToString(), Is.EqualTo("{ one: 1, two: 2 }"));
+    }
+
+    [Test]
     public void TestHashParsingWithExpressions()
     {
         const string input = """

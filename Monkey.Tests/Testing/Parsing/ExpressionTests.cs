@@ -64,7 +64,7 @@ public class ExpressionTests : ParsingTestBase
                 ? AssertCast<IntegerNode>(expression.Right)
                 : AssertCast<BooleanNode>(expression.Right);
 
-            Assert.AreEqual(test.value, right.Value, 
+            Assert.That(test.value, Is.EqualTo(right.Value), 
                 $"expected '{test.value}' got '{right.Value}'");
         });
     }
@@ -100,14 +100,14 @@ public class ExpressionTests : ParsingTestBase
                 ? AssertCast<IntegerNode>(expression.Left)
                 : AssertCast<BooleanNode>(expression.Left);
             
-            Assert.AreEqual(test.leftValue, left.Value, 
+            Assert.That(test.leftValue, Is.EqualTo(left.Value), 
                 $"expected '{test.leftValue}' got '{left.Value}'");
             
             dynamic right = expression.Right is IntegerNode
                 ? AssertCast<IntegerNode>(expression.Right)
                 : AssertCast<BooleanNode>(expression.Right);
             
-            Assert.AreEqual(test.rightValue, right.Value,
+            Assert.That(test.rightValue, Is.EqualTo(right.Value),
                 $"expected '{test.rightValue}' got '{right.Value}'");
         });
     }

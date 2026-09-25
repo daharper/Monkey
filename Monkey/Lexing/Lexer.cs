@@ -102,13 +102,7 @@ public class Lexer
                 token = new Token(Token.RBracket, Ch);
                 break;
             case '"':
-                ReadChar();
-                var str = ReadSubstring(ch => ch != '"');
-                token = new Token(Token.String, str);
-                if (PeekChar() == '"')
-                {
-                    ReadChar();    
-                }
+                token = new Token(Token.String, ReadString());
                 break;
             case '\0':
                 token = new Token(Token.Eof);
@@ -153,7 +147,9 @@ public class Lexer
     private void SkipWhitespace()
     {
         while (char.IsWhiteSpace(Ch))
+        {
             ReadChar();
+        }
     }
 
     private string ReadSubstring(Func<char, bool> predicate)
@@ -167,6 +163,19 @@ public class Lexer
         }
         
         return value;
+    }
+
+    // Reads up to the closing quote, or the end of input if the string is unterminated
+    private string ReadString()
+    {
+        var start = Position + 1;
+
+        do
+        {
+            ReadChar();
+        } while (Ch != '"' && Ch != '\0');
+
+        return Input[start..Math.Min(Position, Input.Length)];
     }
 
     private string ReadNumber()

@@ -1,10 +1,10 @@
 namespace Monkey.Evaluating.Objects;
 
-public class ArrayObject() : MObject(ObjectTypes.Array)
+public class ArrayObject() : MonkeyObject(ObjectTypes.Array)
 {
-    private List<MObject>? _elements;
+    private List<MonkeyObject>? _elements;
 
-    public List<MObject> Elements
+    public List<MonkeyObject> Elements
     {
         get => _elements ??= [];
         init => _elements = value;

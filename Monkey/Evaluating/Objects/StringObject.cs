@@ -1,10 +1,10 @@
 namespace Monkey.Evaluating.Objects;
 
-public class StringObject(string value = "") : MObject(ObjectTypes.String)
+public class StringObject(string value = "") : MonkeyObject(ObjectTypes.String), IHashable
 {
     public string Value { get; } = value;
-    
-    public override string ToString() => Value;
 
-    public override int GetHashCode() => Value.GetHashCode();
+    public HashKey HashKey => new(Type, Value.GetHashCode());
+
+    public override string ToString() => Value;
 }

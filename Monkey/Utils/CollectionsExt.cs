@@ -1,32 +1,7 @@
-using System.Text;
-
 namespace Monkey.Utils;
 
 public static class CollectionsExt
 {
-    /// <summary>
-    /// Skips a specified number of elements from the end of an enumerable sequence.
-    /// </summary>
-    /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
-    /// <param name="source">The enumerable sequence to skip elements from.</param>
-    /// <param name="count">The number of elements to skip from the end of the sequence.</param>
-    /// <returns>
-    /// An enumerable sequence that contains the elements from the source sequence without
-    /// the specified number of elements from the end.
-    /// </returns>
-    public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source, int count)
-    {
-        var queue = new Queue<T>(count + 1);
-
-        foreach (var x in source)
-        {
-            queue.Enqueue(x);
-
-            if (queue.Count > count)
-                yield return queue.Dequeue();
-        }
-    }
-
     /// <summary>
     /// Performs the specified action on each element of the source collection,
     /// passing the index and the element to the action.
@@ -70,21 +45,12 @@ public static class CollectionsExt
         ArgumentOutOfRangeException.ThrowIfGreaterThan(startIndex, source.Length);
 
         var index = startIndex;
-        var sb = new StringBuilder();
-        var ch = source[index];
 
-        while (index < source.Length && predicate(ch))
+        while (index < source.Length && predicate(source[index]))
         {
-            sb.Append(ch);
-
             ++index;
-
-            if (index < source.Length)
-            {
-                ch = source[index];
-            }
         }
 
-        return (index, sb.ToString());
+        return (index, source[startIndex..index]);
     }
 }

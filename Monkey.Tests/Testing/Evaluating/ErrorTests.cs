@@ -12,6 +12,8 @@ public class ErrorTests : EvaluatingTestBase
     [TestCase("if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN")]
     [TestCase("if (10 > 1) {  if (10 > 1) { return true + false; } return 1; }", "unknown operator: BOOLEAN + BOOLEAN")]   
     [TestCase("foobar", "identifier not found: foobar")]
+    [TestCase("5 / 0", "division by zero: 5 / 0")]
+    [TestCase("""{"name": "Monkey"}[fn(x) { x }];""", "unusable as hash key: FUNCTION")]
     public void TestErrorHandling(string input, string expectedMessage)
     {
         var evaluated = TestEval(input);

@@ -1,10 +1,10 @@
 namespace Monkey.Evaluating.Objects;
 
-public class BooleanObject() : MObject(ObjectTypes.Boolean)
+public class BooleanObject() : MonkeyObject(ObjectTypes.Boolean), IHashable
 {
     public bool Value { get; init; }
-    
-    public override string ToString() => Convert.ToString(Value);
 
-    public override int GetHashCode() => Value ? 1 : 0;
+    public HashKey HashKey => new(Type, Value ? 1 : 0);
+
+    public override string ToString() => Convert.ToString(Value);
 }

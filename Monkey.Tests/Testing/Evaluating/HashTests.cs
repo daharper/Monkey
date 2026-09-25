@@ -1,3 +1,4 @@
+using Monkey.Evaluating;
 using Monkey.Evaluating.Objects;
 
 namespace Monkey.Tests.Testing.Evaluating;
@@ -14,15 +15,30 @@ public class HashTests : EvaluatingTestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(hello1.GetHashCode(), Is.EqualTo(hello2.GetHashCode()),
+            Assert.That(hello1.HashKey, Is.EqualTo(hello2.HashKey),
                 $"strings with same content have different hash keys");
 
-            Assert.That(diff1.GetHashCode(), Is.EqualTo(diff2.GetHashCode()),
+            Assert.That(diff1.HashKey, Is.EqualTo(diff2.HashKey),
                 $"strings with same content have different hash keys");
         });
-        
-        Assert.That(hello1.GetHashCode(), Is.Not.EqualTo(diff1.GetHashCode()),
+
+        Assert.That(hello1.HashKey, Is.Not.EqualTo(diff1.HashKey),
             $"strings with different content have same hash keys");
+    }
+
+    [Test]
+    public void TestHashKeysOfDifferentTypesDoNotCollide()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(new IntegerObject(1).HashKey, Is.Not.EqualTo(Builtin.True.HashKey));
+            Assert.That(new IntegerObject(0).HashKey, Is.Not.EqualTo(Builtin.False.HashKey));
+        });
+
+        var hash = AssertCast<HashObject>(TestEval("""{1: "one", true: "yes", 0: "zero", false: "no"}"""));
+
+        Assert.That(hash.Pairs, Has.Count.EqualTo(4),
+            $"hash has wrong number of pairs. got {hash.Pairs.Count}, want 4");
     }
 
     [Test]
@@ -60,7 +76,7 @@ public class HashTests : EvaluatingTestBase
         {
             Assert.Multiple(() =>
             {
-                Assert.That(hash.Pairs.TryGetValue(key.GetHashCode(), out var pair), Is.True);
+                Assert.That(hash.Pairs.TryGetValue(ToHashKey(key), out var pair), Is.True);
 
                 Assert.That(pair.Key.ToString(), Is.EqualTo(key.ToString()));
                 Assert.That(pair.Value?.ToString() ?? "", Is.EqualTo(value.ToString()));
@@ -75,7 +91,11 @@ public class HashTests : EvaluatingTestBase
     [TestCase("{5: 5}[5]", 5)]
     [TestCase("{true: 5}[true]", 5)]
     [TestCase("{false: 5}[false]", 5)]
-    public void TestHashIndexExpressions(string input, object expected)
+    [TestCase("{1: 5}[true]", null)]
+    [TestCase("{true: 5}[1]", null)]
+    [TestCase("{0: 5}[false]", null)]
+    [TestCase("""{"1": 5}[1]""", null)]
+    public void TestHashIndexExpressions(string input, object? expected)
     {
         var evaluated = TestEval(input);
 
@@ -98,4 +118,13 @@ public class HashTests : EvaluatingTestBase
                 break;
         }
     }
+
+    private static HashKey ToHashKey(object key)
+        => key switch
+        {
+            string str => new StringObject(str).HashKey,
+            int integer => new IntegerObject(integer).HashKey,
+            bool boolean => new BooleanObject { Value = boolean }.HashKey,
+            _ => throw new ArgumentException($"unsupported hash key type: {key.GetType().Name}")
+        };
 }

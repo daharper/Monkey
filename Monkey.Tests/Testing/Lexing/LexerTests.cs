@@ -13,6 +13,8 @@ public class LexerTests
         TestToken(new ComplexLexerFixture());
         TestToken(new CompleteLexerFixture());
         TestToken(new StringLexerFixture());
+        TestToken(new UnterminatedStringLexerFixture());
+        TestToken(new LexerFixture("\"", [new Token(Token.String, ""), new Token(Token.Eof)]));
         TestToken(new ArrayLexerFixture());
         TestToken(new HashLexerFixture());
     }

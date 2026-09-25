@@ -13,7 +13,8 @@ public class Token(string type, string literal = "")
     // Identifiers + literals
     public const string Identifier = "IDENT";
     public const string Int = "INT";
-    
+    public const string String = "STRING";
+
     // Operators
     public const string Assign = "=";
     public const string Plus = "+";
@@ -47,8 +48,7 @@ public class Token(string type, string literal = "")
     public const string If = "IF";
     public const string Else = "ELSE";
     public const string Return = "RETURN";
-    public const string String = "STRING";
-    
+
     public static readonly ImmutableDictionary<string, string> Keywords 
         = new Dictionary<string, string>
     {
@@ -63,9 +63,9 @@ public class Token(string type, string literal = "")
 
     public Token(string type, char ch) : this(type, ch.ToString()) { }
     
-    public string Type { get; set; } = type;
-    
-    public string Literal { get; set; } = literal;
+    public string Type { get; } = type;
+
+    public string Literal { get; } = literal;
 
     public bool Is(string tokenType) => Type == tokenType;
     

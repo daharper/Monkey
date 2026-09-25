@@ -4,7 +4,7 @@ using Monkey.Parsing.Nodes;
 namespace Monkey.Evaluating.Objects;
 
 public class FunctionObject(List<IdentifierNode> parameters, BlockNode body, Context context) 
-    : MObject(ObjectTypes.Function)
+    : MonkeyObject(ObjectTypes.Function)
 {
     public List<IdentifierNode> Parameters { get; private set; } = parameters;
 

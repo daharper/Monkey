@@ -30,12 +30,12 @@ public abstract class ParsingTestBase : TestBase
             ? AssertCast<IntegerNode>(infix.Left)
             : AssertCast<BooleanNode>(infix.Left);
             
-        Assert.AreEqual(left, l.Value, $"expected '{left}' got '{l.Value}'");
+        Assert.That(left, Is.EqualTo(l.Value), $"expected '{left}' got '{l.Value}'");
             
         dynamic r = infix.Right is IntegerNode
             ? AssertCast<IntegerNode>(infix.Right)
             : AssertCast<BooleanNode>(infix.Right);
             
-        Assert.AreEqual(right, r.Value, $"expected '{right}' got '{r.Value}'");
+        Assert.That(right, Is.EqualTo(r.Value), $"expected '{right}' got '{r.Value}'");
     }
 }

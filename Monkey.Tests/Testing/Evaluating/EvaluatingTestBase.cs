@@ -7,7 +7,7 @@ namespace Monkey.Tests.Testing.Evaluating;
 
 public class EvaluatingTestBase : TestBase
 {
-    protected MObject TestEval(string input)
+    protected MonkeyObject TestEval(string input)
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
@@ -19,7 +19,7 @@ public class EvaluatingTestBase : TestBase
         return Evaluator.Eval(program, context);
     }
     
-    protected static void TestString(MObject obj, string expected)
+    protected static void TestString(MonkeyObject obj, string expected)
     {
         Assert.That(obj is StringObject, Is.True, 
             $"object is not StringObject. got={obj.GetType().Name} ({obj})");
@@ -30,7 +30,7 @@ public class EvaluatingTestBase : TestBase
             $"object has wrong value. got={result.Value} want={expected}");    
     }
     
-    protected static void TestInteger(MObject obj, int expected)
+    protected static void TestInteger(MonkeyObject obj, int expected)
     {
         Assert.That(obj is IntegerObject, Is.True, 
             $"object is not IntegerObject. got={obj.GetType().Name} ({obj})");
@@ -41,7 +41,7 @@ public class EvaluatingTestBase : TestBase
             $"object has wrong value. got={result.Value} want={expected}");
     }
     
-    protected static void TestBoolean(MObject obj, bool expected)
+    protected static void TestBoolean(MonkeyObject obj, bool expected)
     {
         Assert.That(obj is BooleanObject, Is.True, 
             $"object is not BooleanObject. got={obj.GetType().Name} ({obj})");
@@ -52,7 +52,7 @@ public class EvaluatingTestBase : TestBase
             $"object has wrong value. got={result.Value} want={expected}");
     }
     
-    protected static void TestNull(MObject obj)
+    protected static void TestNull(MonkeyObject obj)
     {
         Assert.That(obj, Is.EqualTo(Builtin.Null), 
             $"object is not NullObject. got={obj.GetType().Name} ({obj})");

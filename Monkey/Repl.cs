@@ -2,9 +2,11 @@ using Monkey.Evaluating;
 using Monkey.Evaluating.Objects;
 using Monkey.Lexing;
 using Monkey.Parsing;
+using Monkey.Parsing.Nodes;
+using Monkey.Utils;
 using static System.Console;
 
-namespace Monkey.Utils;
+namespace Monkey;
 
 public static class Repl
 {
@@ -56,7 +58,18 @@ public static class Repl
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
-        var program = parser.ParseProgram();
+        ProgramNode program;
+
+        try
+        {
+            program = parser.ParseProgram();
+        }
+        catch (ParserException e)
+        {
+            // show any errors collected before the parser gave up, then the reason it stopped
+            DisplayParserErrors(parser.Errors.Append(e.Message));
+            return;
+        }
 
         if (parser.HasErrors)
         {

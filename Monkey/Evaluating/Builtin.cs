@@ -50,14 +50,14 @@ public static class Builtin
 
     #region private methods
     
-    private static MObject EvalPush(MObject container, MObject item)
+    private static MonkeyObject EvalPush(MonkeyObject container, MonkeyObject item)
         => container switch
         {
             ArrayObject array => new ArrayObject { Elements = array.Elements.Append(item).ToList() },
             _ => ErrorObject.Create("argument to `push` must be ARRAY, got {0}", container.Type)
         };        
     
-    private static MObject EvalRest(MObject container)
+    private static MonkeyObject EvalRest(MonkeyObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 
@@ -66,21 +66,21 @@ public static class Builtin
             _ => ErrorObject.Create("argument to `rest` must be ARRAY, got {0}", container.Type)
         };
     
-    private static MObject EvalLast(MObject container)
+    private static MonkeyObject EvalLast(MonkeyObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 ? array.Elements[^1] : Null,
             _ => ErrorObject.Create("argument to `last` must be ARRAY, got {0}", container.Type)
         };
     
-    private static MObject EvalFirst(MObject container)
+    private static MonkeyObject EvalFirst(MonkeyObject container)
         => container switch
         {
             ArrayObject array => array.Elements.Count > 0 ? array.Elements[0] : Null,
             _ => ErrorObject.Create("argument to `first` must be ARRAY, got {0}", container.Type)
         };
 
-    private static MObject EvalLen(MObject obj)
+    private static MonkeyObject EvalLen(MonkeyObject obj)
         => obj switch
         {
             ArrayObject array => new IntegerObject(array.Elements.Count),
