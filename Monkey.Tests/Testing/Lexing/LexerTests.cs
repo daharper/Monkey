@@ -17,6 +17,7 @@ public class LexerTests
         TestToken(new LexerFixture("\"", [new Token(Token.String, ""), new Token(Token.Eof)]));
         TestToken(new ArrayLexerFixture());
         TestToken(new HashLexerFixture());
+        TestToken(new CommentLexerFixture());
     }
     
     private static void TestToken(LexerFixture data)

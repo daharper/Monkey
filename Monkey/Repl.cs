@@ -36,7 +36,9 @@ public static class Repl
             Write(prompt);
             var input = ReadLine();
 
+            if (input is null) break;
             if (string.IsNullOrWhiteSpace(input)) continue;
+            if (input.TrimStart().StartsWith('#')) continue;
             if (input == "exit") break;
 
             try

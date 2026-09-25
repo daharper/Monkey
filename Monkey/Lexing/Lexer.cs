@@ -26,7 +26,7 @@ public class Lexer
     {
         Token token;
         
-        SkipWhitespace();
+        SkipWhitespaceAndComments();
         
         switch (Ch)
         {
@@ -144,11 +144,22 @@ public class Lexer
         ++ReadPosition;
     }
    
-    private void SkipWhitespace()
+    // Comments run from '#' to the end of the line
+    private void SkipWhitespaceAndComments()
     {
-        while (char.IsWhiteSpace(Ch))
+        while (true)
         {
-            ReadChar();
+            while (char.IsWhiteSpace(Ch))
+            {
+                ReadChar();
+            }
+
+            if (Ch != '#') return;
+
+            while (Ch != '\n' && Ch != '\0')
+            {
+                ReadChar();
+            }
         }
     }
 
