@@ -4,6 +4,7 @@ using Monkey.Lexing;
 using Monkey.Parsing;
 using Monkey.Parsing.Nodes;
 using Monkey.Utils;
+
 using static System.Console;
 
 namespace Monkey;
@@ -12,6 +13,7 @@ public static class Repl
 {
     private const string MonkeyFace =
             """
+            
                .--.  .-"     "-.  .--.
               / .. \/  .-. .-.  \/ .. \
              | |  '|  /   Y   \  |'  | |
@@ -22,6 +24,7 @@ public static class Repl
                    \   \ '~' /   /
                     '._ '-=-' _.'
                        '-----'
+                       
             """;
     public static void Run()
     {
@@ -89,8 +92,9 @@ public static class Repl
     
     private static void DisplayWelcomeMessage()
     {
+        WriteLine(MonkeyFace);
         WriteLine("Hello! This is the Monkey programming language!");
-        WriteLine("Feel free to type in commands");
+        WriteLine("Feel free to type in commands" + Environment.NewLine);
     }
     
     private static void DisplayGoodbyeMessage()
@@ -100,7 +104,6 @@ public static class Repl
     
     private static void DisplayParserErrors(IEnumerable<string> errors)
     {
-        WriteLine(MonkeyFace);
         WriteLine("Whoops! We ran into some monkey business here!");
         WriteLine();
         WriteLine("parser errors:");
@@ -109,7 +112,6 @@ public static class Repl
     
     private static void DisplayException(Exception exception)
     {
-        WriteLine(MonkeyFace);
         WriteLine("Whoops! We ran into some monkey business here!");
         WriteLine();
         WriteLine($"{exception.Message}");
