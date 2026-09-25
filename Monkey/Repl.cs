@@ -58,6 +58,7 @@ public static class Repl
     {
         var lexer = new Lexer(input);
         var parser = new Parser(lexer);
+        
         ProgramNode program;
 
         try
@@ -66,7 +67,6 @@ public static class Repl
         }
         catch (ParserException e)
         {
-            // show any errors collected before the parser gave up, then the reason it stopped
             DisplayParserErrors(parser.Errors.Append(e.Message));
             return;
         }
