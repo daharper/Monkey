@@ -10,7 +10,7 @@ I stayed close-ish to the Go structure so I could follow along in the book.
 
 ### Technology
 
-- C# (preview language features)
+- C# 15 (preview language features)
 - .NET 11 (preview SDK required until .NET 11 is released)
 - NUnit 5
 - Rider, or any editor with .NET 11 support
