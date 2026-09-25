@@ -43,7 +43,6 @@ public class Parser
         {
             var statement = ParseStatement();
 
-            // should we exit if null?
             if (statement != Node.Null)
             {
                 programme.Statements.Add(statement);
@@ -130,7 +129,6 @@ public class Parser
 
         statement.Value = ParseExpression(Precedence.Lowest);
 
-        // todo: shouldn't this be an error if it is not a semicolon?
         if (PeekToken.Is(Token.Semicolon))
         {
             Consume();
@@ -177,7 +175,6 @@ public class Parser
         {
             var statement = ParseStatement();
 
-            // should we exit if null?
             if (statement != Node.Null)
             {
                 block.Statements.Add(statement);
